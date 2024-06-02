@@ -16,6 +16,8 @@ import org.swp.dto.response.JwtAuthenticationResponse;
 import org.swp.entity.User;
 import org.swp.service.AuthenticationService;
 
+import java.util.Objects;
+
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -27,23 +29,26 @@ public class AuthController {
 
     //ENDPOINTS
     @PostMapping("/signup")
-    public ResponseEntity<User> signUp(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
         try {
             User newUser = authenticationService.signUp(signUpRequest);
-            return ResponseEntity.ok(newUser);
+            return Objects.isNull(newUser) ?
+                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Maybe the username or email is in use already")
+                    : ResponseEntity.ok(newUser)
+                    ;
         } catch (Exception e) {
             logger.error("Error occurred during sign up: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<?> signIn(@RequestBody SignInRequest signInRequest) {
         try {
             return ResponseEntity.ok(authenticationService.signIn(signInRequest));
         } catch (Exception e) {
             logger.error("Error occurred during sign in: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
