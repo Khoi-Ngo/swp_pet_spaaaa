@@ -1,0 +1,7 @@
+dto: containing definition of model for I/O
+entity: containing definition of Entities (tables in schema)
+repo: ORM
+service: containing business logic process
+controller: endpoints
+configuration: system configuration
+run class: SwpApplication.java
