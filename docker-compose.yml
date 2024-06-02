@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "11154:11154"
+    environment:
+      MYSQL_ROOT_PASSWORD: SNrhenxeQFsQlFwZiCijovRFFGFCfyUu
+      MYSQL_DATABASE: railway
+      MYSQL_USER: root
+      MYSQL_PASSWORD: SNrhenxeQFsQlFwZiCijovRFFGFCfyUu
