@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.swp.entity.User;
+import org.swp.enums.UserRole;
 
 import java.security.Key;
 import java.util.Date;
@@ -18,8 +19,13 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JWTService {
-    public String generrateToken(UserDetails userDetails) {
-        return Jwts.builder().setSubject(userDetails.getUsername())
+    public String generrateToken(UserDetails userDetails, Integer userId, String email, UserRole userRole) {
+        return Jwts.builder()
+                .claim("userId", userId)
+                .claim("email", email)
+                .claim("role", userRole)
+                .claim("username", userDetails.getUsername())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -27,8 +33,15 @@ public class JWTService {
     }
 
 
-    public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
+    public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails
+            , Integer userId, String email, UserRole userRole
+    ) {
+        return Jwts.builder().setClaims(extraClaims)
+                .claim("userId", userId)
+                .claim("email", email)
+                .claim("role", userRole)
+                .claim("username", userDetails.getUsername())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 604800000))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

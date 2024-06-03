@@ -13,6 +13,7 @@ import org.swp.dto.request.SignInRequest;
 import org.swp.dto.request.SignUpRequest;
 import org.swp.dto.response.JwtAuthenticationResponse;
 import org.swp.entity.User;
+import org.swp.enums.UserRole;
 import org.swp.repository.IUserRepository;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class AuthenticationService {
     public User signUp(@NotNull SignUpRequest signUpRequest) {
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        user.setRole(UserRole.CUSTOMER);
         return IUserRepository.save(user);
     }
 
@@ -45,8 +47,10 @@ public class AuthenticationService {
                 .findByUsername(
                         signInRequest.getUsername()).orElseThrow(()
                         -> new IllegalArgumentException("Invalid username or password."));
-        var jwt = jwtService.generrateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        var jwt = jwtService.generrateToken(user, user.getId(), user.getEmail(), user.getRole());
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user,
+                user.getId(), user.getEmail(), user.getRole()
+        );
 
         return new JwtAuthenticationResponse(jwt, refreshToken);
 
@@ -56,8 +60,8 @@ public class AuthenticationService {
         String username = jwtService.extractUserName(refreshRequest.getToken());
         User user = IUserRepository.findByUsername(username).orElseThrow();
         if (jwtService.validateToken(refreshRequest.getToken(), user)) {
-            var jwt = jwtService.generrateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+            var jwt = jwtService.generrateToken(user, user.getId(), user.getEmail(), user.getRole());
+            var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user, user.getId(), user.getEmail(), user.getRole());
 
             return new JwtAuthenticationResponse(jwt, refreshToken);
 
