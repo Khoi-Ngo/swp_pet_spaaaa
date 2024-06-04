@@ -35,7 +35,6 @@ public class AuthenticationService {
     public User signUp(@NotNull SignUpRequest signUpRequest) {
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setRole(UserRole.CUSTOMER);
         return IUserRepository.save(user);
     }
 
