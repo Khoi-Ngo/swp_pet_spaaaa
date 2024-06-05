@@ -33,7 +33,7 @@ public class ServiceController {
     @GetMapping("/most-rcmd-services")
     public ResponseEntity<?> getMostRcmdServices() {
         //get most recommended services
-        return ResponseEntity.ok(serviceService.getMostRcmdServices(ServiceConstantNumber.NUMBER_OF_LATEST_SERVICES.getValue()));
+        return ResponseEntity.ok(serviceService.getMostRcmdServices(ServiceConstantNumber.NUMBER_OF_MOST_RCMD_SERVICES.getValue()));
     }
 
     @GetMapping("/most-rcmd-dog-services")

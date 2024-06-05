@@ -11,10 +11,12 @@ public class ShopService {
     private IShopRepository shopRepository;
 
     public Object getMostRcmdShops(int numberOfRecords) {
-        return shopRepository.findMostRcmdShops(numberOfRecords);
+//        return shopRepository.findMostRcmdShops(numberOfRecords);
+        return shopRepository.findAll();
     }
 
     public Object getMostRcmdShops(TypePet typePet, int numberOfRecords) {
-        return shopRepository.findMostRcmdShops(typePet, numberOfRecords);
+//        return shopRepository.findMostRcmdShops(typePet, numberOfRecords);
+        return shopRepository.findAll();
     }
 }
