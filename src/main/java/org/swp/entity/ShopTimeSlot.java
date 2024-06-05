@@ -13,6 +13,7 @@ public class ShopTimeSlot extends BaseEntity {
     @Lob
     private String description;
 
+    private int totalSlot;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
