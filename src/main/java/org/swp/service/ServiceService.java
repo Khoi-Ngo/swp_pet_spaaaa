@@ -9,6 +9,7 @@ import org.swp.repository.IServiceRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceService {
@@ -18,11 +19,14 @@ public class ServiceService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public List<?> getAll() {
-        List<org.swp.entity.Service> listService = serviceRepository.findAll();
-        List<ServiceListItemDto> dtos = new ArrayList<>();
-        listService.forEach(s -> dtos.add(modelMapper.map(s, ServiceListItemDto.class)));
-        return dtos;
+    public List<ServiceListItemDto> getAll() {
+        return serviceRepository.findAll().stream()
+                .map(service -> {
+                    ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
+                    dto.setTypePetString(dto.getTypePet().getValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     public org.swp.entity.Service getServiceById(int id) {
