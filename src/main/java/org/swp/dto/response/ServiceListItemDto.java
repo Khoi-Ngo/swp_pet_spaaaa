@@ -10,5 +10,6 @@ public class ServiceListItemDto {
     private double price;
     private TypePet typePet;
     private String typePetString;
+    private String address;
     private int nomination;
 }

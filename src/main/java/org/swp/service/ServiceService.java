@@ -9,6 +9,7 @@ import org.swp.repository.IServiceRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,11 @@ public class ServiceService {
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
                     dto.setTypePetString(dto.getTypePet().getValue());
+                    dto.setAddress(
+                            Objects.nonNull(service.getShop()) ?
+                                    service.getShop().getShopAddress()
+                                    : "Khong xac dinh"
+                    );
                     return dto;
                 })
                 .collect(Collectors.toList());
