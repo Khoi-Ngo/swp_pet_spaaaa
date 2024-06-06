@@ -1,20 +1,28 @@
 package org.swp.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.swp.dto.response.ServiceListItemDto;
 import org.swp.enums.TypePet;
 import org.swp.repository.IServiceRepository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ServiceService {
     @Autowired
     private IServiceRepository serviceRepository;
 
-    public List<org.swp.entity.Service> getAll() {
-        return serviceRepository.findAll();
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public List<?> getAll() {
+        List<org.swp.entity.Service> listService = serviceRepository.findAll();
+        List<ServiceListItemDto> dtos = new ArrayList<>();
+        listService.forEach(s -> dtos.add(modelMapper.map(s, ServiceListItemDto.class)));
+        return dtos;
     }
 
     public org.swp.entity.Service getServiceById(int id) {
