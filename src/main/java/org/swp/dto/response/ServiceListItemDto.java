@@ -12,4 +12,5 @@ public class ServiceListItemDto {
     private String typePetString;
     private String address;
     private int nomination;
+    private String shopName;
 }
