@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.swp.dto.response.UserDto;
 import org.swp.service.UserService;
 import org.swp.entity.User;
 
@@ -18,7 +19,7 @@ public class CustomerController {
 
     @GetMapping("/customer/profile/{username}")
     public ResponseEntity<?> getUserProfile(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
+        UserDto user = userService.getUserByUsername(username);
         return ResponseEntity.ok(user);
     }
 }
