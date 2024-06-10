@@ -17,4 +17,5 @@ public class ServiceDetailDto {
     private String categoryName;
     private Integer shopId;
     private String shopName;
+    private String shopAddress;
 }

@@ -47,6 +47,7 @@ public class ServiceService {
         dto.setShopId(Objects.nonNull(service.getShop()) ? service.getShop().getId() : -1);
         dto.setShopName(Objects.nonNull(service.getShop()) ? service.getShop().getShopName() : "Khong xac dinh shop");
         dto.setCategoryName((Objects.nonNull(service.getCategory()) ? service.getCategory().getCategoryName() : "Khong xac dinh category"));
+        dto.setShopAddress(Objects.nonNull(service.getShop()) ? service.getShop().getShopAddress() : "Khong xac dinh");
         return dto;
     }
 
