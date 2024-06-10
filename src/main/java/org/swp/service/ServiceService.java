@@ -48,6 +48,8 @@ public class ServiceService {
         dto.setShopName(Objects.nonNull(service.getShop()) ? service.getShop().getShopName() : "Khong xac dinh shop");
         dto.setCategoryName((Objects.nonNull(service.getCategory()) ? service.getCategory().getCategoryName() : "Khong xac dinh category"));
         dto.setShopAddress(Objects.nonNull(service.getShop()) ? service.getShop().getShopAddress() : "Khong xac dinh");
+        //date for front end create
+        //todo: price more dynamical and response the list basing on the threshold of typepet and weight
         return dto;
     }
 

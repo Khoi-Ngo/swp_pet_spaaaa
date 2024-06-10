@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.swp.configuration.constant.service.ServiceConstantNumber;
 import org.swp.enums.TypePet;
+import org.swp.service.BookingService;
 import org.swp.service.CategoryServiceService;
 import org.swp.service.ServiceService;
 
@@ -126,6 +127,7 @@ public class ServiceController {
 
     @GetMapping("/services/{shopId}")
     public ResponseEntity<?> getServiceByShopId(@PathVariable("shopId") int shopId) {
+        //todo
         try {
             var services = serviceService.getAllServiceByShopId(shopId);
             if (services == null) {

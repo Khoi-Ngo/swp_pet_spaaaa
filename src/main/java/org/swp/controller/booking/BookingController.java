@@ -3,6 +3,7 @@ package org.swp.controller.booking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import org.swp.dto.request.RequestCancelBookingRequest;
 import org.swp.service.BookingService;
 import org.swp.util.SecurityUtil;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @RestController
@@ -47,21 +49,27 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.cancel(request));
     }
 
-    @PostMapping("/accept")
-    public ResponseEntity<?> acceptAction(@RequestBody RequestAcceptBooking request) {
-        try {
-            return ResponseEntity.ok(bookingService.accept(request));
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
         Object responseData = bookingService.getBookingById(id);
         return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping("service/{id}/{date}")
+    public ResponseEntity<?> getServiceByDate(@PathVariable("id") int id
+            , @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        try {
+            var slotInfors = bookingService.getSlotInfors(id, date);
+            return Objects.nonNull(slotInfors) ?
+                    ResponseEntity.ok(slotInfors)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found date or not found the service");
+
+        } catch (Exception e) {
+            logger.error("Error while getting information slots for a date in Service Detail page");
+            logger.error(e.getMessage());
+            return null;
+        }
     }
 
 

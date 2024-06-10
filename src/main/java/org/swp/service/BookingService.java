@@ -9,25 +9,41 @@ import org.swp.controller.booking.BookingController;
 import org.swp.dto.request.RequestAcceptBooking;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
+import org.swp.dto.response.CacheShopTimeSlotDto;
 import org.swp.entity.Booking;
+import org.swp.entity.CacheShopTimeSlot;
+import org.swp.entity.Shop;
+import org.swp.entity.ShopTimeSlot;
 import org.swp.enums.BookingStatus;
 import org.swp.enums.UserRole;
-import org.swp.repository.IBookingRepository;
-import org.swp.repository.IUserRepository;
+import org.swp.repository.*;
+
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class BookingService {
+    private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
+
     @Autowired
     private IBookingRepository bookingRepository;
     @Autowired
     private IUserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
-    private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
+    @Autowired
+    private IServiceRepository serviceRepository;
+    @Autowired
+    private IShopRepository shopRepository;
+    @Autowired
+    private ICacheShopTimeSlotRepository cacheShopTimeSlotRepository;
+    @Autowired
+    private IShopTimeSlotRepository shopTimeSlotRepository;
 
 
     public Object getAllBookings(String userName) {
-        return isCustomer(userName) ?
+      //todo: check input of the endpoint then query base on role and the username
+       return isCustomer(userName) ?
                 bookingRepository.findALlByCustomerUserName(userName)
                 : bookingRepository.findAllByShopOwnerUserName(userName);
     }
@@ -37,6 +53,7 @@ public class BookingService {
     }
 
     public Object getBookingById(int id) {
+        //todo: mapping with dto
         return bookingRepository.findById(id).orElse(null);
     }
 
@@ -47,34 +64,43 @@ public class BookingService {
 
 
     public Object cancel(RequestCancelBookingRequest request) {
+        //update the status -> update the cacheshoptimeslot
         return null;
 
     }
 
-    public Object accept(RequestAcceptBooking request) {
-        //change status only
-        Booking booking = bookingRepository.findById(request.getBookingId()).orElse(null);
-        String status = booking.getStatus();
-        //WAIT FOR CUSTOMER -> ACCEPTED
-        //WAIT FOR SHOP-OWNER -> ACCEPTED
-        if (status.equals(BookingStatus.WAIT_FOR_SHOP_OWNER_ACCEPT.getDescription())
-                || status.equals(BookingStatus.WAIT_FOR_CUSTOMER_ACCEPT.getDescription())) {
-            booking.setStatus(BookingStatus.ACCEPTED.getDescription());
-            return "Accept booking successfully";
+    public Object getSlotInfors(int id, LocalDate date) {
+        List<CacheShopTimeSlotDto> dtos = null;
+        var service = serviceRepository.findById(id);
+        if (service.isPresent()) {
+            Shop shop = service.get().getShop();
+            if (Objects.nonNull(shop)) {
+                //get all the Shop Time Slot Information
+                Set<ShopTimeSlot> shopTimeSlot = shopTimeSlotRepository.findByShopId(shop.getId());
+                Set<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date);
+                dtos = new ArrayList<>();
+                for (ShopTimeSlot timeSlot : shopTimeSlot) {
+                    if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {
+                        dtos.add(new CacheShopTimeSlotDto(shop.getId(), timeSlot.getTotalSlot(), 0, timeSlot.getTotalSlot(), date.atStartOfDay()));
+                    } else {
+                        CacheShopTimeSlot cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
+                        if (Objects.nonNull(cacheShopTimeSlot)) {
+                            dtos.add(new CacheShopTimeSlotDto(shop.getId(),
+                                    cacheShopTimeSlot.getTotalSlots(),
+                                    cacheShopTimeSlot.getUsedSlots(),
+                                    cacheShopTimeSlot.getAvailableSlots(),
+                                    date.atStartOfDay()));
+                        }
+                    }
+                }
+
+
+            }
         }
-        return "Unidentified booking status";
+        return dtos;
     }
 
-    public Object deny(RequestAcceptBooking request) {
-        //change status only
-        //WAIT FOR CUSTOMER -> DENIED
-        //WAIT FOR SHOP-OWNER -> DENIED
-        return null;
-    }
-
-    public Object markBooking(RequestBookingRequest request) {
-        //maybe for shop-owner||customer mark done / having a batch job confirm with the customer || shop-owner
-        // => after this call API -> status will be canceled or done
-        return null;
+    private boolean isEmptyTimeSlot(ShopTimeSlot timeSlot, Set<CacheShopTimeSlot> cacheShopTimeSlots) {
+        return cacheShopTimeSlots.stream().noneMatch(s -> s.getShopTimeSlot().equals(timeSlot));
     }
 }

@@ -16,6 +16,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("api/v1/shop-owner")
 public class ShopOwnerController {
+    //todo handling more exception here
     private static final Logger logger = LoggerFactory.getLogger(ShopOwnerController.class);
 
     @Autowired
@@ -35,9 +36,9 @@ public class ShopOwnerController {
         return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
-    @PostMapping("/booking/accept")
-    public ResponseEntity<?> acceptAction(@RequestBody RequestAcceptBooking request) {
-        return ResponseEntity.ok(bookingService.accept(request));
-    }
+//    @PostMapping("/booking/accept")
+//    public ResponseEntity<?> acceptAction(@RequestBody RequestAcceptBooking request) {
+//        return ResponseEntity.ok(bookingService.accept(request));
+//    }
 
 }
