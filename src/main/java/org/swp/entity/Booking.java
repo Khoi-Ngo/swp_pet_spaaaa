@@ -30,11 +30,7 @@ public class Booking extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "service_id")
     private Service service;
-    @ManyToMany
-    @JoinTable(
-            name = "tbl_booking_time",
-            joinColumns = @JoinColumn(name = "booking_id"),
-            inverseJoinColumns = @JoinColumn(name = "cache_shop_time_slot")
-    )
-    private List<CacheShopTimeSlot> cacheShopTimeSlotList;
+    @ManyToOne
+    @JoinColumn(name = "cache_shop_time_slot")
+    private CacheShopTimeSlot cacheShopTimeSlot;
 }

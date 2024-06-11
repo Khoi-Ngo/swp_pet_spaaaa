@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.swp.dto.request.RequestAcceptBooking;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
 import org.swp.service.BookingService;
@@ -40,8 +39,15 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
-        //TODO : take care relationship in the databases
-        return ResponseEntity.ok(bookingService.createBooking(request));
+        try {
+            var response = bookingService.createBooking(request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating booking");
+        }
     }
 
     @DeleteMapping

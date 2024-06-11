@@ -6,8 +6,8 @@ public enum BookingStatus {
     ACCEPTED("Booking accepted"),
     CANCELLED("Booking cancelled"),
     DONE("Booking done"),
-    REJECTED("Booking rejected");
-
+    REJECTED("Booking rejected"),
+    SCHEDULED("Booking rejected");
     private final String description;
 
     BookingStatus(String description) {
