@@ -14,5 +14,5 @@ public class CacheShopTimeSlotDto {
     private int usedSlots;
     private int availableSlots;
     private LocalDateTime localDateTime;
-    private TimeSlot timeSlot;
+    private TimeSlotDto timeSlotDto;
 }

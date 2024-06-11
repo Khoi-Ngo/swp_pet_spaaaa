@@ -2,6 +2,7 @@ package org.swp.dto.request;
 
 import lombok.Data;
 import org.swp.dto.response.CacheShopTimeSlotDto;
+import org.swp.dto.response.TimeSlotDto;
 import org.swp.entity.TimeSlot;
 
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public class RequestBookingRequest {
 
     //date - timeslot
     private LocalDate localDate;
-    private TimeSlot timeSlot;
+    private TimeSlotDto timeSlotDto;
 
 
 }

@@ -8,6 +8,7 @@ import org.swp.entity.ShopTimeSlot;
 import org.swp.entity.TimeSlot;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -15,7 +16,7 @@ public interface IShopTimeSlotRepository extends JpaRepository<ShopTimeSlot, Int
 
 
     @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id")
-    Set<ShopTimeSlot> findByShopId(@Param("id") Integer id);
+    List<ShopTimeSlot> findByShopId(@Param("id") Integer id);
 
     @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.timeSlot = :timeSlot")
     ShopTimeSlot findByShopIdAndTimeSlot(@Param("id") Integer id, @Param("timeSlot") TimeSlot timeSlot);

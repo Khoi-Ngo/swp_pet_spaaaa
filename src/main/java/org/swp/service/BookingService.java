@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
-import org.swp.dto.response.BookingDetailDto;
-import org.swp.dto.response.CacheShopTimeSlotDto;
-import org.swp.dto.response.CancelBookingDto;
-import org.swp.dto.response.CreateBookingDto;
+import org.swp.dto.response.*;
 import org.swp.entity.*;
 import org.swp.enums.BookingStatus;
 import org.swp.enums.UserRole;
@@ -37,6 +34,8 @@ public class BookingService {
     private ICacheShopTimeSlotRepository cacheShopTimeSlotRepository;
     @Autowired
     private IShopTimeSlotRepository shopTimeSlotRepository;
+    @Autowired
+    private ITimeSlotRepository timeSlotRepository;
 
 
     public Object getAllBookings(String userName) {
@@ -63,10 +62,15 @@ public class BookingService {
             if (Objects.isNull(shop)) {
                 return null;
             }
+
+            TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime());
+            ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot);
+
+
             CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopDateAndTimeSlot(
                     shop.getId()
-                    , request.getLocalDate()
-                    , request.getTimeSlot());
+                    , request.getLocalDate().atStartOfDay()
+                    , shopTimeSlot);
             if (Objects.nonNull(cacheShopTimeSlot)) {
                 cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
                 cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
@@ -74,11 +78,6 @@ public class BookingService {
                     return null;
                 }
             } else {
-                //find shop time slot original by ShopIdAndTimeSlot
-                ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(
-                        shop.getId()
-                        , request.getTimeSlot());
-
                 //refer into -> Cache record and save
                 cacheShopTimeSlot = new CacheShopTimeSlot();
                 cacheShopTimeSlot.setTotalSlots(shopTimeSlot.getTotalSlot());
@@ -96,10 +95,12 @@ public class BookingService {
             booking.setStatus(BookingStatus.SCHEDULED.getDescription());
             booking.setShop(shop);
             booking.setService(service.get());
-            booking.setCacheShopTimeSlot(cacheShopTimeSlot);
+
 
             User customer = userRepository.findById(request.getCustomerId()).get();
             booking.setUser(customer);
+            bookingRepository.save(booking);
+
             List<Booking> bookings = cacheShopTimeSlot.getBookings();
             if (CollectionUtils.isEmpty(bookings)) {
                 bookings = new ArrayList<>();
@@ -107,9 +108,16 @@ public class BookingService {
             bookings.add(booking);
             cacheShopTimeSlot.setBookings(bookings);
             //save
-
             cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+
+
+            booking.setCacheShopTimeSlot(cacheShopTimeSlot);
             bookingRepository.save(booking);
+
+
+
+
+
             dto = modelMapper.map(request, CreateBookingDto.class);
 
         }
@@ -146,8 +154,8 @@ public class BookingService {
             Shop shop = service.get().getShop();
             if (Objects.nonNull(shop)) {
                 //get all the Shop Time Slot Information
-                Set<ShopTimeSlot> shopTimeSlot = shopTimeSlotRepository.findByShopId(shop.getId());
-                Set<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date);
+                List<ShopTimeSlot> shopTimeSlot = shopTimeSlotRepository.findByShopId(shop.getId());
+                List<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date.atStartOfDay());
                 dtos = new ArrayList<>();
                 for (ShopTimeSlot timeSlot : shopTimeSlot) {
                     if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {
@@ -156,7 +164,7 @@ public class BookingService {
                                 0,
                                 timeSlot.getTotalSlot(),
                                 date.atStartOfDay(),
-                                timeSlot.getTimeSlot()));
+                                modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
                     } else {
                         CacheShopTimeSlot cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
                         if (Objects.nonNull(cacheShopTimeSlot)) {
@@ -165,7 +173,7 @@ public class BookingService {
                                     cacheShopTimeSlot.getUsedSlots(),
                                     cacheShopTimeSlot.getAvailableSlots(),
                                     date.atStartOfDay(),
-                                    timeSlot.getTimeSlot()));
+                                    modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
                         }
                     }
                 }
@@ -176,7 +184,7 @@ public class BookingService {
         return dtos;
     }
 
-    private boolean isEmptyTimeSlot(ShopTimeSlot timeSlot, Set<CacheShopTimeSlot> cacheShopTimeSlots) {
+    private boolean isEmptyTimeSlot(ShopTimeSlot timeSlot, List<CacheShopTimeSlot> cacheShopTimeSlots) {
         return cacheShopTimeSlots.stream().noneMatch(s -> s.getShopTimeSlot().equals(timeSlot));
     }
 }
