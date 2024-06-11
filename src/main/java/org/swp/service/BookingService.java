@@ -36,10 +36,23 @@ public class BookingService {
     private IShopTimeSlotRepository shopTimeSlotRepository;
     @Autowired
     private ITimeSlotRepository timeSlotRepository;
+    @Autowired
+    private IPetrepository petrepository;
+    @Autowired
+    private JWTService jwtService;
+
+    private String getUserNameFromToken(String token) {
+        String userName = null;
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7); // Remove "Bearer " prefix
+            userName = jwtService.extractUserName(jwtToken);
+        }
+        return userName;
+    }
 
 
-    public Object getAllBookings(String userName) {
-        //todo: check input of the endpoint then query base on role and the username
+    public Object getAllBookings(String token) {
+        String userName = getUserNameFromToken(token);
         return isCustomer(userName) ?
                 bookingRepository.findALlByCustomerUserName(userName)
                 : bookingRepository.findAllByShopOwnerUserName(userName);
@@ -56,7 +69,6 @@ public class BookingService {
 
     public Object createBooking(RequestBookingRequest request) {
         var service = serviceRepository.findById(request.getServiceId());
-        CreateBookingDto dto = null;
         if (service.isPresent()) {
             Shop shop = service.get().getShop();
             if (Objects.isNull(shop)) {
@@ -96,9 +108,26 @@ public class BookingService {
             booking.setShop(shop);
             booking.setService(service.get());
 
+            //pet also
+            Pet pet = null;
+            if (Objects.nonNull(request.getPetId())) {
+                pet = petrepository.findById(request.getPetId()).get();
+            }
+            if (Objects.isNull(pet)) {
+                pet = new Pet();
+                pet.setPetName(request.getPetName());
+                pet.setPetAge(request.getPetAge());
+                pet.setPetGender(request.getPetGender());
+                pet.setPetWeight(request.getPetWeight());
+                pet.setPetType(request.getTypePet());
+            }
+
 
             User customer = userRepository.findById(request.getCustomerId()).get();
+            pet.setUser(customer);
+            petrepository.save(pet);
             booking.setUser(customer);
+            booking.setPet(pet);
             bookingRepository.save(booking);
 
             List<Booking> bookings = cacheShopTimeSlot.getBookings();
@@ -113,15 +142,11 @@ public class BookingService {
 
             booking.setCacheShopTimeSlot(cacheShopTimeSlot);
             bookingRepository.save(booking);
+            return "Create booking ok!";
 
-
-
-
-
-            dto = modelMapper.map(request, CreateBookingDto.class);
 
         }
-        return dto;
+        return "Cannot find the service";
     }
 
 

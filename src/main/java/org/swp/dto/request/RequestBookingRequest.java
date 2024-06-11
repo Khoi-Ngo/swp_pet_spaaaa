@@ -1,9 +1,8 @@
 package org.swp.dto.request;
 
 import lombok.Data;
-import org.swp.dto.response.CacheShopTimeSlotDto;
 import org.swp.dto.response.TimeSlotDto;
-import org.swp.entity.TimeSlot;
+import org.swp.enums.TypePet;
 
 import java.time.LocalDate;
 
@@ -11,17 +10,20 @@ import java.time.LocalDate;
 public class RequestBookingRequest {
 
     private int customerId;
-    private String customerName;
-    private String customerAddress;
-    private String customerPhone;
-    private String customerEmail;
-    private String additionalMessage;//from customer to shop
+    private String additionalMessage;
     private int serviceId;
-    private String serviceName;
 
     //date - timeslot
     private LocalDate localDate;
     private TimeSlotDto timeSlotDto;
+
+    //pet information
+    private String petName;
+    private int petAge;
+    private TypePet typePet;
+    private int petWeight;
+    private Integer petId;
+    private String petGender;
 
 
 }

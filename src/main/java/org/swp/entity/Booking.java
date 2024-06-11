@@ -31,6 +31,9 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "service_id")
     private Service service;
     @ManyToOne
-    @JoinColumn(name = "cache_shop_time_slot")
+    @JoinColumn(name = "cache_shop_time_slot_id")
     private CacheShopTimeSlot cacheShopTimeSlot;
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
 }

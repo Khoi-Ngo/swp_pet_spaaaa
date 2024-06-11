@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
 import org.swp.service.BookingService;
+import org.swp.service.JWTService;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -26,14 +27,15 @@ public class BookingController {
 
 
     @GetMapping
-    public ResponseEntity<?> getAllBookings() {
-        //get all bookings for a specified customer
-//        String userName = SecurityUtil.getUserName(SecurityContextHolder.getContext());
-        String userName = null;
-        return Objects.nonNull(userName) ?
-                ResponseEntity.ok(bookingService.getAllBookings(userName))
+    public ResponseEntity<?> getAllBookings(@RequestHeader(name = "Authorization") String token) {
+        return Objects.nonNull(token) ?
+                ResponseEntity.ok(bookingService.getAllBookings(token))
                 : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
     }
+
+
+
+
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
