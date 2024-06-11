@@ -18,7 +18,6 @@ import org.swp.enums.BookingStatus;
 import org.swp.enums.UserRole;
 import org.swp.repository.*;
 
-import java.awt.print.Book;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -78,8 +77,7 @@ public class BookingService {
                 //find shop time slot original by ShopIdAndTimeSlot
                 ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(
                         shop.getId()
-                        , request.getTimeSlot().getStartLocalDateTime()
-                        , request.getTimeSlot().getEndLocalDateTime());
+                        , request.getTimeSlot());
 
                 //refer into -> Cache record and save
                 cacheShopTimeSlot = new CacheShopTimeSlot();

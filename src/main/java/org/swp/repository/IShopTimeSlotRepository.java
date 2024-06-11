@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.swp.entity.ShopTimeSlot;
+import org.swp.entity.TimeSlot;
 
 import java.time.LocalTime;
 import java.util.Set;
@@ -16,6 +17,7 @@ public interface IShopTimeSlotRepository extends JpaRepository<ShopTimeSlot, Int
     @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id")
     Set<ShopTimeSlot> findByShopId(@Param("id") Integer id);
 
-    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.startTime = :startLocalTime AND sts.endTime = :endLocalTime")
-    ShopTimeSlot findByShopIdAndTimeSlot(@Param("id") Integer id, @Param("startLocalTime") LocalTime startLocalTime, @Param("endLocalTime") LocalTime endLocalTime);
+    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.timeSlot = :timeSlot")
+    ShopTimeSlot findByShopIdAndTimeSlot(@Param("id") Integer id, @Param("timeSlot") TimeSlot timeSlot);
+
 }
