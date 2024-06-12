@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.swp.entity.Booking;
 
+import java.util.List;
+
 @Repository
 public interface IBookingRepository extends JpaRepository<Booking, Integer> {
 
@@ -14,7 +16,7 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "customer_id = (SELECT u.id FROM tbl_user u \n" +
             "WHERE\n" +
             "u.username = :userName);", nativeQuery = true)
-    Object findALlByCustomerUserName(@Param("userName") String userName);
+    List<Booking> findALlByCustomerUserName(@Param("userName") String userName);
 
     @Query(value = "SELECT * FROM tbl_booking b\n" +
             "WHERE\n" +
@@ -22,5 +24,5 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "WHERE s.shop_owner_id = (SELECT u.id FROM tbl_user u\n" +
             "WHERE u.username = :userName\n" +
             "));", nativeQuery = true)
-    Object findAllByShopOwnerUserName(@Param("userName") String userName);
+    List<Booking> findAllByShopOwnerUserName(@Param("userName") String userName);
 }

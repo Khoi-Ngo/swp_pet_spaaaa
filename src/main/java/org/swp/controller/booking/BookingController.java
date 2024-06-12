@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
 import org.swp.service.BookingService;
-import org.swp.service.JWTService;
 
 import java.time.LocalDate;
 import java.util.Objects;

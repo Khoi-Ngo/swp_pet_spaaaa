@@ -53,9 +53,50 @@ public class BookingService {
 
     public Object getAllBookings(String token) {
         String userName = getUserNameFromToken(token);
-        return isCustomer(userName) ?
+        List<Booking> res = isCustomer(userName) ?
                 bookingRepository.findALlByCustomerUserName(userName)
                 : bookingRepository.findAllByShopOwnerUserName(userName);
+        //mapping
+        List<BookingListItemDto> dtos = new ArrayList<>();
+        res.forEach(b -> {
+            BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
+
+
+            org.swp.entity.Service service = b.getService();
+            if (service != null) {
+                dto.setServiceId(service.getId());
+                dto.setServiceName(service.getServiceName());
+            }
+
+            Shop shop = b.getShop();
+            if (shop != null) {
+                dto.setShopName(shop.getShopName());
+                dto.setShopId(shop.getId());
+            }
+
+            User user = b.getUser();
+            if (user != null) {
+                dto.setCustomerFullName(user.getFirstName() + " " + user.getLastName());
+            }
+
+            Pet pet = b.getPet();
+            if (pet != null) {
+                dto.setPetId(pet.getId());
+                dto.setPetName(pet.getPetName());
+            }
+
+            //local date + time slot
+            CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
+            if (cacheShopTimeSlot != null) {
+                dto.setLocalDate(LocalDate.from(cacheShopTimeSlot.getLocalDateTime()));
+                dto.setTimeSlotDto(modelMapper.map(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot(), TimeSlotDto.class));
+
+            }
+
+
+            dtos.add(dto);
+        });
+        return dtos;
     }
 
     private boolean isCustomer(String userName) {
