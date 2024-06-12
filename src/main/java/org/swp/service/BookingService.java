@@ -225,20 +225,18 @@ public class BookingService {
                 dtos = new ArrayList<>();
                 for (ShopTimeSlot timeSlot : shopTimeSlot) {
                     if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {
-                        dtos.add(new CacheShopTimeSlotDto(shop.getId(),
+                        dtos.add(new CacheShopTimeSlotDto(
                                 timeSlot.getTotalSlot(),
                                 0,
                                 timeSlot.getTotalSlot(),
-                                date.atStartOfDay(),
                                 modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
                     } else {
                         CacheShopTimeSlot cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
                         if (Objects.nonNull(cacheShopTimeSlot)) {
-                            dtos.add(new CacheShopTimeSlotDto(shop.getId(),
+                            dtos.add(new CacheShopTimeSlotDto(
                                     cacheShopTimeSlot.getTotalSlots(),
                                     cacheShopTimeSlot.getUsedSlots(),
                                     cacheShopTimeSlot.getAvailableSlots(),
-                                    date.atStartOfDay(),
                                     modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
                         }
                     }

@@ -9,10 +9,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class CacheShopTimeSlotDto {
-    private Integer shopId;
+
     private int totalSlots;
     private int usedSlots;
     private int availableSlots;
-    private LocalDateTime localDateTime;
     private TimeSlotDto timeSlotDto;
 }
