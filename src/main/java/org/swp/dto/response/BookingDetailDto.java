@@ -4,7 +4,7 @@ import jakarta.persistence.Lob;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class BookingDetailDto {
@@ -18,6 +18,6 @@ public class BookingDetailDto {
     private UserDto userDto;
     private ServiceDetailDto serviceDetailDto;
     private LocalDate localDate;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
 }

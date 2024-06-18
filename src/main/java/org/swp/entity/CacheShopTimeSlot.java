@@ -18,7 +18,7 @@ public class CacheShopTimeSlot extends BaseEntity {
     private int usedSlots;
     private int availableSlots;
 
-    private LocalDateTime localDateTime;
+    private LocalDateTime localDateTime; //date
 
     @ManyToOne
     @JoinColumn(name = "shop_time_slot_id")

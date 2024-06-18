@@ -105,7 +105,18 @@ public class BookingService {
 
     public Object getBookingById(int id) {
         Booking booking = bookingRepository.findById(id).orElse(null);
-        return modelMapper.map(booking, BookingDetailDto.class);
+        BookingDetailDto dto = modelMapper.map(booking, BookingDetailDto.class);
+        CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
+        if (Objects.nonNull(cacheShopTimeSlot)) {
+            dto.setLocalDate(cacheShopTimeSlot.getLocalDateTime().toLocalDate());
+            dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
+            dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
+        }
+        dto.setUserDto(modelMapper.map(booking.getUser(), UserDto.class));
+        dto.setShopDetailDto(modelMapper.map(booking.getShop(), ShopDetailDto.class));
+        dto.setServiceDetailDto(modelMapper.map(booking.getService(), ServiceDetailDto.class));
+        return dto;
+
     }
 
     public Object createBooking(RequestBookingRequest request) {
