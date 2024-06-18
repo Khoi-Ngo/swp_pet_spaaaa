@@ -42,4 +42,19 @@ public class ShopController {
                 .getMostRcmdShops(TypePet.CAT
                         , ShopConstantNumber.NUMBER_OF_MOST_RCMD_SHOP.getValue()));
     }
+
+
+    //todo
+
+    //consider shop view ?
+
+
+    //create shop
+
+    //update shop
+
+    //delete shop
+
+
+
 }

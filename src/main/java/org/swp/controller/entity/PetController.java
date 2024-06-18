@@ -68,14 +68,6 @@ public class PetController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete the pet");
 //        }
 //    }
-//    @DeleteMapping
-//    public ResponseEntity<?> deletePets(@RequestBody List<Integer> ids){
-//        try {
-//
-//        }catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete pets");
-//        }
-//    }
 
 
     //UPDATE
