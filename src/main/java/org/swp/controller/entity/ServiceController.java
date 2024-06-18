@@ -65,7 +65,7 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-    @GetMapping("/services")
+    @GetMapping("/all")
     public ResponseEntity<?> getAllServices() {
         try {
             var services = serviceService.getAll();
