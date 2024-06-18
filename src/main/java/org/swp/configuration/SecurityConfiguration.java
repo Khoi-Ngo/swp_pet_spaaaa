@@ -51,6 +51,25 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+//
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(request -> request
+//                        .requestMatchers("/api/v1/auth/signup").permitAll()
+//                        .requestMatchers("/api/v1/auth/signin").permitAll()
+//                        .requestMatchers("/api/v1/auth/refresh").permitAll()
+//                        .requestMatchers("/api/v1/auth/**").authenticated() // Require authentication for other endpoints under /api/v1/auth
+//                        .anyRequest().permitAll() // Permit all other requests not specified above
+//                )
+//                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authenticationProvider(authenticationProvider())
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
+//
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

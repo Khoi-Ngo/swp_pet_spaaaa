@@ -34,6 +34,12 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of booking");
         }
     }
+    @GetMapping("{id}")
+    public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
+        Object responseData = bookingService.getBookingById(id);
+        return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
@@ -53,12 +59,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.cancel(request));
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
-        Object responseData = bookingService.getBookingById(id);
-        return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
+
 
 
 

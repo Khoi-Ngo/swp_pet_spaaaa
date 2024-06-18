@@ -23,8 +23,8 @@ public class CacheShopTimeSlotController {
     @Autowired
     private CacheShopTimeSlotService cacheShopTimeSlotService;
 
-    @GetMapping("/{shopId}/{date}")
-    public ResponseEntity<?> getAvailableTimeSlotsForDate(@PathVariable("shopId") int id
+    @GetMapping("/{serviceId}/{date}")
+    public ResponseEntity<?> getAvailableTimeSlotsForDate(@PathVariable("serviceId") int id
             , @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
             var slotInfors = cacheShopTimeSlotService.getSlotInfors(id, date);

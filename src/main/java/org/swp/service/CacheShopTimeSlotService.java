@@ -9,7 +9,7 @@ import org.swp.entity.CacheShopTimeSlot;
 import org.swp.entity.Shop;
 import org.swp.entity.ShopTimeSlot;
 import org.swp.repository.ICacheShopTimeSlotRepository;
-import org.swp.repository.IShopRepository;
+import org.swp.repository.IServiceRepository;
 import org.swp.repository.IShopTimeSlotRepository;
 
 import java.time.LocalDate;
@@ -19,18 +19,20 @@ import java.util.Objects;
 
 @Service
 public class CacheShopTimeSlotService {
-    @Autowired
-    private IShopRepository shopRepository;
+
     @Autowired
     private IShopTimeSlotRepository shopTimeSlotRepository;
     @Autowired
     private ICacheShopTimeSlotRepository cacheShopTimeSlotRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private IServiceRepository serviceRepository;
 
     public Object getSlotInfors(int id, LocalDate date) { //todo: using shop id only ->> require FrontEnd change
         List<CacheShopTimeSlotDto> dtos = null;
-        Shop shop = shopRepository.findById(id).get();
+        org.swp.entity.Service service = serviceRepository.findById(id).get();
+        Shop shop = service.getShop();
         if (Objects.nonNull(shop)) {
             List<ShopTimeSlot> shopTimeSlot = shopTimeSlotRepository.findByShopId(shop.getId());
             List<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date.atStartOfDay());
