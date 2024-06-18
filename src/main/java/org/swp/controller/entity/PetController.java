@@ -10,7 +10,8 @@ import org.swp.enums.TypePet;
 
 import java.util.List;
 
-@RestController("api/v1/pet")//todo pet -> already login (customer, admin role)
+@RestController
+@RequestMapping("api/v1/pet")//todo pet -> already login (customer, admin role)
 public class PetController {
 
     @Autowired
