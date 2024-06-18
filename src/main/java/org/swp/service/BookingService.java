@@ -110,6 +110,8 @@ public class BookingService {
         dto.setLocalDate(cacheShopTimeSlot.getLocalDateTime().toLocalDate());
         dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
         dto.setEndTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
+        dto.setBookingNote(booking.getBookingNote());
+
         //user info
         User user = booking.getUser();
         dto.setFirstName(user.getFirstName());
