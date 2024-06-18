@@ -107,14 +107,29 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id).orElse(null);
         BookingDetailDto dto = modelMapper.map(booking, BookingDetailDto.class);
         CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
-        if (Objects.nonNull(cacheShopTimeSlot)) {
-            dto.setLocalDate(cacheShopTimeSlot.getLocalDateTime().toLocalDate());
-            dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
-            dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
-        }
-        dto.setUserDto(modelMapper.map(booking.getUser(), UserDto.class));
-        dto.setShopDetailDto(modelMapper.map(booking.getShop(), ShopDetailDto.class));
-        dto.setServiceDetailDto(modelMapper.map(booking.getService(), ServiceDetailDto.class));
+        dto.setLocalDate(cacheShopTimeSlot.getLocalDateTime().toLocalDate());
+        dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
+        dto.setEndTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
+        //user info
+        User user = booking.getUser();
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setUserId(user.getId());
+        dto.setUserName(user.getUsername());
+        //pet info
+        Pet pet = booking.getPet();
+        dto.setPetName(pet.getPetName());
+        dto.setTypePet(pet.getPetType());
+        dto.setPetWeight(pet.getPetWeight());
+        //shop info
+        Shop shop = booking.getShop();
+        dto.setShopAddress(shop.getShopAddress());
+        dto.setShopId(shop.getId());
+        dto.setShopName(shop.getShopName());
+        //service info
+        org.swp.entity.Service service = booking.getService();
+        dto.setServiceId(service.getId());
+        dto.setServiceName(service.getServiceName());
         return dto;
 
     }
