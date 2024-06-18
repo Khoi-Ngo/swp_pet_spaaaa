@@ -13,7 +13,7 @@ import org.swp.service.BookingService;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/v1/author/booking/auth")
+@RequestMapping("/api/v1/booking/auth")
 public class BookingController {
 
 
