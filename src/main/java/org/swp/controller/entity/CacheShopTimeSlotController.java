@@ -8,20 +8,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.swp.service.CacheShopTimeSlotService;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-@RestController("api/v1/cache-shop-time-slot")
+@RestController
+@RequestMapping("/api/v1/cache-shop-time-slot/")
 public class CacheShopTimeSlotController {
     private static final Logger logger = LoggerFactory.getLogger(CacheShopTimeSlotController.class);
 
     @Autowired
     private CacheShopTimeSlotService cacheShopTimeSlotService;
 
-    @GetMapping("{shopId}/{date}")
+    @GetMapping("/{shopId}/{date}")
     public ResponseEntity<?> getAvailableTimeSlotsForDate(@PathVariable("shopId") int id
             , @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
