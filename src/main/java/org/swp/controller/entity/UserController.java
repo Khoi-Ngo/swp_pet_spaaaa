@@ -1,4 +1,53 @@
 package org.swp.controller.entity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.swp.service.UserService;
+
+import java.util.Objects;
+
+@RestController
+@RequestMapping("api/v1/user")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    private UserService userService;
+
+
+    //no auth
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUser(@PathVariable("username") String username) {
+        try {
+            return Objects.nonNull(username) ?
+                    ResponseEntity.ok(userService.getUserByUsername(username))
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
+        }
+    }
+
+    //user profile (private)
+    @GetMapping
+    public ResponseEntity<?> getUserProfile(@RequestHeader(name = "Authorization") String token) {
+        try {
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(userService.getUserProfile(token))
+                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot get the profile");
+        }
+    }
+
+    //UPDATE USER PROFILE + CHANGE PASSWORD
+    //DELETE
+    //CREATE SHOP OWNER
+
 }
