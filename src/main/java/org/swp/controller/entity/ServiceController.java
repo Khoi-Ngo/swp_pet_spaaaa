@@ -79,7 +79,7 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-    @GetMapping("/service/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<?> getServiceById(@PathVariable("id") int id) {
         try {
             var service = serviceService.getServiceById(id);
@@ -93,7 +93,7 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-    @GetMapping("/services/{shopId}")
+    @GetMapping("/all/{shopId}")
     public ResponseEntity<?> getServiceByShopId(@PathVariable("shopId") int shopId) {
         //todo
         try {
