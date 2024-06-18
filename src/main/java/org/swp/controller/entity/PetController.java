@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.enums.TypePet;
+import org.swp.service.PetService;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("api/v1/pet")//todo pet -> already login (customer, admin role)
@@ -16,6 +18,11 @@ public class PetController {
 
     @Autowired
     private static final Logger logger = LoggerFactory.getLogger(PetController.class);
+    private final PetService petService;
+
+    public PetController(PetService petService) {
+        this.petService = petService;
+    }
 
 
     @GetMapping("/pet-types")
@@ -31,22 +38,19 @@ public class PetController {
         }
     }
 
-//    @GetMapping("/all")
-//    public ResponseEntity<?> getAllPets() {
-//
-//    }
-//
-//    @GetMapping("/all")
-//    public ResponseEntity<?> getAllPets(@RequestHeader(name = "Authorization") String token) {
-//        try {
-//
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Cannot find all pets");
-//        }
-//
-//    }
+    @GetMapping("/all/auth")
+    public ResponseEntity<?> getAllPets(@RequestHeader(name = "Authorization") String token) {
+        try {
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(petService.getAllPets(token)) :
+                    ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the pet");
+        }
+    }
+
+
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getPetDetail(@PathVariable("id") int id){
 //        try{
@@ -73,4 +77,9 @@ public class PetController {
 //        }
 //    }
 
+
+    //UPDATE
+
+
+    //CREATE
 }

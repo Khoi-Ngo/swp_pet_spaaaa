@@ -8,7 +8,10 @@ public class PetListItemDto {
     private Integer id;
     private String petName;
     private TypePet petType;
+    private int petAge;
+    private String petGender;
     private String petPhoto;
+
     private Integer ownerId;
     private String ownerName;
 

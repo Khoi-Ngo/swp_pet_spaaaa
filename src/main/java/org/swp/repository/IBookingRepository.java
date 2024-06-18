@@ -25,4 +25,7 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "WHERE u.username = :userName\n" +
             "));", nativeQuery = true)
     List<Booking> findAllByShopOwnerUserName(@Param("userName") String userName);
+
+    @Query(value = "SELECT * FROM tbl_booking WHERE pet_id = :petId AND status = :status", nativeQuery = true)
+    List<Booking> findByPetIdAndStatus(@Param("petId")Integer petId,@Param("status") String status);
 }

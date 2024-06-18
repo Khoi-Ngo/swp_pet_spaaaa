@@ -173,7 +173,7 @@ public class BookingService {
             booking.setBookingNote(request.getAdditionalMessage());
             booking.setDone(false);
             booking.setCanceled(false);
-            booking.setStatus(BookingStatus.SCHEDULED.getDescription());
+            booking.setStatus(BookingStatus.SCHEDULED.name());
             booking.setShop(shop);
             booking.setService(service.get());
 
@@ -229,7 +229,7 @@ public class BookingService {
             Booking entity = booking.get();
             entity.setCanceled(true);
             entity.setDone(false);
-            entity.setStatus(BookingStatus.CANCELLED.getDescription());
+            entity.setStatus(BookingStatus.CANCELLED.name());
             CacheShopTimeSlot cacheShopTimeSlot = entity.getCacheShopTimeSlot();
             if (Objects.nonNull(cacheShopTimeSlot)) {
                 cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() + 1);

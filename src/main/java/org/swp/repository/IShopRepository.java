@@ -14,10 +14,4 @@ import java.util.List;
 public interface IShopRepository extends JpaRepository<Shop, Integer> {
     @Query(value = "SELECT * FROM tbl_shop  ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Service> findMostRcmdShops(@Param("numberOfRecords") int numberOfRecords);
-
-//    //TODO: re-write this statement
-//    @Query(value = "SELECT * FROM tbl_shop ", nativeQuery = true)
-//    List<Service> findMostRcmdShops(@Param("typePet") TypePet typePet, @Param("numberOfRecords") int numberOfRecords);
-
-
 }
