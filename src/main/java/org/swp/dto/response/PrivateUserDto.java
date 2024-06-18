@@ -7,7 +7,10 @@ import org.swp.enums.UserRole;
 import java.time.LocalDate;
 
 @Data
-public class UserDto {
+public class PrivateUserDto {
+    private Integer id;
+
+    //account information
     private String username;
     private UserRole role;
     //fundamental personal information
@@ -22,3 +25,4 @@ public class UserDto {
     private String coverImageUrl;
     private LocalDate birthday;
 }
+
