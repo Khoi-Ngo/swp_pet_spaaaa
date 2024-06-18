@@ -1,24 +1,19 @@
-package org.swp.controller.service;
+package org.swp.controller.entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.service.ServiceConstantNumber;
 import org.swp.enums.TypePet;
-import org.swp.service.BookingService;
 import org.swp.service.CategoryServiceService;
 import org.swp.service.ServiceService;
 
 @RestController
-@RequestMapping("/api/v1")
-public class ServiceController {
+@RequestMapping("/api/v1/service")
+public class ServiceController { //todo -> some action should be more authenticated
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceController.class);
 
@@ -55,33 +50,6 @@ public class ServiceController {
         }
     }
 
-    @GetMapping("/most-rcmd-dog-services")
-    public ResponseEntity<?> getMostRcmdDogServices() {
-        try {
-            var services = serviceService.getMostRcmdServices(TypePet.DOG, ServiceConstantNumber.NUMBER_OF_MOST_RCMD_SERVICES.getValue());
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Most recommended dog services not found");
-            }
-            return ResponseEntity.ok(services);
-        } catch (Exception e) {
-            logger.error("Error while getting most recommended dog services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/most-rcmd-cat-services")
-    public ResponseEntity<?> getMostRcmdCatServices() {
-        try {
-            var services = serviceService.getMostRcmdServices(TypePet.CAT, ServiceConstantNumber.NUMBER_OF_MOST_RCMD_SERVICES.getValue());
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Most recommended cat services not found");
-            }
-            return ResponseEntity.ok(services);
-        } catch (Exception e) {
-            logger.error("Error while getting most recommended cat services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
 
     @GetMapping("/category-services")
     public ResponseEntity<?> getAllCategoryServices() {
@@ -139,6 +107,38 @@ public class ServiceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+//    @DeleteMapping("{id}")
+//    public ResponseEntity<?> deleteService(@PathVariable("id") int id){
+//        try{
+//
+//        }catch (Exception e){
+//            logger.error(e.getMessage());
+//            logger.error("Cannot delete service");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete service");
+//        }
+//    }
+//
+//    @DeleteMapping
+//    public ResponseEntity<?> deleteService(@PathVariable("id") int id){
+//        try{
+//
+//        }catch (Exception e){
+//            logger.error(e.getMessage());
+//            logger.error("Cannot delete service");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete service");
+//        }
+//    }
+//    @PostMapping
+//    public ResponseEntity<?> createService(@RequestBody CreateServiceRequest request){
+//        try{
+//
+//        }catch (Exception e){
+//            logger.error(e.getMessage());
+//            logger.error("Cannot create service");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot create service");
+//        }
+//    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {

@@ -1,4 +1,4 @@
-package org.swp.controller.general;
+package org.swp.controller.authenticate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

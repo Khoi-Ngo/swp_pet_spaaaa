@@ -1,4 +1,4 @@
-package org.swp.controller;
+package org.swp.controller.entity.role;
 
 
 import org.springframework.web.bind.annotation.*;

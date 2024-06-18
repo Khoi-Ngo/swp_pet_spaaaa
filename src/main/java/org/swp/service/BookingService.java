@@ -213,42 +213,5 @@ public class BookingService {
         return dto;
     }
 
-    public Object getSlotInfors(int id, LocalDate date) {
-        List<CacheShopTimeSlotDto> dtos = null;
-        var service = serviceRepository.findById(id);
-        if (service.isPresent()) {
-            Shop shop = service.get().getShop();
-            if (Objects.nonNull(shop)) {
-                //get all the Shop Time Slot Information
-                List<ShopTimeSlot> shopTimeSlot = shopTimeSlotRepository.findByShopId(shop.getId());
-                List<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date.atStartOfDay());
-                dtos = new ArrayList<>();
-                for (ShopTimeSlot timeSlot : shopTimeSlot) {
-                    if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {
-                        dtos.add(new CacheShopTimeSlotDto(
-                                timeSlot.getTotalSlot(),
-                                0,
-                                timeSlot.getTotalSlot(),
-                                modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
-                    } else {
-                        CacheShopTimeSlot cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
-                        if (Objects.nonNull(cacheShopTimeSlot)) {
-                            dtos.add(new CacheShopTimeSlotDto(
-                                    cacheShopTimeSlot.getTotalSlots(),
-                                    cacheShopTimeSlot.getUsedSlots(),
-                                    cacheShopTimeSlot.getAvailableSlots(),
-                                    modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
-                        }
-                    }
-                }
 
-
-            }
-        }
-        return dtos;
-    }
-
-    private boolean isEmptyTimeSlot(ShopTimeSlot timeSlot, List<CacheShopTimeSlot> cacheShopTimeSlots) {
-        return cacheShopTimeSlots.stream().noneMatch(s -> s.getShopTimeSlot().equals(timeSlot));
-    }
 }
