@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateServiceRequest;
+import org.swp.dto.request.DeleteServiceRequest;
 import org.swp.dto.response.ServiceDetailDto;
 import org.swp.dto.response.ServiceListItemDto;
 import org.swp.entity.ServiceCategory;
@@ -148,5 +149,16 @@ public class ServiceService {
         shopRepository.save(shop);
 
         return "create service ok!";
+    }
+
+    public Object deleteService(DeleteServiceRequest request){
+
+        serviceRepository.deleteById(request.getServiceId());
+
+        Shop shop = shopRepository.findById(request.getShopId()).get();
+        shop.setTotalServices(shop.getTotalServices()-1);
+        shopRepository.save(shop);
+
+        return "delete service successful!";
     }
 }
