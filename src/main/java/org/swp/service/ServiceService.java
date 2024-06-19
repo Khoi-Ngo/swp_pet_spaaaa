@@ -144,6 +144,8 @@ public class ServiceService {
         service.setTags(request.getTags());
 
         serviceRepository.save(service);
+        shop.setTotalServices(shop.getTotalServices()+1);
+        shopRepository.save(shop);
 
         return "create service ok!";
     }
