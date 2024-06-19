@@ -152,7 +152,6 @@ public class ServiceService {
     }
 
     public Object deleteService(DeleteServiceRequest request){
-
         serviceRepository.deleteById(request.getServiceId());
 
         Shop shop = shopRepository.findById(request.getShopId()).get();

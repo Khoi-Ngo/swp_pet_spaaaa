@@ -6,4 +6,5 @@ import lombok.Data;
 public class DeleteServiceRequest {
     private int serviceId;
     private int shopId;
+
 }
