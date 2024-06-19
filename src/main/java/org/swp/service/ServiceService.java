@@ -3,10 +3,15 @@ package org.swp.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.swp.dto.request.CreateServiceRequest;
 import org.swp.dto.response.ServiceDetailDto;
 import org.swp.dto.response.ServiceListItemDto;
+import org.swp.entity.ServiceCategory;
+import org.swp.entity.Shop;
 import org.swp.enums.TypePet;
+import org.swp.repository.ICategorySerivceRepository;
 import org.swp.repository.IServiceRepository;
+import org.swp.repository.IShopRepository;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +24,12 @@ public class ServiceService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private IShopRepository shopRepository;
+
+    @Autowired
+    private ICategorySerivceRepository categorySerivceRepository;
 
     public List<ServiceListItemDto> getAll() {
         return serviceRepository.findAll().stream()
@@ -113,5 +124,27 @@ public class ServiceService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public Object createService(CreateServiceRequest request){
+        org.swp.entity.Service service = new org.swp.entity.Service();
+
+        Shop shop = shopRepository.findById(request.getShopId()).get();
+        service.setShop(shop);
+
+        ServiceCategory serviceCategory = categorySerivceRepository.findById(request.getServiceCategoryId()).get();
+        service.setCategory(serviceCategory);
+
+        service.setServiceName(request.getServiceName());
+        service.setServiceDescription(request.getServiceDescription());
+        service.setPrice(request.getPrice());
+        service.setMinWeight(request.getMinWeight());
+        service.setMaxWeight(request.getMaxWeight());
+        service.setTypePet(request.getTypePet());
+        service.setTags(request.getTags());
+
+        serviceRepository.save(service);
+
+        return "create service ok!";
     }
 }
