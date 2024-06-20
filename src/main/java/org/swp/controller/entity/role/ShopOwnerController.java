@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.CreateServiceRequest;
+import org.swp.dto.request.DeleteServiceRequest;
 import org.swp.service.ServiceService;
 
 import java.util.Objects;
@@ -33,6 +34,20 @@ public class ShopOwnerController {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating service");
         }
-
     }
+
+    @DeleteMapping("/manageService/delete")
+    public ResponseEntity<?> deleteService(@RequestBody DeleteServiceRequest request){
+        try{
+            var response = serviceService.deleteService(request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        }
+        catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleteing service");
+        }
+    }
+
 }

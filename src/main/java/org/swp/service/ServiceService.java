@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateServiceRequest;
+import org.swp.dto.request.DeleteServiceRequest;
 import org.swp.dto.response.ServiceDetailDto;
 import org.swp.dto.response.ServiceListItemDto;
 import org.swp.entity.ServiceCategory;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.swp.enums.UserRole.SHOP_OWNER;
 
 @Service
 public class ServiceService {
@@ -151,5 +154,18 @@ public class ServiceService {
         shopRepository.save(shop);
 
         return service.getId();
+    }
+
+    public Object deleteService(DeleteServiceRequest request){
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        Shop shop = shopRepository.findByShopOwnerId(user.getId());
+        if(user.getRole() != SHOP_OWNER){
+            serviceRepository.deleteById(request.getServiceId());
+        }
+        else return "incorrect role!";
+        shop.setTotalServices(shop.getTotalServices()-1);
+        shopRepository.save(shop);
+
+        return "delete service successful!";
     }
 }
