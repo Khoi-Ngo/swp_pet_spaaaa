@@ -8,13 +8,16 @@ import org.swp.dto.response.ServiceDetailDto;
 import org.swp.dto.response.ServiceListItemDto;
 import org.swp.entity.ServiceCategory;
 import org.swp.entity.Shop;
+import org.swp.entity.User;
 import org.swp.enums.TypePet;
 import org.swp.repository.ICategorySerivceRepository;
 import org.swp.repository.IServiceRepository;
 import org.swp.repository.IShopRepository;
+import org.swp.repository.IUserRepository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,9 @@ public class ServiceService {
 
     @Autowired
     private IShopRepository shopRepository;
+
+    @Autowired
+    private IUserRepository userRepository;
 
     @Autowired
     private ICategorySerivceRepository categorySerivceRepository;
@@ -127,26 +133,23 @@ public class ServiceService {
     }
 
     public Object createService(CreateServiceRequest request){
-        org.swp.entity.Service service = new org.swp.entity.Service();
 
-        Shop shop = shopRepository.findById(request.getShopId()).get();
+        org.swp.entity.Service service = modelMapper.map(request, org.swp.entity.Service.class);
+
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        int shopOwnerId = user.getId();
+        service.setCreatedBy(String.valueOf(user.getRole()));
+
+        Shop shop = shopRepository.findByShopOwnerId(shopOwnerId);
         service.setShop(shop);
 
-        ServiceCategory serviceCategory = categorySerivceRepository.findById(request.getServiceCategoryId()).get();
-        service.setCategory(serviceCategory);
-
-        service.setServiceName(request.getServiceName());
-        service.setServiceDescription(request.getServiceDescription());
-        service.setPrice(request.getPrice());
-        service.setMinWeight(request.getMinWeight());
-        service.setMaxWeight(request.getMaxWeight());
-        service.setTypePet(request.getTypePet());
-        service.setTags(request.getTags());
+        service.setCategory(categorySerivceRepository.findById(request.getServiceCategoryId()).orElseThrow(() -> new RuntimeException("Service category not found")));
 
         serviceRepository.save(service);
-        shop.setTotalServices(shop.getTotalServices()+1);
+
+        shop.setTotalServices(shop.getTotalServices() + 1);
         shopRepository.save(shop);
 
-        return "create service ok!";
+        return service.getId();
     }
 }

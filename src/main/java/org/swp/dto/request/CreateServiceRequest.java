@@ -5,7 +5,7 @@ import org.swp.enums.TypePet;
 
 @Data
 public class CreateServiceRequest {
-    private int shopId;
+    private int userId;
     private int serviceCategoryId;
     private String serviceName;
     private String serviceDescription;
