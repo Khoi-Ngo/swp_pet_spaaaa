@@ -1,4 +1,4 @@
-package org.swp.controller.entity;
+package org.swp.controller.entity.role;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
