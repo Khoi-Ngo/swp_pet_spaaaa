@@ -159,10 +159,7 @@ public class ServiceService {
     public Object deleteService(DeleteServiceRequest request){
         User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
-        if(user.getRole() != SHOP_OWNER){
-            serviceRepository.deleteById(request.getServiceId());
-        }
-        else return "incorrect role!";
+        serviceRepository.deleteById(request.getServiceId());
         shop.setTotalServices(shop.getTotalServices()-1);
         shopRepository.save(shop);
 
