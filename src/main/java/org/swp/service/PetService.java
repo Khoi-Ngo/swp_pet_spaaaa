@@ -117,8 +117,7 @@ public class PetService {
     }
 
     public Object updatePet(UpdatePetRequestDto request) {
-        Pet pet = petrepository.findById(request.getId()).get();
-        pet.setDeleted(true);
+        Pet pet = modelMapper.map(request, Pet.class);
         petrepository.save(pet);
         return modelMapper.map(pet, PetDetailDto.class);
     }
