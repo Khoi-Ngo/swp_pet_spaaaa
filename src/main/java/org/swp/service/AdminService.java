@@ -62,7 +62,9 @@ public class AdminService {
         User user = userRepository.findById(id).get();
         user.setDeleted(true);
         userRepository.save(user);
-        return modelMapper.map(user, ListAccountShopOwnerDto.class);
+        ListAccountShopOwnerDto dto = modelMapper.map(user, ListAccountShopOwnerDto.class);
+        dto.setStatus(true);
+        return dto;
     }
 
 }
