@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface IPetrepository extends JpaRepository<Pet, Integer> {
-    @Query(value = "SELECT * FROM tbl_pet WHERE user_id = (SELECT id FROM tbl_user WHERE username = :username)", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_pet WHERE user_id = (SELECT id FROM tbl_user WHERE username = :username) AND is_delete = FALSE", nativeQuery = true)
     List<Pet> findByUserName(@Param("username") String username);
 }
