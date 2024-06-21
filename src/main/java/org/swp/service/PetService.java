@@ -3,6 +3,9 @@ package org.swp.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.swp.dto.request.CreatePetRequestDto;
+import org.swp.dto.request.UpdatePetRequestDto;
+import org.swp.dto.response.BookingHistoryListItemDto;
 import org.swp.dto.response.PetDetailDto;
 import org.swp.dto.response.PetListItemDto;
 import org.swp.entity.Booking;
@@ -41,16 +44,6 @@ public class PetService {
     }
 
 
-
-    //get pet detail
-
-    //create pet
-
-    //update pet info
-
-    //delete pet
-
-
     //map to list item pet dto
     private List<PetListItemDto> mapToDto(List<Pet> pets) {
         if (Objects.isNull(pets)) {
@@ -70,11 +63,29 @@ public class PetService {
     }
 
     //map to pet detail dto
-//    private PetDetailDto mapToDto(Pet petEntity) {
-//        PetDetailDto dto = modelMapper.map(petEntity, PetDetailDto.class);
-//        //mapping with Booking History
-//        return null;
-//    }
+    private PetDetailDto mapToDto(Pet petEntity) {
+        PetDetailDto dto = modelMapper.map(petEntity, PetDetailDto.class);
+        //mapping with Booking History -> find all booking
+        List<Booking> bookings = bookingRepository.findByPetId(dto.getId());
+        bookings.forEach(booking -> {
+            BookingHistoryListItemDto historyInDate = modelMapper.map(booking, BookingHistoryListItemDto.class);
+            historyInDate.setServiceName(booking.getService().getServiceName());
+            historyInDate.setServiceId(booking.getService().getId());
+            historyInDate.setShopId(booking.getShop().getId());
+            historyInDate.setShopName(booking.getShop().getShopName());
+            if (dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDateTime().toLocalDate()) != null) {
+                dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDateTime().toLocalDate()).add(historyInDate);
+            } else {
+                List<BookingHistoryListItemDto> historyListDate = new ArrayList<>();
+                historyListDate.add(historyInDate);
+                dto.getBookingHistory().put(
+                        booking.getCacheShopTimeSlot().getLocalDateTime().toLocalDate(),
+                        historyListDate
+                );
+            }
+        });
+        return dto;
+    }
 
     private String getUserNameFromToken(String token) {
         String userName = null;
@@ -85,10 +96,36 @@ public class PetService {
         return userName;
     }
 
-    private boolean isAdmin(String username){
+    private boolean isAdmin(String username) {
         User user = userRepository.findByUsername(username).get();
         return UserRole.ADMIN.equals(user.getRole());
     }
 
 
+    public Object getPetDetail(int id) {
+        Pet pet = petrepository.findById(id).get();
+        return mapToDto(pet);
+    }
+
+    public Object deletePet(int id) {
+        Pet pet = petrepository.findById(id).get();
+        pet.setDeleted(true);
+        petrepository.save(pet);
+        return modelMapper.map(pet, PetDetailDto.class);
+    }
+
+    public Object updatePet(UpdatePetRequestDto request) {
+        Pet pet = petrepository.findById(request.getId()).get();
+        pet.setDeleted(true);
+        petrepository.save(pet);
+        return modelMapper.map(pet, PetDetailDto.class);
+    }
+
+    public Object createPet(CreatePetRequestDto request) {
+        Pet pet = modelMapper.map(request, Pet.class);
+        User user = userRepository.findById(request.getUserId()).get();
+        pet.setUser(user);
+        petrepository.save(pet);
+        return modelMapper.map(pet, PetDetailDto.class);
+    }
 }

@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.swp.dto.request.CreatePetRequestDto;
+import org.swp.dto.request.UpdatePetRequestDto;
 import org.swp.enums.TypePet;
 import org.swp.service.PetService;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -51,27 +52,50 @@ public class PetController {
     }
 
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getPetDetail(@PathVariable("id") int id){
-//        try{
-//
-//        }catch (Exception e){
-//            logger.error("Cannot find the pet" + e);
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the pet");
-//        }
-//    }
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deletePet(@PathVariable("id") int id) {
-//        try {
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete the pet");
-//        }
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPetDetail(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(petService.getPetDetail(id));
+        } catch (Exception e) {
+            logger.error("Cannot find the pet" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the pet");
+        }
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePet(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(petService.deletePet(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete the pet");
+        }
+    }
 
     //UPDATE
+    @PutMapping
+    public ResponseEntity<?> updatePet(@RequestBody UpdatePetRequestDto request) {
+        try {
+            return Objects.nonNull(request) ?
+                    ResponseEntity.ok(petService.updatePet(request)) :
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
 
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot update the pet");
+        }
+    }
 
     //CREATE
+    @PostMapping
+    public ResponseEntity<?> createPet(@RequestBody CreatePetRequestDto request) {
+        try {
+            return Objects.nonNull(request) ?
+                    ResponseEntity.ok(petService.createPet(request)) :
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot create the pet");
+        }
+    }
 }
