@@ -26,7 +26,7 @@ public class AdminService {
     private IUserRepository userRepository;
 
     public List<ListAccountShopOwnerDto> getAllShopOwner(){
-        return adminRepository.findAll().stream()
+        return adminRepository.findAllShopOwnerAcc().stream()
                 .map(user ->{
                     ListAccountShopOwnerDto dto = modelMapper.map(user, ListAccountShopOwnerDto.class);
                     return dto;
