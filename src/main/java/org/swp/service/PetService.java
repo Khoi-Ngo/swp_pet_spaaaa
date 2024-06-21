@@ -104,6 +104,8 @@ public class PetService {
 
     public Object getPetDetail(int id) {
         Pet pet = petrepository.findById(id).get();
+        if( pet.isDeleted() == true)
+            return "pet ís deleted!";
         return mapToDto(pet);
     }
 
