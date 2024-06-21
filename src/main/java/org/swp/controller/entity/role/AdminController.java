@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.swp.dto.request.SignUpRequest;
+import org.swp.entity.User;
 import org.swp.service.AdminService;
+import org.swp.service.AuthenticationService;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("api/v1/admin")
@@ -14,6 +19,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -51,6 +59,20 @@ public class AdminController {
             return ResponseEntity.ok(adminService.deleteUserById(id));
         } catch (Exception e) {
             logger.error("Error while getting delete shopOwner", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("manageShopOwner/addShopOwner")
+    public ResponseEntity<?> addShopOwner(@RequestBody SignUpRequest signUpRequest) {
+        try {
+            User newShopOwner = adminService.addShopOwner(signUpRequest);
+            return Objects.isNull(newShopOwner) ?
+                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Maybe the username or email is in use already")
+                    : ResponseEntity.ok(newShopOwner)
+                    ;
+        } catch (Exception e) {
+            logger.error("Error occurred during sign up: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
