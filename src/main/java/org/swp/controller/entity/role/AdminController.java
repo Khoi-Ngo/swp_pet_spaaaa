@@ -31,17 +31,4 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("manageShopOwner/delete/{id}")
-    public ResponseEntity<?> deleteAccShopOwner(@PathVariable("id")){
-        try {
-            var accountsShopOwner = adminService.getAllShopOwner();
-            if (accountsShopOwner == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("delete account shopOwner fail!");
-            }
-            return ResponseEntity.ok(accountsShopOwner);
-        } catch (Exception e) {
-            logger.error("Error while delete account shopOwner", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
 }
