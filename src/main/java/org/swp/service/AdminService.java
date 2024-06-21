@@ -3,6 +3,7 @@ package org.swp.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.swp.dto.response.ListAccountCustomerDto;
 import org.swp.dto.response.ListAccountShopOwnerDto;
 import org.swp.repository.IAdminRepository;
 
@@ -26,4 +27,14 @@ public class AdminService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public List<ListAccountCustomerDto> getAllCustomer() {
+        return adminRepository.findAllCustomerACC().stream()
+                .map(service -> {
+                    ListAccountCustomerDto dto = modelMapper.map(service, ListAccountCustomerDto.class);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }

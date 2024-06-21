@@ -31,4 +31,23 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/manageCustomer/viewAll")
+    public ResponseEntity<?> getAllCustomer() {
+        try {
+            var accountCustomer = adminService.getAllCustomer();
+            if (accountCustomer == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
+            }
+            return ResponseEntity.ok(accountCustomer);
+        } catch (Exception e) {
+            logger.error("Error while getting all account Customer", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAllExceptions(Exception ex) {
+        logger.error("Unhandled exception occurred", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
+    }
 }
