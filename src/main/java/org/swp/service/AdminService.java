@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.response.ListAccountCustomerDto;
 import org.swp.dto.response.ListAccountShopOwnerDto;
+import org.swp.entity.User;
 import org.swp.repository.IAdminRepository;
+import org.swp.repository.IUserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 public class AdminService {
@@ -18,6 +21,9 @@ public class AdminService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private IUserRepository userRepository;
 
     public List<ListAccountShopOwnerDto> getAllShopOwner(){
         return adminRepository.findAll().stream()
@@ -35,6 +41,13 @@ public class AdminService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public Object deleteUserById(int id){
+        User user = userRepository.findById(id).get();
+        user.setDeleted(true);
+        userRepository.save(user);
+        return modelMapper.map(user, ListAccountShopOwnerDto.class);
     }
 
 }

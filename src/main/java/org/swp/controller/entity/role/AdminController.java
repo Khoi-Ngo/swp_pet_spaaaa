@@ -17,7 +17,7 @@ public class AdminController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
-    @GetMapping("manageShopOwner/viewAll")
+    @GetMapping("/manageShopOwner/viewAll")
     public ResponseEntity<?> getAllAccShopOwner(){
         try {
             var accountsShopOwner = adminService.getAllShopOwner();
@@ -41,6 +41,16 @@ public class AdminController {
             return ResponseEntity.ok(accountCustomer);
         } catch (Exception e) {
             logger.error("Error while getting all account Customer", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAccountById(@PathVariable("id") int id){
+        try {
+            return ResponseEntity.ok(adminService.deleteUserById(id));
+        } catch (Exception e) {
+            logger.error("Error while getting delete shopOwner", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
