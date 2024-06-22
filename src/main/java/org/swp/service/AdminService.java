@@ -36,6 +36,8 @@ public class AdminService {
         return adminRepository.findAllShopOwnerAcc().stream()
                 .map(user ->{
                     ListAccountShopOwnerDto dto = modelMapper.map(user, ListAccountShopOwnerDto.class);
+                    User shopOwner = userRepository.findById(dto.getId()).get();
+                    dto.setStatus(shopOwner.isDeleted());
                     return dto;
                 })
                 .collect(Collectors.toList());
