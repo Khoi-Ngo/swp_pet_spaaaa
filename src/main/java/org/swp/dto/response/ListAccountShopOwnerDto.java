@@ -10,6 +10,6 @@ public class ListAccountShopOwnerDto {
     private Integer id;
     private String username;
     private String email;
-    private String phoneNumber;
+    private String phone;
     private boolean status;
 }
