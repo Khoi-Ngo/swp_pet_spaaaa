@@ -11,7 +11,7 @@ public class PetListItemDto {
     private int petAge;
     private String petGender;
     private String petPhoto;
-
+    private int petWeight;
     private Integer ownerId;
     private String ownerName;
 
