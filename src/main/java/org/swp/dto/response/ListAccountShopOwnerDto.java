@@ -8,8 +8,8 @@ import org.swp.enums.UserRole;
 @Data
 public class ListAccountShopOwnerDto {
     private Integer id;
-    private String firstName;
-    private String lastName;
     private String username;
+    private String email;
+    private String phoneNumber;
     private boolean status;
 }
