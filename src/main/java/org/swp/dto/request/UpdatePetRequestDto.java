@@ -14,4 +14,5 @@ public class UpdatePetRequestDto {
     private String petDescription;
     private String petPhoto;
     private String petNote;
+    private int userId;
 }
