@@ -51,6 +51,9 @@ public class AdminService {
     }
 
     public User addShopOwner(@NotNull SignUpRequest signUpRequest) {
+        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(UserRole.SHOP_OWNER);
