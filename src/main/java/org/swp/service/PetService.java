@@ -117,7 +117,9 @@ public class PetService {
     }
 
     public Object updatePet(UpdatePetRequestDto request) {
+        User owner = userRepository.findById(request.getUserId()).get();
         Pet pet = modelMapper.map(request, Pet.class);
+        pet.setUser(owner);
         petrepository.save(pet);
         return modelMapper.map(pet, PetDetailDto.class);
     }
