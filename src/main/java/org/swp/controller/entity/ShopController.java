@@ -48,7 +48,20 @@ public class ShopController {
 
     //consider shop view ?
 
-
+    //view all shop available
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllShops() {
+        try{
+            var shops = shopService.getAllShops();
+            if(shops == null){
+                return ResponseEntity.status(404).body("Shops not found");
+            }
+            return ResponseEntity.ok(shops);
+        } catch (Exception e){
+            logger.error("Error while getting all shops", e);
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
     //create shop
 
     //update shop
