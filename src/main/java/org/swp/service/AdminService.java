@@ -3,9 +3,12 @@ package org.swp.service;
 import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.SignUpRequest;
+import org.swp.dto.response.DetailAccountDto;
 import org.swp.dto.response.ListAccountCustomerDto;
 import org.swp.dto.response.ListAccountShopOwnerDto;
 import org.swp.entity.User;
@@ -31,6 +34,9 @@ public class AdminService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public List<ListAccountShopOwnerDto> getAllShopOwner(){
         return adminRepository.findAllShopOwnerAcc().stream()
@@ -71,5 +77,12 @@ public class AdminService {
         dto.setStatus(true);
         return dto;
     }
+
+    public Object viewAccById(int id){
+        User user = userRepository.findById(id).get();
+        DetailAccountDto dto = modelMapper.map(user, DetailAccountDto.class);
+        return dto;
+    }
+
 
 }

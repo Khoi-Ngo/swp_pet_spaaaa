@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.SignUpRequest;
 import org.swp.entity.User;
@@ -73,6 +74,16 @@ public class AdminController {
                     ;
         } catch (Exception e) {
             logger.error("Error occurred during sign up: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/viewDetail/{id}")
+    public ResponseEntity<?> viewDetailAccById(@PathVariable("id") int id){
+        try {
+            return ResponseEntity.ok(adminService.viewAccById(id));
+        } catch (Exception e) {
+            logger.error("Error while getting detail account", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
