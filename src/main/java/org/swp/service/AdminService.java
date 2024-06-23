@@ -81,6 +81,7 @@ public class AdminService {
     public Object viewAccById(int id){
         User user = userRepository.findById(id).get();
         DetailAccountDto dto = modelMapper.map(user, DetailAccountDto.class);
+        dto.setStatus(user.isDeleted());
         return dto;
     }
 
