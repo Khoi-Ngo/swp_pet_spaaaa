@@ -7,9 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.service.ServiceConstantNumber;
+import org.swp.dto.request.CreateServiceRequest;
+import org.swp.dto.request.DeleteServiceRequest;
 import org.swp.enums.TypePet;
 import org.swp.service.CategoryServiceService;
 import org.swp.service.ServiceService;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/service")
@@ -49,7 +53,6 @@ public class ServiceController { //todo -> some action should be more authentica
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
 
     @GetMapping("/category-services")
     public ResponseEntity<?> getAllCategoryServices() {
@@ -108,37 +111,43 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-//    @DeleteMapping("{id}")
-//    public ResponseEntity<?> deleteService(@PathVariable("id") int id){
-//        try{
-//
-//        }catch (Exception e){
-//            logger.error(e.getMessage());
-//            logger.error("Cannot delete service");
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete service");
-//        }
-//    }
-//
-//    @DeleteMapping
-//    public ResponseEntity<?> deleteService(@PathVariable("id") int id){
-//        try{
-//
-//        }catch (Exception e){
-//            logger.error(e.getMessage());
-//            logger.error("Cannot delete service");
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete service");
-//        }
-//    }
-//    @PostMapping
-//    public ResponseEntity<?> createService(@RequestBody CreateServiceRequest request){
-//        try{
-//
-//        }catch (Exception e){
-//            logger.error(e.getMessage());
-//            logger.error("Cannot create service");
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot create service");
-//        }
-//    }
+    //UPDATE
+
+    //CREATE
+    @PostMapping
+    public ResponseEntity<?> createService(@RequestBody CreateServiceRequest request) {
+        try {
+            var response = serviceService.createService(request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating service");
+        }
+    }
+
+    //DELETE
+    @DeleteMapping
+    public ResponseEntity<?> deleteService(@RequestBody DeleteServiceRequest request) {
+        try {
+            var response = serviceService.deleteService(request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleteing service");
+        }
+    }
+
+    //DELETE ALL
+
+    //DELETE SERVICE CATEGORY
+
+    //CREATE SERVICE CATEGORY (maybe no need)
+
+    //UPDATE SERVICE CATEGORY (maybe no need too)
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {

@@ -35,7 +35,7 @@ public class CacheShopTimeSlotService {
         Shop shop = service.getShop();
         if (Objects.nonNull(shop)) {
             List<ShopTimeSlot> shopTimeSlot = shopTimeSlotRepository.findByShopId(shop.getId());
-            List<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date.atStartOfDay());
+            List<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date);
             dtos = new ArrayList<>();
             for (ShopTimeSlot timeSlot : shopTimeSlot) {
                 if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {

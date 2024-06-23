@@ -88,7 +88,7 @@ public class BookingService {
             //local date + time slot
             CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
             if (cacheShopTimeSlot != null) {
-                dto.setLocalDate(LocalDate.from(cacheShopTimeSlot.getLocalDateTime()));
+                dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
                 dto.setTimeSlotDto(modelMapper.map(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot(), TimeSlotDto.class));
 
             }
@@ -107,7 +107,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id).orElse(null);
         BookingDetailDto dto = modelMapper.map(booking, BookingDetailDto.class);
         CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
-        dto.setLocalDate(cacheShopTimeSlot.getLocalDateTime().toLocalDate());
+        dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
         dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
         dto.setEndTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
         dto.setBookingNote(booking.getBookingNote());
@@ -150,7 +150,7 @@ public class BookingService {
 
             CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopDateAndTimeSlot(
                     shop.getId()
-                    , request.getLocalDate().atStartOfDay()
+                    , request.getLocalDate()
                     , shopTimeSlot);
             if (Objects.nonNull(cacheShopTimeSlot)) {
                 cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
@@ -164,10 +164,11 @@ public class BookingService {
                 cacheShopTimeSlot.setTotalSlots(shopTimeSlot.getTotalSlot());
                 cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() > 0 ? cacheShopTimeSlot.getUsedSlots() + 1 : 1);
                 cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getTotalSlots() - cacheShopTimeSlot.getUsedSlots());
-                cacheShopTimeSlot.setLocalDateTime(request.getLocalDate().atStartOfDay());
+                cacheShopTimeSlot.setLocalDate(request.getLocalDate());
                 cacheShopTimeSlot.setShop(shop);
                 cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
             }
+
             //create booking here
             Booking booking = new Booking();
             booking.setBookingNote(request.getAdditionalMessage());
@@ -183,12 +184,7 @@ public class BookingService {
                 pet = petrepository.findById(request.getPetId()).get();
             }
             if (Objects.isNull(pet)) {
-                pet = new Pet();
-                pet.setPetName(request.getPetName());
-                pet.setPetAge(request.getPetAge());
-                pet.setPetGender(request.getPetGender());
-                pet.setPetWeight(request.getPetWeight());
-                pet.setPetType(request.getTypePet());
+                pet = modelMapper.map(request, Pet.class);
             }
 
 

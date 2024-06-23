@@ -1,4 +1,4 @@
-package org.swp.controller.entity.role;
+package org.swp.controller.entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.swp.dto.request.UpdatePasswordRequest;
+import org.swp.dto.request.UpdateUserProfileRequest;
 import org.swp.service.UserService;
 
 import java.util.Objects;
@@ -47,7 +49,14 @@ public class UserController {
     }
 
     //UPDATE USER PROFILE + CHANGE PASSWORD
-    //DELETE
-    //CREATE SHOP OWNER tabituananh
+    @PutMapping
+    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateUserProfileRequest request) {
+        return null;
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest request) {
+        return null;
+    }
 
 }

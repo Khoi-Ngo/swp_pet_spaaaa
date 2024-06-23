@@ -18,12 +18,15 @@ public class RequestBookingRequest {
     private TimeSlotDto timeSlotDto;
 
     //pet information
-    private String petName;
-    private int petAge;
-    private TypePet typePet;
-    private int petWeight;
     private Integer petId;
+    private String petName;
+    private TypePet petType;
+    private int petAge;
     private String petGender;
+    private int petWeight;
+    private String petDescription;
+    private String petPhoto;
+    private String petNote;
 
 
 }

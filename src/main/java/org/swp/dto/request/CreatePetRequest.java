@@ -4,8 +4,8 @@ import lombok.Data;
 import org.swp.enums.TypePet;
 
 @Data
-public class UpdatePetRequestDto {
-    private Integer id;//petId
+public class CreatePetRequest {
+    private int userId;
     private String petName;
     private TypePet petType;
     private int petAge;
@@ -14,6 +14,4 @@ public class UpdatePetRequestDto {
     private String petDescription;
     private String petPhoto;
     private String petNote;
-    private int userId;
-
 }

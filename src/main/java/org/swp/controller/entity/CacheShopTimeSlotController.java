@@ -38,4 +38,5 @@ public class CacheShopTimeSlotController {
             return null;
         }
     }
+    //no need CRUD here
 }

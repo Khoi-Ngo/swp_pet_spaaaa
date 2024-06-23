@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.swp.dto.request.CreatePetRequestDto;
-import org.swp.dto.request.UpdatePetRequestDto;
+import org.swp.dto.request.CreatePetRequest;
+import org.swp.dto.request.UpdatePetRequest;
 import org.swp.enums.TypePet;
 import org.swp.service.PetService;
 
@@ -51,7 +51,6 @@ public class PetController {
         }
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getPetDetail(@PathVariable("id") int id) {
         try {
@@ -61,7 +60,7 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the pet");
         }
     }
-
+    //DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePet(@PathVariable("id") int id) {
         try {
@@ -73,7 +72,7 @@ public class PetController {
 
     //UPDATE
     @PutMapping
-    public ResponseEntity<?> updatePet(@RequestBody UpdatePetRequestDto request) {
+    public ResponseEntity<?> updatePet(@RequestBody UpdatePetRequest request) {
         try {
             return Objects.nonNull(request) ?
                     ResponseEntity.ok(petService.updatePet(request)) :
@@ -87,7 +86,7 @@ public class PetController {
 
     //CREATE
     @PostMapping
-    public ResponseEntity<?> createPet(@RequestBody CreatePetRequestDto request) {
+    public ResponseEntity<?> createPet(@RequestBody CreatePetRequest request) {
         try {
             return Objects.nonNull(request) ?
                     ResponseEntity.ok(petService.createPet(request)) :

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.swp.configuration.constant.shop.ShopConstantNumber;
-import org.swp.enums.TypePet;
 import org.swp.service.ShopService;
 
 @RestController
@@ -29,26 +28,8 @@ public class ShopController {
                         .NUMBER_OF_MOST_RCMD_SHOP.getValue()));
     }
 
-    @GetMapping("/most-rcmd-shops-dog")
-    public ResponseEntity<?> getMostRcmdShopsDog() {
-        return ResponseEntity.ok(shopService
-                .getMostRcmdShops(TypePet.DOG
-                        , ShopConstantNumber.NUMBER_OF_MOST_RCMD_SHOP.getValue()));
-    }
+    //LATEST SHOPS
 
-    @GetMapping("/most-rcmd-shops-cat")
-    public ResponseEntity<?> getMostRcmdShopsCat() {
-        return ResponseEntity.ok(shopService
-                .getMostRcmdShops(TypePet.CAT
-                        , ShopConstantNumber.NUMBER_OF_MOST_RCMD_SHOP.getValue()));
-    }
-
-
-    //todo
-
-    //consider shop view ?
-
-    //view all shop available
     @GetMapping("/all")
     public ResponseEntity<?> getAllShops() {
         try{

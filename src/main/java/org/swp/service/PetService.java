@@ -3,8 +3,8 @@ package org.swp.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.swp.dto.request.CreatePetRequestDto;
-import org.swp.dto.request.UpdatePetRequestDto;
+import org.swp.dto.request.CreatePetRequest;
+import org.swp.dto.request.UpdatePetRequest;
 import org.swp.dto.response.BookingHistoryListItemDto;
 import org.swp.dto.response.PetDetailDto;
 import org.swp.dto.response.PetListItemDto;
@@ -73,13 +73,13 @@ public class PetService {
             historyInDate.setServiceId(booking.getService().getId());
             historyInDate.setShopId(booking.getShop().getId());
             historyInDate.setShopName(booking.getShop().getShopName());
-            if (dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDateTime().toLocalDate()) != null) {
-                dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDateTime().toLocalDate()).add(historyInDate);
+            if (dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDate()) != null) {
+                dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDate()).add(historyInDate);
             } else {
                 List<BookingHistoryListItemDto> historyListDate = new ArrayList<>();
                 historyListDate.add(historyInDate);
                 dto.getBookingHistory().put(
-                        booking.getCacheShopTimeSlot().getLocalDateTime().toLocalDate(),
+                        booking.getCacheShopTimeSlot().getLocalDate(),
                         historyListDate
                 );
             }
@@ -116,7 +116,7 @@ public class PetService {
         return modelMapper.map(pet, PetDetailDto.class);
     }
 
-    public Object updatePet(UpdatePetRequestDto request) {
+    public Object updatePet(UpdatePetRequest request) {
         User owner = userRepository.findById(request.getUserId()).get();
         Pet pet = modelMapper.map(request, Pet.class);
         pet.setUser(owner);
@@ -124,7 +124,7 @@ public class PetService {
         return modelMapper.map(pet, PetDetailDto.class);
     }
 
-    public Object createPet(CreatePetRequestDto request) {
+    public Object createPet(CreatePetRequest request) {
         Pet pet = modelMapper.map(request, Pet.class);
         User user = userRepository.findById(request.getUserId()).get();
         pet.setUser(user);

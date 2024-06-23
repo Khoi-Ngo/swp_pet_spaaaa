@@ -3,6 +3,7 @@ package org.swp.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class CacheShopTimeSlot extends BaseEntity {
     private int usedSlots;
     private int availableSlots;
 
-    private LocalDateTime localDateTime; //date
+    private LocalDate localDate; //date
 
     @ManyToOne
     @JoinColumn(name = "shop_time_slot_id")

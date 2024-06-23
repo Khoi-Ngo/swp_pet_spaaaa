@@ -17,7 +17,6 @@ public class Service extends BaseEntity {
     private double price;
     private double minWeight;
     private double maxWeight;
-    private TypePet typePet;
     private String tags; //regex "tag1 - tag2 - tag3"
     private int nomination;
 

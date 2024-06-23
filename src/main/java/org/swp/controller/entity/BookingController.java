@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
+import org.swp.dto.request.UpdateBookigRequest;
 import org.swp.service.BookingService;
 
 import java.util.Objects;
@@ -34,6 +35,7 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of booking");
         }
     }
+
     @GetMapping("{id}")
     public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
         Object responseData = bookingService.getBookingById(id);
@@ -43,6 +45,8 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
+        //if create for existed pet -> petId
+        //if new pet todo compare with create pet
         try {
             var response = bookingService.createBooking(request);
             return Objects.nonNull(response) ?
@@ -59,12 +63,8 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.cancel(request));
     }
 
-
-
-
-
-
-
-
-
+    @PutMapping
+    public ResponseEntity<?> updateInforBooking(@RequestBody UpdateBookigRequest request) {
+        return null;
+    }
 }
