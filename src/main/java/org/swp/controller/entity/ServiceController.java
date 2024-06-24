@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.service.ServiceConstantNumber;
 import org.swp.dto.request.CreateServiceRequest;
 import org.swp.dto.request.DeleteServiceRequest;
+import org.swp.entity.Shop;
+import org.swp.entity.User;
 import org.swp.enums.TypePet;
 import org.swp.service.CategoryServiceService;
 import org.swp.service.ServiceService;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/service")
@@ -138,6 +141,20 @@ public class ServiceController { //todo -> some action should be more authentica
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleteing service");
+        }
+    }
+
+    @GetMapping("/all/shopowner/{id}")
+    public ResponseEntity<?> getAllServicesOfShopowner(@PathVariable("id") int id) {
+        try {
+            var services = serviceService.getAllOfShopowner(id);
+            if (services == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Services not found");
+            }
+            return ResponseEntity.ok(services);
+        } catch (Exception e) {
+            logger.error("Error while getting all services", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
