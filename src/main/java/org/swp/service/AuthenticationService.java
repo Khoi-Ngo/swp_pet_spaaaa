@@ -56,10 +56,10 @@ public class AuthenticationService {
 
     }
 
-    public JwtAuthenticationResponse refresh(@NotNull RefreshRequest refreshRequest) {
-        String username = jwtService.extractUserName(refreshRequest.getToken());
+    public JwtAuthenticationResponse refresh(@NotNull String token) {
+        String username = jwtService.extractUserName(token);
         User user = IUserRepository.findByUsername(username).orElseThrow();
-        if (jwtService.validateToken(refreshRequest.getToken(), user)) {
+        if (jwtService.validateToken(token, user)) {
             var jwt = jwtService.generrateToken(user, user.getId(), user.getEmail(), user.getRole());
             var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user, user.getId(), user.getEmail(), user.getRole());
 

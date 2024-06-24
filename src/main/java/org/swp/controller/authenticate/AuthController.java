@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.RefreshRequest;
 import org.swp.dto.request.SignInRequest;
 import org.swp.dto.request.SignUpRequest;
@@ -53,9 +50,9 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
+    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(authenticationService.refresh(refreshRequest));
+            return ResponseEntity.ok(authenticationService.refresh(token));
         } catch (Exception e) {
             logger.error("Error occurred during refresh: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
