@@ -3,12 +3,15 @@ package org.swp.controller.entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.shop.ShopConstantNumber;
+import org.swp.dto.request.CreateShopRequest;
+import org.swp.entity.Shop;
 import org.swp.service.ShopService;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/shop")
@@ -44,7 +47,19 @@ public class ShopController {
         }
     }
     //create shop
-
+    @PostMapping("/create")
+    public ResponseEntity<?> createShop(@RequestBody CreateShopRequest request) {
+        logger.info("Creating shop with request: {}", request);
+        try {
+            return Objects.nonNull(request) ?
+                    ResponseEntity.ok(shopService.createShop(request)) :
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
+        }
+        catch (Exception e) {
+            logger.error("Error while creating shop", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
     //update shop
 
     //delete shop
