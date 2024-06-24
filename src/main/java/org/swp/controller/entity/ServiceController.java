@@ -144,10 +144,10 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-    @GetMapping("/all/shopowner/{id}")
-    public ResponseEntity<?> getAllServicesOfShopowner(@PathVariable("id") int id) {
+    @GetMapping("/all/auth")
+    public ResponseEntity<?> getAllServicesOfShopowner(@RequestHeader(name = "Authorization") String token) {
         try {
-            var services = serviceService.getAllOfShopowner(id);
+            var services = serviceService.getAllOfShopowner(token);
             if (services == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Services not found");
             }

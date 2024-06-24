@@ -41,6 +41,9 @@ public class ServiceService {
     @Autowired
     private ICategorySerivceRepository categorySerivceRepository;
 
+    @Autowired
+    private JWTService jwtService;
+
     public List<ServiceListItemDto> getAll() {
         return serviceRepository.findAll().stream()
                 .map(service -> {
@@ -164,8 +167,9 @@ public class ServiceService {
         return "delete service successful!";
     }
 
-    public Object getAllOfShopowner(int id){
-        User user = userRepository.findById(id).get();
+    public Object getAllOfShopowner(String token){
+        String username = getUserNameFromToken(token);
+        User user = userRepository.findByUsername(username).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
         return serviceRepository.findAllByShopId(shop.getId()).stream()
                 .map(service -> {
@@ -173,5 +177,14 @@ public class ServiceService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String getUserNameFromToken(String token) {
+        String userName = null;
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7); // Remove "Bearer " prefix
+            userName = jwtService.extractUserName(jwtToken);
+        }
+        return userName;
     }
 }
