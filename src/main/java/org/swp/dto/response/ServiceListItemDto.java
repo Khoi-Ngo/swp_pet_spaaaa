@@ -8,8 +8,8 @@ public class ServiceListItemDto {
     private Integer id;
     private String serviceName;
     private double price;
-    private TypePet typePet;
-    private String typePetString;
+//    private TypePet typePet;
+//    private String typePetString;
     private String address;
     private int nomination;
     private String shopName;

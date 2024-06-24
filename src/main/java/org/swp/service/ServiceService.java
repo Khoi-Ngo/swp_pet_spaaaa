@@ -45,8 +45,7 @@ public class ServiceService {
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
 
-                    dto.setTypePetString(
-                            dto.getTypePet() != null ? dto.getTypePet() .getValue(): null);
+
                     dto.setAddress(
                             Objects.nonNull(service.getShop()) ?
                                     service.getShop().getShopAddress()
@@ -79,7 +78,6 @@ public class ServiceService {
         return serviceRepository.findMostRcmdServices(typePet, numberOfRecords).stream()
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
-                    dto.setTypePetString(dto.getTypePet().getValue());
                     dto.setAddress(
                             Objects.nonNull(service.getShop()) ?
                                     service.getShop().getShopAddress()
@@ -94,7 +92,6 @@ public class ServiceService {
         return serviceRepository.findMostRcmdServices(numberOfRecords).stream()
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
-                    dto.setTypePetString(dto.getTypePet().getValue());
                     dto.setAddress(
                             Objects.nonNull(service.getShop()) ?
                                     service.getShop().getShopAddress()
@@ -111,7 +108,6 @@ public class ServiceService {
         return serviceRepository.findLatestServices(numberOfRecords).stream()
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
-                    dto.setTypePetString(dto.getTypePet().getValue());
                     dto.setAddress(
                             Objects.nonNull(service.getShop()) ?
                                     service.getShop().getShopAddress()
@@ -126,7 +122,6 @@ public class ServiceService {
         return serviceRepository.findAllByShopId(shopId).stream()
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
-                    dto.setTypePetString(dto.getTypePet().getValue());
                     dto.setAddress(
                             Objects.nonNull(service.getShop()) ?
                                     service.getShop().getShopAddress()
