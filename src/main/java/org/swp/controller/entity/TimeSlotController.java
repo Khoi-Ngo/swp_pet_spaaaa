@@ -4,14 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/shop-timeslot")
-public class ShopTimeSlotController {
+@RequestMapping("/api/v1/timeslot")
+public class TimeSlotController {
     /*
-     * SHOP timeslot
+     * Timeslot
      *
      */
     //create
-//    public ResponseEntity<?> createShopTimeSlot(@RequestBody CreateShopTimeSlotRequest request) {
+//    public ResponseEntity<?> createTimeSlot(@RequestBody CreateTimeSlotRequest request) {
 //        try {
 //
 //        } catch (Exception e) {
@@ -21,7 +21,7 @@ public class ShopTimeSlotController {
 //
 //    //delete
 //    @DeleteMapping("{id}")
-//    public ResponseEntity<?> deleteShopTimeSlot(@PathVariable("id") int id) {
+//    public ResponseEntity<?> deleteTimeSlot(@PathVariable("id") int id) {
 //        try {
 //
 //        } catch (Exception e) {
@@ -30,7 +30,7 @@ public class ShopTimeSlotController {
 //    }
 //
 //    //update
-//    public ResponseEntity<?> updateShopTimeSlot(@RequestBody UpdateShopTimeSlotRequest request) {
+//    public ResponseEntity<?> updateTimeSlot(@RequestBody UpdateTimeSlotRequest request) {
 //        try {
 //
 //        } catch (Exception e) {
@@ -39,13 +39,12 @@ public class ShopTimeSlotController {
 //    }
 //
 //    //get all (note no need to get any detail)
-//    public ResponseEntity<?> getAllShopTimeSlots() {
+//    public ResponseEntity<?> getAllTimeSlots() {
 //        try {
 //
 //        } catch (Exception e) {
 //
 //        }
 //    }
-
 
 }

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.shop.ShopConstantNumber;
 import org.swp.dto.request.CreateShopRequest;
-import org.swp.entity.Shop;
 import org.swp.service.ShopService;
 
 import java.util.Objects;
@@ -72,9 +71,9 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    //update shop
+    //update shop todo
 
-    //delete shop
+    //delete shop todo -> recheck other tables depending on this
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteShop(@PathVariable("id") int id) {
         try {

@@ -49,14 +49,12 @@ public class UserController {
     }
 
     //UPDATE USER PROFILE + CHANGE PASSWORD
-    @PutMapping
-    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateUserProfileRequest request) {
-        return null;
-    }
-
-    @PutMapping("/password")
-    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest request) {
-        return null;
-    }
+//    @PutMapping
+//    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateUserProfileRequest request) {
+//    }
+//
+//    @PutMapping("/password")
+//    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest request) {
+//    }
 
 }
