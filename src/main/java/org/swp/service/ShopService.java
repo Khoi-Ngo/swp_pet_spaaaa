@@ -43,7 +43,7 @@ public class ShopService {
     }
 
     //map to shop detail dto
-    private ShopDetailDto sMapToDto(Shop shopEntity) {
+    private ShopDetailDto mapToDto(Shop shopEntity) {
         ShopDetailDto dto = modelMapper.map(shopEntity, ShopDetailDto.class);
         //get list booking of shop
 //        List<Booking> bookings = bookingRepository.findByShopId(dto.getId());
@@ -82,7 +82,7 @@ public class ShopService {
         if (shop.isDeleted() == true) {
            return "Shop is deleted!";
         }
-        return sMapToDto(shop);
+        return mapToDto(shop);
     }
 
     public Object createShop(CreateShopRequest request) {
@@ -100,7 +100,7 @@ public class ShopService {
         Shop shop = shopRepository.findById(id).get();
         shop.setDeleted(true);
         shopRepository.save(shop);
-        return sMapToDto(shop);
+        return mapToDto(shop);
     }
 
 }
