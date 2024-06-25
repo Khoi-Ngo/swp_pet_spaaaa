@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateServiceRequest;
 import org.swp.dto.request.DeleteServiceRequest;
+import org.swp.dto.request.UpdateServiceRequest;
 import org.swp.dto.response.ListServiceDto;
 import org.swp.dto.response.ServiceDetailDto;
 import org.swp.dto.response.ServiceListItemDto;
@@ -165,6 +166,16 @@ public class ServiceService {
         shopRepository.save(shop);
 
         return "delete service successful!";
+    }
+
+    public Object updateService(UpdateServiceRequest request){
+        org.swp.entity.Service service = modelMapper.map(request, org.swp.entity.Service.class);
+        User user = userRepository.findById(request.getUserId()).get();
+        Shop shop = shopRepository.findByShopOwnerId(user.getId());
+        service.setCategory(categorySerivceRepository.findById(request.getServiceCategoryId()).get());
+        service.setShop(shop);
+        serviceRepository.save(service);
+        return request;
     }
 
     public Object getAllOfShopowner(String token){

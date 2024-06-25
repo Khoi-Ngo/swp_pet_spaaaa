@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.service.ServiceConstantNumber;
 import org.swp.dto.request.CreateServiceRequest;
 import org.swp.dto.request.DeleteServiceRequest;
+import org.swp.dto.request.UpdateServiceRequest;
+import org.swp.entity.Service;
 import org.swp.entity.Shop;
 import org.swp.entity.User;
 import org.swp.enums.TypePet;
+import org.swp.repository.IServiceRepository;
+import org.swp.repository.IShopRepository;
 import org.swp.service.CategoryServiceService;
 import org.swp.service.ServiceService;
 
@@ -28,6 +32,12 @@ public class ServiceController { //todo -> some action should be more authentica
     private ServiceService serviceService;
     @Autowired
     private CategoryServiceService categoryServiceService;
+
+    @Autowired
+    private IServiceRepository serviceRepository;
+
+    @Autowired
+    private IShopRepository shopRepository;
 
     @GetMapping("/latest-services")
     public ResponseEntity<?> getLatestServices() {
@@ -115,6 +125,23 @@ public class ServiceController { //todo -> some action should be more authentica
     }
 
     //UPDATE
+    @PutMapping
+    public ResponseEntity<?> updateService(@RequestBody UpdateServiceRequest request){
+        try {
+            Service service = serviceRepository.findById(request.getId()).get();
+            int shopId = service.getShop().getId();
+            Shop shop = shopRepository.findById(shopId).get();
+            if(request.getUserId() != shop.getUser().getId())
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Wrong service id");
+            var response = serviceService.updateService(request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while update service");
+        }
+    }
 
     //CREATE
     @PostMapping
