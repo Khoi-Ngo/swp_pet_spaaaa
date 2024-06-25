@@ -31,4 +31,7 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query(value = "SELECT * FROM tbl_booking WHERE pet_id = :petId ", nativeQuery = true)
     List<Booking> findByPetId(@Param("petId") Integer petId);
+
+    @Query(value = "SELECT * FROM tbl_booking WHERE shop_id = :shopId ", nativeQuery = true)
+    List<Booking> findByShopId(@Param("shopId") Integer shopId);
 }

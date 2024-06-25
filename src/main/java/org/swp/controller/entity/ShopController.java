@@ -46,8 +46,20 @@ public class ShopController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
+    //get shop detail
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getShopDetail(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(shopService.getShopDetail(id));
+        } catch (Exception e) {
+            logger.error("Cannot find the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
     //create shop
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createShop(@RequestBody CreateShopRequest request) {
         logger.info("Creating shop with request: {}", request);
         try {
@@ -63,7 +75,15 @@ public class ShopController {
     //update shop
 
     //delete shop
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteShop(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(shopService.deleteShop(id));
+        } catch (Exception e) {
+            logger.error("Cannot delete the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete the shop");
+        }
+    }
 
 
 }
