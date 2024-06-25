@@ -22,6 +22,6 @@ public interface IServiceRepository extends JpaRepository<Service, Integer> {
     @Query(value = "SELECT * FROM tbl_service  WHERE type_pet = :typePet ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Service> findMostRcmdServices(@Param("typePet") TypePet typePet, @Param("numberOfRecords") int numberOfRecords);
 
-    @Query(value = "SELECT * FROM tbl_service  WHERE shop_id = :shopId ORDER BY nomination DESC ", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_service  WHERE shop_id = :shopId and is_deleted = false ORDER BY nomination DESC ", nativeQuery = true)
     List<Service> findAllByShopId(@Param("shopId") int shopId);
 }

@@ -161,6 +161,11 @@ public class ServiceController { //todo -> some action should be more authentica
     @DeleteMapping
     public ResponseEntity<?> deleteService(@RequestBody DeleteServiceRequest request) {
         try {
+            Service service = serviceRepository.findById(request.getServiceId()).get();
+            int shopId = service.getShop().getId();
+            Shop shop = shopRepository.findById(shopId).get();
+            if(request.getUserId() != shop.getUser().getId())
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Wrong service id");
             var response = serviceService.deleteService(request);
             return Objects.nonNull(response) ?
                     ResponseEntity.ok(response)

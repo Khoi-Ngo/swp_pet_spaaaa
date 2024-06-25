@@ -5,6 +5,7 @@ import org.swp.enums.TypePet;
 
 @Data
 public class ListServiceDto {
+    private String id;
     private String serviceName;
     private String serviceDescription;
     private double price;

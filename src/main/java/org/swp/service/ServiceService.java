@@ -161,7 +161,8 @@ public class ServiceService {
     public Object deleteService(DeleteServiceRequest request){
         User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
-        serviceRepository.deleteById(request.getServiceId());
+        org.swp.entity.Service service = serviceRepository.getById(request.getServiceId());
+        service.setDeleted(true);
         shop.setTotalServices(shop.getTotalServices()-1);
         shopRepository.save(shop);
 
