@@ -2,6 +2,8 @@ package org.swp.dto.response;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class DetailAccountDto {
     private int id;
@@ -11,4 +13,6 @@ public class DetailAccountDto {
     private String username;
     private String phone;
     private boolean status;
+    private LocalDate birthday;
+
 }

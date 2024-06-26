@@ -16,4 +16,5 @@ public class ListAccountCustomerDto {
         private String profileImageUrl;
         private String coverImageUrl;
         private LocalDate birthday;
+        private boolean status;
 }

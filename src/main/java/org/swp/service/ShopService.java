@@ -14,6 +14,8 @@ import org.swp.repository.IBookingRepository;
 import org.swp.repository.IShopRepository;
 import org.swp.repository.IUserRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,8 +95,12 @@ public class ShopService {
         if (user == null) {
             throw new RuntimeException("User not found with id: " + request.getUserId());
         }
+        LocalDateTime openDateTime = LocalDateTime.of(LocalDate.now(), request.getOpenTime());
+        LocalDateTime closeDateTime = LocalDateTime.of(LocalDate.now(), request.getCloseTime());
         Shop shop = modelMapper.map(request, Shop.class);
         shop.setUser(user);
+        shop.setCloseTime(closeDateTime);
+        shop.setOpenTime(openDateTime);
         Shop savedShop = shopRepository.save(shop);
         return modelMapper.map(savedShop, ShopDetailDto.class);
     }

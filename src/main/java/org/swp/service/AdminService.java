@@ -53,6 +53,8 @@ public class AdminService {
         return adminRepository.findAllCustomerACC().stream()
                 .map(service -> {
                     ListAccountCustomerDto dto = modelMapper.map(service, ListAccountCustomerDto.class);
+                    User user = userRepository.findById(dto.getId()).get();
+                    dto.setStatus(user.isDeleted());
                     return dto;
                 })
                 .collect(Collectors.toList());

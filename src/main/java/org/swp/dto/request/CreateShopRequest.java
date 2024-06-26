@@ -2,7 +2,9 @@ package org.swp.dto.request;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class CreateShopRequest {
@@ -13,8 +15,8 @@ public class CreateShopRequest {
     private String shopEmail;
     private String area;//Thu Duc City || Sai Gon
     private String shopDescription;
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+    private LocalTime openTime;
+    private LocalTime closeTime;
     private boolean isAvailable;
     private String shopTitle;
 }
