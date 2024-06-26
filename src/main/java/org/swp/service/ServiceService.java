@@ -4,12 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateServiceRequest;
-import org.swp.dto.request.DeleteServiceRequest;
 import org.swp.dto.request.UpdateServiceRequest;
 import org.swp.dto.response.ListServiceDto;
 import org.swp.dto.response.ServiceDetailDto;
 import org.swp.dto.response.ServiceListItemDto;
-import org.swp.entity.ServiceCategory;
 import org.swp.entity.Shop;
 import org.swp.entity.User;
 import org.swp.enums.TypePet;
@@ -20,10 +18,7 @@ import org.swp.repository.IUserRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.swp.enums.UserRole.SHOP_OWNER;
 
 @Service
 public class ServiceService {
@@ -158,15 +153,13 @@ public class ServiceService {
         return service.getId();
     }
 
-    public Object deleteService(DeleteServiceRequest request){
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-        Shop shop = shopRepository.findByShopOwnerId(user.getId());
-        org.swp.entity.Service service = serviceRepository.getById(request.getServiceId());
+    public Object deleteService(int id){
+        org.swp.entity.Service service = serviceRepository.findById(id).get();
+        Shop shop = service.getShop();
         service.setDeleted(true);
         shop.setTotalServices(shop.getTotalServices()-1);
         shopRepository.save(shop);
-
-        return "delete service successful!";
+        return modelMapper.map(service, ServiceDetailDto.class);
     }
 
     public Object updateService(UpdateServiceRequest request){
