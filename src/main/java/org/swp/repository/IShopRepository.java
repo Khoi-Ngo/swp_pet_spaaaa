@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.swp.entity.Pet;
 import org.swp.entity.Service;
 import org.swp.entity.Shop;
 import org.swp.enums.TypePet;
@@ -18,4 +19,6 @@ public interface IShopRepository extends JpaRepository<Shop, Integer> {
     @Query (value = "SELECT * FROM tbl_shop WHERE shop_owner_id = :shopOwnerId", nativeQuery = true)
     Shop findByShopOwnerId (@Param("shopOwnerId") int shopOwnerId);
 
+    @Query(value = "SELECT * FROM tbl_shop WHERE shop_owner_id = (SELECT id FROM tbl_user WHERE username = :username) AND is_deleted = FALSE", nativeQuery = true)
+    Shop findByUserName(@Param("username") String username);
 }

@@ -47,10 +47,12 @@ public class ShopController {
     }
 
     //get shop detail
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getShopDetail(@PathVariable("id") int id) {
+    @GetMapping("/auth")
+    public ResponseEntity<?> getShopDetail(@RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(shopService.getShopDetail(id));
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(shopService.getShopDetail(token)) :
+                    ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
         } catch (Exception e) {
             logger.error("Cannot find the shop" + e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");

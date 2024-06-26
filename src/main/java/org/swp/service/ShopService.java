@@ -32,6 +32,9 @@ public class ShopService {
     @Autowired
     private IBookingRepository bookingRepository;
 
+    @Autowired
+    private JWTService jwtService;
+
     public Object getMostRcmdShops(int numberOfRecords) {
 //        return shopRepository.findMostRcmdShops(numberOfRecords);
         return shopRepository.findAll();
@@ -67,7 +70,6 @@ public class ShopService {
     }
 
 
-
     public List<ShopDetailDto> getAllShops() {
         return shopRepository.findAll().stream()
                 .map(shop -> {
@@ -76,9 +78,10 @@ public class ShopService {
                 })
                 .collect(Collectors.toList());
     }
-
-    public Object getShopDetail(int id) {
-        Shop shop = shopRepository.findById(id).get();
+    //get shop for shop owner
+    public Object getShopDetail(String token) {
+        String username = getUserNameFromToken(token);
+        Shop shop = shopRepository.findByUserName(username);
         if (shop.isDeleted() == true) {
            return "Shop is deleted!";
         }
@@ -103,4 +106,12 @@ public class ShopService {
         return mapToDto(shop);
     }
 
+    private String getUserNameFromToken(String token) {
+        String userName = null;
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7); // Remove "Bearer " prefix
+            userName = jwtService.extractUserName(jwtToken);
+        }
+        return userName;
+    }
 }
