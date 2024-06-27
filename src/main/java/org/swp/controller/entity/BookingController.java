@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
+import org.swp.enums.BookingStatus;
 import org.swp.service.BookingService;
 
 import java.time.LocalDate;
