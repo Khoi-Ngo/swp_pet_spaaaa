@@ -1,9 +1,11 @@
 package org.swp.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Lob;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +21,12 @@ public class ShopDetailDto {
     private String area;//Thu Duc City || Sai Gon
     @Lob
     private String shopDescription;
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime openTime;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime closeTime;
+
     private boolean isAvailable;
     //day of week working
     private String shopTitle;

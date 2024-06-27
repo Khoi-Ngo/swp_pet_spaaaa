@@ -16,6 +16,7 @@ import org.swp.repository.IUserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +50,16 @@ public class ShopService {
 
     //map to shop detail dto
     private ShopDetailDto mapToDto(Shop shopEntity) {
-        ShopDetailDto dto = modelMapper.map(shopEntity, ShopDetailDto.class);
+        ModelMapper localModelMapper = new ModelMapper();
+        localModelMapper.typeMap(LocalDateTime.class, LocalTime.class).setConverter(context ->
+                context.getSource() != null ? context.getSource().toLocalTime() : null
+        );
+
+        ShopDetailDto dto = localModelMapper.map(shopEntity, ShopDetailDto.class);
+
+        // Ensure the openTime and closeTime are mapped as LocalTime
+        dto.setOpenTime(shopEntity.getOpenTime().toLocalTime());
+        dto.setCloseTime(shopEntity.getCloseTime().toLocalTime());
         //get list booking of shop
 //        List<Booking> bookings = bookingRepository.findByShopId(dto.getId());
 //        bookings.forEach(booking -> {
@@ -75,7 +85,7 @@ public class ShopService {
     public List<ShopDetailDto> getAllShops() {
         return shopRepository.findAll().stream()
                 .map(shop -> {
-                    ShopDetailDto dto = modelMapper.map(shop, ShopDetailDto.class);
+                    ShopDetailDto dto = mapToDto(shop);
                     return dto;
                 })
                 .collect(Collectors.toList());
