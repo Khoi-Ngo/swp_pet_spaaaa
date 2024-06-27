@@ -103,6 +103,11 @@ public class BookingService {
         return userRepository.findByUsername(userName).get().getRole().equals(UserRole.CUSTOMER);
     }
 
+
+    private boolean isShopOwner(String userName) {
+        return userRepository.findByUsername(userName).get().getRole().equals(UserRole.SHOP_OWNER);
+    }
+
     public Object getBookingById(int id) {
         Booking booking = bookingRepository.findById(id).orElse(null);
         BookingDetailDto dto = modelMapper.map(booking, BookingDetailDto.class);
@@ -233,5 +238,45 @@ public class BookingService {
         return "Canceled";
     }
 
+
+    public Object getAllBookingsByShop(String token) {
+        String userName = getUserNameFromToken(token);
+        List<Booking> res = isShopOwner(userName) ?
+                bookingRepository.findAllByShopOwnerUserName(userName)
+                : bookingRepository.findALlByCustomerUserName(userName);
+        //mapping
+        List<BookingListItemDto> dtos = new ArrayList<>();
+        res.forEach(b -> {
+            BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
+            org.swp.entity.Service service = b.getService();
+            if (service != null) {
+                dto.setServiceId(service.getId());
+                dto.setServiceName(service.getServiceName());
+            }
+            Shop shop = b.getShop();
+            if (shop != null) {
+                dto.setShopName(shop.getShopName());
+                dto.setShopId(shop.getId());
+            }
+            User user = b.getUser();
+            if (user != null) {
+                dto.setCustomerFullName(user.getFirstName() + " " + user.getLastName());
+            }
+            Pet pet = b.getPet();
+            if (pet != null) {
+                dto.setPetId(pet.getId());
+                dto.setPetName(pet.getPetName());
+            }
+            //local date + time slot
+            CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
+            if (cacheShopTimeSlot != null) {
+                dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
+                dto.setTimeSlotDto(modelMapper.map(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot(), TimeSlotDto.class));
+
+            }
+            dtos.add(dto);
+        });
+        return dtos;
+    }
 
 }
