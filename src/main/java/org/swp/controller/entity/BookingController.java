@@ -51,7 +51,7 @@ public class BookingController {
         }
     }
 
-    @DeleteMapping
+    @PostMapping("/cancel")
     public ResponseEntity<?> cancelBooking(@RequestBody RequestCancelBookingRequest request) {
         try {
             return ResponseEntity.ok(bookingService.cancel(request));
