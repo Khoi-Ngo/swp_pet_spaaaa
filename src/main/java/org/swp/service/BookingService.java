@@ -217,11 +217,7 @@ public class BookingService {
 
     public Object cancel(@NotNull RequestCancelBookingRequest request) {
         var booking = bookingRepository.findById(request.getBookingId());
-        CancelBookingDto dto = null;
         if (booking.isPresent()) {
-            dto = new CancelBookingDto();
-            dto.setBookingDetailDto(modelMapper.map(booking, BookingDetailDto.class));
-            dto.setAdditionalMessage(request.getAdditionalMessage());
             Booking entity = booking.get();
             entity.setCanceled(true);
             entity.setDone(false);
@@ -232,9 +228,9 @@ public class BookingService {
                 cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() - 1);
             }
             bookingRepository.save(entity);
-
+            cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
         }
-        return dto;
+        return "Canceled";
     }
 
 

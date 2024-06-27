@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
-import org.swp.dto.request.UpdateBookigRequest;
 import org.swp.service.BookingService;
 
 import java.util.Objects;
@@ -36,12 +35,6 @@ public class BookingController {
         }
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
-        Object responseData = bookingService.getBookingById(id);
-        return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
@@ -60,11 +53,29 @@ public class BookingController {
 
     @DeleteMapping
     public ResponseEntity<?> cancelBooking(@RequestBody RequestCancelBookingRequest request) {
-        return ResponseEntity.ok(bookingService.cancel(request));
+        try {
+            return ResponseEntity.ok(bookingService.cancel(request));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while cancelling booking");
+        }
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateInforBooking(@RequestBody UpdateBookigRequest request) {
-        return null;
+
+
+    //MARK COMPLETED
+
+
+    //MARK CANCELED
+
+
+    //==========
+    @GetMapping("{id}")
+    public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
+        Object responseData = bookingService.getBookingById(id);
+        return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+
 }
