@@ -239,6 +239,16 @@ public class BookingService {
     }
 
 
+    public Object markBooking(int id, BookingStatus bookingStatus) {
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent()) {
+            Booking entity = booking.get();
+            entity.setStatus(bookingStatus.name());
+            bookingRepository.save(entity);
+            return "Booking marked!";
+        }
+        return "Booking not found!";
+    }
     public Object getAllBookingsByShop(String token) {
         String userName = getUserNameFromToken(token);
         List<Booking> res = isShopOwner(userName) ?

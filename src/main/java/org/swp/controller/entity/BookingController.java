@@ -62,11 +62,28 @@ public class BookingController {
     }
 
 
-
     //MARK COMPLETED
+    @PutMapping("id")
+    public ResponseEntity<?> markCompleted(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while marking booking");
+        }
+    }
 
 
     //MARK CANCELED
+    @DeleteMapping("id")
+    public ResponseEntity<?> markCanceled(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while marking booking");
+        }
+    }
 
 
     //==========
@@ -75,6 +92,14 @@ public class BookingController {
         Object responseData = bookingService.getBookingById(id);
         return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    //LocalDate + Type
+    @GetMapping("{date}/{type}")
+    public ResponseEntity<?> getBookingByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                              @PathVariable("type") String type) {
+
+        return null;
     }
 
     @GetMapping("/shop")
