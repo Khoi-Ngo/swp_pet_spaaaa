@@ -49,9 +49,18 @@ public class UserController {
     }
 
     //UPDATE USER PROFILE + CHANGE PASSWORD
-//    @PutMapping
-//    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateUserProfileRequest request) {
-//    }
+    @PatchMapping
+    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateUserProfileRequest request) {
+        try {
+            var response = userService.updateUserProfile(request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
+        }
+    }
 //
 //    @PutMapping("/password")
 //    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest request) {

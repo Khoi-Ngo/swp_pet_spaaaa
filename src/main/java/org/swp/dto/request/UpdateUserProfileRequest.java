@@ -7,7 +7,8 @@ import java.time.LocalDate;
 
 @Data
 public class UpdateUserProfileRequest {
-    private String username;
+    private Integer id;
+//    private String username;
     private String firstName;
     private String lastName;
     private String email;//todo: need to validate duplicate
