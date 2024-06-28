@@ -19,4 +19,7 @@ public interface ICacheShopTimeSlotRepository extends JpaRepository<CacheShopTim
     @Query("SELECT csts FROM CacheShopTimeSlot csts WHERE csts.shop.id = :id AND csts.localDate = :localDate AND csts.shopTimeSlot = :shopTimeSlot")
     CacheShopTimeSlot findByShopDateAndTimeSlot(@Param("id") Integer id, @Param("localDate") LocalDate localDate, @Param("shopTimeSlot") ShopTimeSlot shopTimeSlot);
 
+
+    @Query("SELECT csts FROM CacheShopTimeSlot csts WHERE csts.shop.id = :shopId AND csts.shopTimeSlot.id = :shopTimeSlotId")
+    CacheShopTimeSlot findByShopIdShopTimeSlotId(@Param("shopId") int shopId, @Param("shopTimeSlotId") int shopTimeSlotId);
 }
