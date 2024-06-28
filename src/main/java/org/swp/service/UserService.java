@@ -3,10 +3,13 @@ package org.swp.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.swp.dto.request.UpdatePasswordRequest;
 import org.swp.dto.request.UpdateUserProfileRequest;
 import org.swp.dto.response.PrivateUserDto;
 import org.swp.dto.response.PublicUserDto;
@@ -22,6 +25,9 @@ public class UserService {
     private ModelMapper modelMapper;
     @Autowired
     private JWTService jwtService;
+    @Autowired
+    @Lazy
+    private PasswordEncoder passwordEncoder;
 
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -81,5 +87,30 @@ public class UserService {
         modelMapper.map(request, user);
         IUserRepository.save(user);
         return modelMapper.map(user, UpdateUserProfileRequest.class);
+    }
+
+    public Object updatePassword(String token, UpdatePasswordRequest request) {
+        try {
+            String username = getUserNameFromToken(token);
+            User user = IUserRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Validate old password
+            if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+                return "Old password is incorrect";
+            }
+
+            // Check if new password and confirm password match
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                return "New password and confirm password do not match";
+            }
+
+            // Update password
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            IUserRepository.save(user);
+            return "Password updated successfully";
+        } catch (Exception e) {
+            return "Cannot find the user";
+        }
     }
 }

@@ -61,9 +61,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
         }
     }
-//
-//    @PutMapping("/password")
-//    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest request) {
-//    }
+
+    @PutMapping("/password")
+    public ResponseEntity<?> updatePassword(@RequestHeader("Authorization") String token,
+                                            @RequestBody UpdatePasswordRequest request) {
+        try {
+            var response = userService.updatePassword(token, request);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
+        }
+    }
 
 }
