@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.feedback.FeedbackConstantNumber;
+import org.swp.dto.request.FeedbackReplyRequest;
+import org.swp.dto.request.FeedbackRequest;
 import org.swp.service.FeedBackService;
 
 @RestController
@@ -19,8 +21,7 @@ public class FeedbackController {
     @Autowired
     private FeedBackService feedbackService;
 
-    //Feedback
-
+    //Feedback list
     @GetMapping("/latest-feedback/{serviceId}")
     public ResponseEntity<?> getLatestFeedbackOfServiceByServiceId(@PathVariable("serviceId") int serviceId){
         try {
@@ -35,11 +36,42 @@ public class FeedbackController {
         }
     }
 
+    //Create feedback
+    @PostMapping("/create")
+    public ResponseEntity<?> createFeedback(@RequestHeader("Authorization") String token,
+                                            @RequestBody FeedbackRequest feedbackRequest) {
+        try {
+            boolean isCreated = feedbackService.createFeedback(token, feedbackRequest);
+            if (!isCreated) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create feedback");
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body("Feedback created successfully");
+        } catch (Exception e) {
+            logger.error("Error while creating feedback", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
-    //Feedback reply
 
+    //Feedback reply create
+    @PostMapping("/create-reply")
+    public ResponseEntity<?> createFeedbackReply(@RequestHeader("Authorization") String token,
+                                             @RequestBody FeedbackReplyRequest feedbackRequest) {
+        try {
+            boolean isCreated = feedbackService.createFeedbackReply(token, feedbackRequest);
+            if (!isCreated) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create feedback reply");
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body("Feedback reply created successfully");
+        } catch (Exception e) {
+            logger.error("Error while creating feedback reply", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    //Feedback reply list
     @GetMapping("/latest-feedback-reply/{feedbackId}")
-    public ResponseEntity<?> getLatestFeedbackRe(@PathVariable("feedbackId") int feedbackId){
+    public ResponseEntity<?> getLatestFeedbackReply(@PathVariable("feedbackId") int feedbackId){
         try {
             var feedback_re = feedbackService.getLatestFeedbackRe(feedbackId, FeedbackConstantNumber.NUMBER_OF_LATEST_FEEDBACK.getValue());
             if (feedback_re == null) {
@@ -51,7 +83,6 @@ public class FeedbackController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
 
 
     @ExceptionHandler(Exception.class)
