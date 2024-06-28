@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateShopRequest;
+import org.swp.dto.request.UpdateShopRequest;
 import org.swp.dto.response.BookingHistoryListItemDto;
 import org.swp.dto.response.ShopDetailDto;
 import org.swp.entity.Booking;
@@ -37,6 +38,9 @@ public class ShopService {
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    private ServiceService serviceService;
 
     public Object getMostRcmdShops(int numberOfRecords) {
 //        return shopRepository.findMostRcmdShops(numberOfRecords);
@@ -115,9 +119,23 @@ public class ShopService {
         return modelMapper.map(savedShop, ShopDetailDto.class);
     }
 
+    public Object updateShop(UpdateShopRequest request) {
+        Shop shop = shopRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("Shop not found with id: " + request.getId()));
+        LocalDateTime openDateTime = LocalDateTime.of(LocalDate.now(), request.getOpenTime());
+        LocalDateTime closeDateTime = LocalDateTime.of(LocalDate.now(), request.getCloseTime());
+        shop.setCloseTime(closeDateTime);
+        shop.setOpenTime(openDateTime);
+        modelMapper.map(request, shop);
+        shopRepository.save(shop);
+        return mapToDto(shop);
+    }
+
     public Object deleteShop(int id) {
-        Shop shop = shopRepository.findById(id).get();
+        Shop shop = shopRepository.findById(id).orElseThrow(()
+                -> new RuntimeException("Shop not found with id: " + id));
         shop.setDeleted(true);
+        //call delete all service by shop id
+        serviceService.deleteAllServiceByShopId(shop.getId());
         shopRepository.save(shop);
         return mapToDto(shop);
     }
@@ -130,4 +148,6 @@ public class ShopService {
         }
         return userName;
     }
+
+
 }

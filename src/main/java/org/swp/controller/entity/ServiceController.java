@@ -167,6 +167,18 @@ public class ServiceController { //todo -> some action should be more authentica
     }
 
     //DELETE ALL
+    @PostMapping("/delete-all/{shopId}")
+    public ResponseEntity<?> deleteAllServiceByShopId(@PathVariable("shopId") int shopId) {
+        try {
+            var response = serviceService.deleteAllServiceByShopId(shopId);
+            return Objects.nonNull(response) ?
+                    ResponseEntity.ok(response)
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while delete all service by shopId");
+        }
+    }
 
     //DELETE SERVICE CATEGORY
 

@@ -192,4 +192,27 @@ public class ServiceService {
         }
         return userName;
     }
+
+    public Object deleteAllServiceByShopId(int shopId) {
+        List<org.swp.entity.Service> services = serviceRepository.findAllByShopId(shopId);
+
+        if (services.isEmpty()) {
+            throw new RuntimeException("No services found for the given shop ID");
+        }
+
+        services.forEach(service -> {
+            service.setDeleted(true);
+        });
+
+        serviceRepository.saveAll(services);
+
+        Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new RuntimeException("Shop not found"));
+        shop.setTotalServices(0);
+        shopRepository.save(shop);
+
+        return services.stream()
+                .map(service -> modelMapper.map(service, ServiceListItemDto.class))
+                .collect(Collectors.toList());
+    }
+
 }

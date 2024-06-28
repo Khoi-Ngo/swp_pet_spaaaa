@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.shop.ShopConstantNumber;
 import org.swp.dto.request.CreateShopRequest;
+import org.swp.dto.request.UpdateShopRequest;
+import org.swp.service.ServiceService;
 import org.swp.service.ShopService;
 
 import java.util.Objects;
@@ -21,7 +23,6 @@ public class ShopController {
 
     @Autowired
     private ShopService shopService;
-
 
     @GetMapping("/most-rcmd-shops")
     public ResponseEntity<?> getMostRcmdShops() {
@@ -73,10 +74,20 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    //update shop todo
+    //update shop
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateShop(@RequestBody UpdateShopRequest request) {
+        try {
+            return ResponseEntity.ok(shopService.updateShop(request));
+        } catch (Exception e) {
+            logger.error("Cannot update the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot update the shop");
+        }
+    }
 
-    //delete shop todo -> recheck other tables depending on this
-    @DeleteMapping("/{id}")
+
+    //delete shop
+    @PostMapping("delete/{id}")
     public ResponseEntity<?> deleteShop(@PathVariable("id") int id) {
         try {
             return ResponseEntity.ok(shopService.deleteShop(id));
