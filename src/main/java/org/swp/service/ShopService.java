@@ -150,4 +150,16 @@ public class ShopService {
     }
 
 
+    public Object getShopDetailById(int id){
+
+        Shop shop = shopRepository.findById(id).get();
+        if (shop.isDeleted() == true) {
+            return "Shop is deleted!";
+        }
+
+        return mapToDto(shop);
+
+    }
+
+
 }

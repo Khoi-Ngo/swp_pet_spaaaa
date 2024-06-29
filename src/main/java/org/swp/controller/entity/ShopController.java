@@ -98,4 +98,16 @@ public class ShopController {
     }
 
 
+    //get shop detail by id
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getShopDetailById(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(shopService.getShopDetailById(id));
+        } catch (Exception e) {
+            logger.error("Cannot find the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
+
 }
