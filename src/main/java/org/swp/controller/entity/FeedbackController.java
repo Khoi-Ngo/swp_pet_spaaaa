@@ -21,6 +21,21 @@ public class FeedbackController {
     @Autowired
     private FeedBackService feedbackService;
 
+    //Feedback all
+    @GetMapping("/all/{serviceId}")
+    public ResponseEntity<?> getAllFeedbacks(@PathVariable("serviceId") int serviceId) {
+        try {
+            var feedbacks = feedbackService.getAllFeedbacks(serviceId);
+            if (feedbacks == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feedback not found");
+            }
+            return ResponseEntity.ok(feedbacks);
+        } catch (Exception e) {
+            logger.error("Error while getting feedbacks", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     //Feedback list
     @GetMapping("/latest-feedback/{serviceId}")
     public ResponseEntity<?> getLatestFeedbackOfServiceByServiceId(@PathVariable("serviceId") int serviceId){

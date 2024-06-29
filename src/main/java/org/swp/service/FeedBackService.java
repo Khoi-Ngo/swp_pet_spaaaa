@@ -34,29 +34,55 @@ public class FeedBackService {
     @Autowired
     private IShopRepository shopRepository;
 
-        public Object getLatestFeedback(int serviceId, int numberOfRecords) {
-            return feedbackRepository.findLatestFeedbackByServiceId(serviceId, numberOfRecords).stream()
-                    .map(feedback -> {
-                        FeedbackListDto dto = modelMapper.map(feedback, FeedbackListDto.class);
-                        dto.setUserName(
-                                Objects.nonNull(feedback.getUser()) ?
-                                        feedback.getUser().getUsername()
-                                        : "Khong xac dinh"
-                        );
-                        dto.setServiceName(
-                                Objects.nonNull(feedback.getService()) ?
-                                        feedback.getService().getServiceName()
-                                        : "Khong xac dinh"
-                        );
-                        dto.setShopName(
-                                Objects.nonNull(feedback.getService()) ?
-                                        feedback.getService().getShop().getShopName()
-                                        : "Khong xac dinh"
-                        );
-                        return dto;
-                    })
-                    .collect(Collectors.toList());
-        }
+
+
+    public Object getAllFeedbacks(int serviceId) {
+        return feedbackRepository.findAllFeedbackByServiceId(serviceId).stream()
+                .map(feedback -> {
+                    FeedbackListDto dto = modelMapper.map(feedback, FeedbackListDto.class);
+                    dto.setUserName(
+                            Objects.nonNull(feedback.getUser()) ?
+                                    feedback.getUser().getUsername()
+                                    : "Khong xac dinh"
+                    );
+                    dto.setServiceName(
+                            Objects.nonNull(feedback.getService()) ?
+                                    feedback.getService().getServiceName()
+                                    : "Khong xac dinh"
+                    );
+                    dto.setShopName(
+                            Objects.nonNull(feedback.getService()) ?
+                                    feedback.getService().getShop().getShopName()
+                                    : "Khong xac dinh"
+                    );
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public Object getLatestFeedback(int serviceId, int numberOfRecords) {
+        return feedbackRepository.findLatestFeedbackByServiceId(serviceId, numberOfRecords).stream()
+                .map(feedback -> {
+                    FeedbackListDto dto = modelMapper.map(feedback, FeedbackListDto.class);
+                    dto.setUserName(
+                            Objects.nonNull(feedback.getUser()) ?
+                                    feedback.getUser().getUsername()
+                                    : "Khong xac dinh"
+                    );
+                    dto.setServiceName(
+                            Objects.nonNull(feedback.getService()) ?
+                                    feedback.getService().getServiceName()
+                                    : "Khong xac dinh"
+                    );
+                    dto.setShopName(
+                            Objects.nonNull(feedback.getService()) ?
+                                    feedback.getService().getShop().getShopName()
+                                    : "Khong xac dinh"
+                    );
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
     public Object getLatestFeedbackRe(int feedbackId, int numberOfRecords) {
         return feedBackReplyRepository.findFeedbackRe(feedbackId, numberOfRecords).stream()
