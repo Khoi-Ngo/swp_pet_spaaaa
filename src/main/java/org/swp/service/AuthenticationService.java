@@ -57,6 +57,9 @@ public class AuthenticationService {
     }
 
     public JwtAuthenticationResponse refresh(@NotNull String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7); // Remove "Bearer " prefix
+        }
         String username = jwtService.extractUserName(token);
         User user = IUserRepository.findByUsername(username).orElseThrow();
         if (jwtService.validateToken(token, user)) {
