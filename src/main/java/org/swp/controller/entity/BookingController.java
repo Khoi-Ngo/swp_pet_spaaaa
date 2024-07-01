@@ -66,7 +66,7 @@ public class BookingController {
 
 
     //MARK COMPLETED
-    @PutMapping("id")
+    @PutMapping("{id}")
     public ResponseEntity<?> markCompleted(@PathVariable("id") int id) {
         try {
             return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED));
@@ -78,7 +78,7 @@ public class BookingController {
 
 
     //MARK CANCELED
-    @DeleteMapping("id")
+    @DeleteMapping("{id}")
     public ResponseEntity<?> markCanceled(@PathVariable("id") int id) {
         try {
             return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED));
@@ -97,7 +97,7 @@ public class BookingController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    //LocalDate + Type
+    //LocalDate + Type //todo
     @GetMapping("{date}/{type}")
     public ResponseEntity<?> getBookingByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                               @PathVariable("type") String type) {

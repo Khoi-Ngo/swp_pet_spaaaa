@@ -49,7 +49,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestHeader(name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(authenticationService.refresh(token));
