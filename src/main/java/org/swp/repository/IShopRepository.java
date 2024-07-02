@@ -13,10 +13,10 @@ import java.util.List;
 
 @Repository
 public interface IShopRepository extends JpaRepository<Shop, Integer> {
-    @Query(value = "SELECT * FROM tbl_shop WHERE is_deleted = FALSE ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_shop  ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Service> findMostRcmdShops(@Param("numberOfRecords") int numberOfRecords);
 
-    @Query (value = "SELECT * FROM tbl_shop WHERE shop_owner_id = :shopOwnerId AND is_deleted = FALSE", nativeQuery = true)
+    @Query (value = "SELECT * FROM tbl_shop WHERE shop_owner_id = :shopOwnerId", nativeQuery = true)
     Shop findByShopOwnerId (@Param("shopOwnerId") int shopOwnerId);
 
     @Query(value = "SELECT * FROM tbl_shop WHERE shop_owner_id = (SELECT id FROM tbl_user WHERE username = :username) AND is_deleted = FALSE", nativeQuery = true)

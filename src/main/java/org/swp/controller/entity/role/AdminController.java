@@ -51,7 +51,7 @@ public class AdminController {
         }
     }
 
-
+    // need admin role
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAccountById(@PathVariable("id") int id) {
         try {
@@ -61,8 +61,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-
+    // need admin role
     @PostMapping("manageShopOwner/addShopOwner")
     public ResponseEntity<?> addShopOwner(@RequestBody SignUpRequest signUpRequest) {
         try {

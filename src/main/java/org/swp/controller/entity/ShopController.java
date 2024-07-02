@@ -31,7 +31,7 @@ public class ShopController {
                         .NUMBER_OF_MOST_RCMD_SHOP.getValue()));
     }
 
-
+    //LATEST SHOPS
     @GetMapping("/all")
     public ResponseEntity<?> getAllShops() {
         try {
@@ -46,7 +46,7 @@ public class ShopController {
         }
     }
 
-
+    //get shop detail
     @GetMapping("/auth")
     public ResponseEntity<?> getShopDetail(@RequestHeader(name = "Authorization") String token) {
         try {
@@ -59,7 +59,7 @@ public class ShopController {
         }
     }
 
-
+    //create shop
     @PostMapping
     public ResponseEntity<?> createShop(@RequestBody CreateShopRequest request) {
         logger.info("Creating shop with request: {}", request);
@@ -71,7 +71,7 @@ public class ShopController {
         }
     }
 
-
+    //update shop
     @PatchMapping
     public ResponseEntity<?> updateShop(@RequestBody UpdateShopRequest request,
                                         @RequestHeader(name = "Authorization") String token) {
@@ -83,7 +83,7 @@ public class ShopController {
         }
     }
 
-
+    //delete shop
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteShop(@PathVariable("id") int id,
                                         @RequestHeader(name = "Authorization") String token) {
@@ -95,7 +95,7 @@ public class ShopController {
         }
     }
 
-
+    //get shop detail by id
     @GetMapping("/{id}")
     public ResponseEntity<?> getShopDetailById(@PathVariable("id") int id) {
         try {

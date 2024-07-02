@@ -42,7 +42,6 @@ public class ServiceService {
 
     public List<ServiceListItemDto> getAll() {
         return serviceRepository.findAll().stream()
-                .filter(service -> !service.isDeleted())
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
 
@@ -63,12 +62,14 @@ public class ServiceService {
     }
 
     public Object getServiceById(int id) {
+        //service detail
         org.swp.entity.Service service = serviceRepository.findById(id).orElse(null);// Return null if service is not found
         ServiceDetailDto dto = modelMapper.map(service, ServiceDetailDto.class);
         dto.setShopId(Objects.nonNull(service.getShop()) ? service.getShop().getId() : -1);
         dto.setShopName(Objects.nonNull(service.getShop()) ? service.getShop().getShopName() : "Khong xac dinh shop");
         dto.setCategoryName((Objects.nonNull(service.getCategory()) ? service.getCategory().getCategoryName() : "Khong xac dinh category"));
         dto.setShopAddress(Objects.nonNull(service.getShop()) ? service.getShop().getShopAddress() : "Khong xac dinh");
+        //date for front end create
         //todo: price more dynamical and response the list basing on the threshold of typepet and weight
         return dto;
     }

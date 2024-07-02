@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface IFeedbackRepository extends JpaRepository<Feedback, Integer> {
 
-    @Query(value = "SELECT * FROM tbl_feedback WHERE service_id = :serviceId AND is_deleted = false ORDER BY id DESC LIMIT :numberOfRecords", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_feedback WHERE service_id = :serviceId ORDER BY id DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Feedback> findLatestFeedbackByServiceId(@Param("serviceId") int serviceId, @Param("numberOfRecords") int numberOfRecords);
 
-    @Query(value = "SELECT * FROM tbl_feedback WHERE service_id = :serviceId AND is_deleted = false ORDER BY id DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_feedback WHERE service_id = :serviceId ORDER BY id DESC", nativeQuery = true)
     List<Feedback> findAllFeedbackByServiceId(@Param("serviceId") int serviceId);
 
 }

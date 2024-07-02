@@ -65,7 +65,6 @@ public class ShopService {
 
     public List<ShopDetailDto> getAllShops() {
         return shopRepository.findAll().stream()
-                .filter(shop -> !shop.isDeleted())
                 .map(shop -> {
                     ShopDetailDto dto = mapToDto(shop);
                     return dto;

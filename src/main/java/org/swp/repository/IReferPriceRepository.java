@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface IReferPriceRepository extends JpaRepository<ReferPrice, Integer> {
-    @Query(value = "SELECT * FROM tbl_refer_price WHERE service_id = :serviceId AND is_deleted = FALSE", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_refer_price WHERE service_id = :serviceId", nativeQuery = true)
     List<ReferPrice> findByServiceId(@Param("serviceId") int serviceId);
 }

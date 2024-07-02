@@ -12,14 +12,14 @@ import java.util.List;
 
 @Repository
 public interface IServiceRepository extends JpaRepository<Service, Integer> {
-    @Query(value = "SELECT * FROM tbl_service  WHERE is_deleted = FALSE ORDER BY created_time DESC LIMIT :numberOfRecords", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_service  ORDER BY created_time DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Service> findLatestServices(@Param("numberOfRecords") int numberOfRecords);
 
-    @Query(value = "SELECT * FROM tbl_service  WHERE is_deleted = FALSE ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_service  ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Service> findMostRcmdServices(@Param("numberOfRecords") int numberOfRecords);
 
 
-    @Query(value = "SELECT * FROM tbl_service  WHERE type_pet = :typePet AND is_deleted = FALSE ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_service  WHERE type_pet = :typePet ORDER BY nomination DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<Service> findMostRcmdServices(@Param("typePet") TypePet typePet, @Param("numberOfRecords") int numberOfRecords);
 
     @Query(value = "SELECT * FROM tbl_service  WHERE shop_id = :shopId and is_deleted = false ORDER BY nomination DESC ", nativeQuery = true)

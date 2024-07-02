@@ -15,10 +15,10 @@ import java.util.Set;
 public interface IShopTimeSlotRepository extends JpaRepository<ShopTimeSlot, Integer> {
 
 
-    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.isDeleted = FALSE")
+    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id")
     List<ShopTimeSlot> findByShopId(@Param("id") Integer id);
 
-    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.timeSlot = :timeSlot AND sts.isDeleted = FALSE")
+    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.timeSlot = :timeSlot")
     ShopTimeSlot findByShopIdAndTimeSlot(@Param("id") Integer id, @Param("timeSlot") TimeSlot timeSlot);
 
 }

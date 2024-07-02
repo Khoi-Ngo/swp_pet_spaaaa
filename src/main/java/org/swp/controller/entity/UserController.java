@@ -21,7 +21,7 @@ public class UserController {
     private UserService userService;
 
 
-
+    //no auth
     @GetMapping("/{username}")
     public ResponseEntity<?> getUser(@PathVariable("username") String username) {
         try {
@@ -34,7 +34,7 @@ public class UserController {
         }
     }
 
-
+    //user profile (private)
     @GetMapping
     public ResponseEntity<?> getUserProfile(@RequestHeader(name = "Authorization") String token) {
         try {
@@ -48,7 +48,7 @@ public class UserController {
         }
     }
 
-
+    //UPDATE USER PROFILE + CHANGE PASSWORD
     @PatchMapping
     public ResponseEntity<?> updateUserProfile(@RequestBody UpdateUserProfileRequest request) {
         try {
@@ -61,7 +61,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
         }
     }
-
 
     @PutMapping("/password")
     public ResponseEntity<?> updatePassword(@RequestHeader("Authorization") String token,

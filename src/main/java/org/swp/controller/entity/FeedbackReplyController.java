@@ -18,7 +18,7 @@ public class FeedbackReplyController {
     @Autowired
     private FeedBackReplyService feedBackReplyService;
 
-
+    //Feedback reply create
     @PostMapping
     public ResponseEntity<?> createFeedbackReply(@RequestHeader("Authorization") String token,
                                                  @RequestBody FeedbackReplyCreateRequest request) {
@@ -31,7 +31,7 @@ public class FeedbackReplyController {
         }
     }
 
-
+    //Feedback reply latest list
     @GetMapping("/latest/{feedbackId}")
     public ResponseEntity<?> getLatestFeedbackReply(@PathVariable("feedbackId") int feedbackId) {
         try {
@@ -43,7 +43,7 @@ public class FeedbackReplyController {
         }
     }
 
-
+    //All feedback reply by a feedback
     @GetMapping("/all/{feedbackId}")
     public ResponseEntity<?> getAllFeedbackReplyByFeedback(@PathVariable("feedbackId") int feedbackId) {
         try {
@@ -55,7 +55,7 @@ public class FeedbackReplyController {
         }
     }
 
-
+    //delete
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFeedbackReply(@PathVariable("id") int id,
                                                  @RequestHeader("Authorization") String token) {
@@ -68,7 +68,7 @@ public class FeedbackReplyController {
         }
     }
 
-
+    //update
     @PutMapping
     public ResponseEntity<?> updateFeedbackReply(@RequestBody FeedbackReplyUpdateRequest request,
                                                  @RequestHeader("Authorization") String token) {
