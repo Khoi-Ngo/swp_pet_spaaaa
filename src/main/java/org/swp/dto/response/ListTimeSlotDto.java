@@ -9,5 +9,4 @@ public class ListTimeSlotDto {
     private Integer id;
     private LocalTime startLocalDateTime;
     private LocalTime endLocalDateTime;
-    private boolean status;
 }
