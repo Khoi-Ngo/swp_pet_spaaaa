@@ -27,37 +27,44 @@ public interface IShopRepository extends JpaRepository<Shop, Integer> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE tbl_service SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
-    void updateServiceDeletedByShopId(@Param("id") int id);
+    void updateServiceDeleted_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
     @Query(value = "UPDATE tbl_nomination SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
-    void updateNominationDeletedByShopId(@Param("id") int id);
+    void updateNominationDeleted_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
     @Query(value = "UPDATE tbl_cache_shop_time_slot SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
-    void updateCacheShopTimeSlotDeletedByShopId(@Param("id") int id);
+    void updateCacheShopTimeSlotDeleted_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
     @Query(value = "UPDATE tbl_booking SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
-    void updateBookingDeletedByShopId(@Param("id") int id);
+    void updateBookingDeleted_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
     @Query(value = "UPDATE tb_shop_time_slot SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
-    void updateShopTimeSlotDeletedByShopId(@Param("id") int id);
+    void updateShopTimeSlotDeleted_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
     @Query(value = "UPDATE tbl_feedback SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
-    void updateFeedBackByShopId(@Param("id") int id);
+    void updateFeedBack_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE tbl_feedback_reply SET is_deleted = 1 WHERE feedback_id IN (SELECT id FROM tbl_feedback WHERE shop_id = :shopId)", nativeQuery = true)
-    void updateFeedbackReplyDeletedByShopId(@Param("shopId") int shopId);
+    @Query(value = "UPDATE tbl_feedback_reply SET is_deleted = 1 WHERE feedback_id IN (SELECT id FROM tbl_feedback WHERE shop_id = :id)", nativeQuery = true)
+    void updateFeedbackReplyDeleted_ByShopId(@Param("id") int id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE tbl_refer_price SET is_deleted = 1 WHERE service_id IN (SELECT id FROM tbl_service WHERE shop_id = :id)", nativeQuery = true)
+    void updateReFerPrice_DeletedByShopId(@Param("id") int id);
+
+
 
 
 }

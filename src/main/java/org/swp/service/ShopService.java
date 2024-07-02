@@ -113,13 +113,14 @@ public class ShopService {
         shop.setDeleted(true);
         shopRepository.save(shop);
         //update all service and booking deleted also
-        shopRepository.updateServiceDeletedByShopId(id);
-        shopRepository.updateNominationDeletedByShopId(id);
-        shopRepository.updateCacheShopTimeSlotDeletedByShopId(id);
-        shopRepository.updateBookingDeletedByShopId(id);
-        shopRepository.updateShopTimeSlotDeletedByShopId(id);
-        shopRepository.updateFeedBackByShopId(id);
-        shopRepository.updateFeedbackReplyDeletedByShopId(id);
+        shopRepository.updateServiceDeleted_ByShopId(id);
+        shopRepository.updateNominationDeleted_ByShopId(id);
+        shopRepository.updateCacheShopTimeSlotDeleted_ByShopId(id);
+        shopRepository.updateBookingDeleted_ByShopId(id);
+        shopRepository.updateShopTimeSlotDeleted_ByShopId(id);
+        shopRepository.updateFeedBack_ByShopId(id);
+        shopRepository.updateFeedbackReplyDeleted_ByShopId(id);
+        shopRepository.updateReFerPrice_DeletedByShopId(id);
         return "Deleted";
     }
 
