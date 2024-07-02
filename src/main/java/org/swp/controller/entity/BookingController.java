@@ -43,9 +43,7 @@ public class BookingController {
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
         try {
             var response = bookingService.createBooking(request);
-            return Objects.nonNull(response) ?
-                    ResponseEntity.ok(response)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating booking");
@@ -77,18 +75,14 @@ public class BookingController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
-        Object responseData = bookingService.getBookingById(id);
-        return Objects.nonNull(responseData) ? ResponseEntity.ok(responseData)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            return ResponseEntity.ok(bookingService.getBookingById(id));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    //LocalDate + Type //todo
-    @GetMapping("{date}/{type}")
-    public ResponseEntity<?> getBookingByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                              @PathVariable("type") String type) {
-
-        return null;
-    }
 
     @GetMapping("/shop")
     public ResponseEntity<?> getAllBookingsByShop(@RequestHeader(name = "Authorization") String token) {
