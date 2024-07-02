@@ -95,6 +95,8 @@ public class ShopTimeSlotService {
                 .map(shopTimeSlot -> {
                     ListShopTimeSlotDto dto = modelMapper.map(shopTimeSlot, ListShopTimeSlotDto.class);
 
+                    dto.setShopId(shopTimeSlot.getShop().getId());
+
                     TimeSlot timeSlot = shopTimeSlot.getTimeSlot();
                     dto.setStartLocalTime(timeSlot.getStartLocalDateTime());
                     dto.setEndLocalTime(timeSlot.getEndLocalDateTime());
