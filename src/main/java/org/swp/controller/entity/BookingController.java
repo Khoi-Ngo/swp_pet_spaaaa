@@ -61,7 +61,7 @@ public class BookingController {
         }
     }
 
-    //MARK COMPLETED
+
     @PutMapping("{id}")
     public ResponseEntity<?> markCompleted(@PathVariable("id") int id,
                                            @RequestHeader(name = "Authorization") String token) {

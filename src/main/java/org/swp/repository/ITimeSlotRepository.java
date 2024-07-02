@@ -9,6 +9,6 @@ import java.time.LocalTime;
 
 @Repository
 public interface ITimeSlotRepository extends JpaRepository<TimeSlot, Integer> {
-    @Query("SELECT t FROM TimeSlot t WHERE t.startLocalDateTime = ?1 AND t.endLocalDateTime = ?2")
+    @Query("SELECT t FROM TimeSlot t WHERE t.startLocalDateTime = ?1 AND t.endLocalDateTime = ?2 AND t.isDeleted = FALSE")
     TimeSlot findByStartAndEnd(LocalTime startLocalDateTime, LocalTime endLocalDateTime);
 }

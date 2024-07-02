@@ -56,7 +56,7 @@ public class BookingService {
         List<Booking> res = isCustomer(userName) ?
                 bookingRepository.findALlByCustomerUserName(userName)
                 : bookingRepository.findAllByShopOwnerUserName(userName);
-        //mapping
+
         List<BookingListItemDto> dtos = new ArrayList<>();
         res.forEach(b -> {
             BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
@@ -85,7 +85,7 @@ public class BookingService {
                 dto.setPetName(pet.getPetName());
             }
 
-            //local date + time slot
+
             CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
             if (cacheShopTimeSlot != null) {
                 dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
@@ -117,23 +117,22 @@ public class BookingService {
         dto.setEndTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
         dto.setBookingNote(booking.getBookingNote());
 
-        //user info
         User user = booking.getUser();
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setUserId(user.getId());
         dto.setUserName(user.getUsername());
-        //pet info
+
         Pet pet = booking.getPet();
         dto.setPetName(pet.getPetName());
         dto.setTypePet(pet.getPetType());
         dto.setPetWeight(pet.getPetWeight());
-        //shop info
+
         Shop shop = booking.getShop();
         dto.setShopAddress(shop.getShopAddress());
         dto.setShopId(shop.getId());
         dto.setShopName(shop.getShopName());
-        //service info
+
         org.swp.entity.Service service = booking.getService();
         dto.setServiceId(service.getId());
         dto.setServiceName(service.getServiceName());
@@ -164,7 +163,6 @@ public class BookingService {
                     return null;
                 }
             } else {
-                //refer into -> Cache record and save
                 cacheShopTimeSlot = new CacheShopTimeSlot();
                 cacheShopTimeSlot.setTotalSlots(shopTimeSlot.getTotalSlot());
                 cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() > 0 ? cacheShopTimeSlot.getUsedSlots() + 1 : 1);
@@ -174,14 +172,12 @@ public class BookingService {
                 cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
             }
 
-            //create booking here
             Booking booking = new Booking();
             booking.setBookingNote(request.getAdditionalMessage());
             booking.setStatus(BookingStatus.SCHEDULED.name());
             booking.setShop(shop);
             booking.setService(service.get());
 
-            //pet also
             Pet pet = null;
             if (Objects.nonNull(request.getPetId())) {
                 pet = petrepository.findById(request.getPetId()).get();
@@ -254,7 +250,6 @@ public class BookingService {
         List<Booking> res = isShopOwner(userName) ?
                 bookingRepository.findAllByShopOwnerUserName(userName)
                 : bookingRepository.findALlByCustomerUserName(userName);
-        //mapping
         List<BookingListItemDto> dtos = new ArrayList<>();
         res.forEach(b -> {
             BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
@@ -277,7 +272,6 @@ public class BookingService {
                 dto.setPetId(pet.getId());
                 dto.setPetName(pet.getPetName());
             }
-            //local date + time slot
             CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
             if (cacheShopTimeSlot != null) {
                 dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
