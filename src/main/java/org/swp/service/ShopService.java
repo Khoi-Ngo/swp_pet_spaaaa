@@ -34,13 +34,7 @@ public class ShopService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private IBookingRepository bookingRepository;
-
-    @Autowired
     private JWTService jwtService;
-
-    @Autowired
-    private ServiceService serviceService;
 
     public Object getMostRcmdShops(int numberOfRecords) {
 //        return shopRepository.findMostRcmdShops(numberOfRecords);
@@ -119,7 +113,13 @@ public class ShopService {
         shop.setDeleted(true);
         shopRepository.save(shop);
         //update all service and booking deleted also
-
+        shopRepository.updateServiceDeletedByShopId(id);
+        shopRepository.updateNominationDeletedByShopId(id);
+        shopRepository.updateCacheShopTimeSlotDeletedByShopId(id);
+        shopRepository.updateBookingDeletedByShopId(id);
+        shopRepository.updateShopTimeSlotDeletedByShopId(id);
+        shopRepository.updateFeedBackByShopId(id);
+        shopRepository.updateFeedbackReplyDeletedByShopId(id);
         return "Deleted";
     }
 
