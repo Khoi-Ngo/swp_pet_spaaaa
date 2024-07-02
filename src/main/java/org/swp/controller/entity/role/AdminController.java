@@ -21,9 +21,6 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @Autowired
-    private AuthenticationService authenticationService;
-
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @GetMapping("/manageShopOwner/viewAll")
