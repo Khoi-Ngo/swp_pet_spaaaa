@@ -16,4 +16,5 @@ public class UpdateShopTimeSlotRequest {
     private int totalSlot;
     private int shopId;
     private int timeSlotId;
+    private Integer userId;
 }

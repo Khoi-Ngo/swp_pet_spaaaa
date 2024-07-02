@@ -132,7 +132,7 @@ public class ServiceService {
                 .collect(Collectors.toList());
     }
 
-    public Object createService(CreateServiceRequest request){
+    public Object createService(CreateServiceRequest request) {
 
         org.swp.entity.Service service = modelMapper.map(request, org.swp.entity.Service.class);
 
@@ -153,16 +153,24 @@ public class ServiceService {
         return service.getId();
     }
 
-    public Object deleteService(int id){
+    public Object deleteService(int id, String token) {
         org.swp.entity.Service service = serviceRepository.findById(id).get();
-        Shop shop = service.getShop();
+        if (!isShopOwnerOfService(service, token)) throw new RuntimeException("User not shop owner");
         service.setDeleted(true);
-        shop.setTotalServices(shop.getTotalServices()-1);
+        serviceRepository.save(service);
+        Shop shop = service.getShop();
+        shop.setTotalServices(shop.getTotalServices() - 1);
         shopRepository.save(shop);
-        return modelMapper.map(service, ServiceDetailDto.class);
+        //update booking also
+        return "Deleted";
     }
 
-    public Object updateService(UpdateServiceRequest request){
+    private boolean isShopOwnerOfService(org.swp.entity.Service service, String token) {
+        String userName = getUserNameFromToken(token);
+        return userName.equals(service.getShop().getUser().getUsername());
+    }
+
+    public Object updateService(UpdateServiceRequest request) {
         org.swp.entity.Service service = modelMapper.map(request, org.swp.entity.Service.class);
         User user = userRepository.findById(request.getUserId()).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
@@ -172,7 +180,7 @@ public class ServiceService {
         return request;
     }
 
-    public Object getAllOfShopowner(String token){
+    public Object getAllOfShopowner(String token) {
         String username = getUserNameFromToken(token);
         User user = userRepository.findByUsername(username).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
@@ -191,28 +199,6 @@ public class ServiceService {
             userName = jwtService.extractUserName(jwtToken);
         }
         return userName;
-    }
-
-    public Object deleteAllServiceByShopId(int shopId) {
-        List<org.swp.entity.Service> services = serviceRepository.findAllByShopId(shopId);
-
-        if (services.isEmpty()) {
-            throw new RuntimeException("No services found for the given shop ID");
-        }
-
-        services.forEach(service -> {
-            service.setDeleted(true);
-        });
-
-        serviceRepository.saveAll(services);
-
-        Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new RuntimeException("Shop not found"));
-        shop.setTotalServices(0);
-        shopRepository.save(shop);
-
-        return services.stream()
-                .map(service -> modelMapper.map(service, ServiceListItemDto.class))
-                .collect(Collectors.toList());
     }
 
 }

@@ -112,12 +112,10 @@ public class ServiceController { //todo -> some action should be more authentica
 
     //UPDATE
     @PutMapping
-    public ResponseEntity<?> updateService(@RequestBody UpdateServiceRequest request){
+    public ResponseEntity<?> updateService(@RequestBody UpdateServiceRequest request) {
         try {
             var response = serviceService.updateService(request);
-            return Objects.nonNull(response) ?
-                    ResponseEntity.ok(response)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while update service");
@@ -129,9 +127,7 @@ public class ServiceController { //todo -> some action should be more authentica
     public ResponseEntity<?> createService(@RequestBody CreateServiceRequest request) {
         try {
             var response = serviceService.createService(request);
-            return Objects.nonNull(response) ?
-                    ResponseEntity.ok(response)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating service");
@@ -140,12 +136,11 @@ public class ServiceController { //todo -> some action should be more authentica
 
     //DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteService(@PathVariable("id") int id) {
+    public ResponseEntity<?> deleteService(@PathVariable("id") int id,
+                                           @RequestHeader(name = "Authorization") String token) {
         try {
-            var response = serviceService.deleteService(id);
-            return Objects.nonNull(response) ?
-                    ResponseEntity.ok(response)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+            var response = serviceService.deleteService(id, token);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleting service");
@@ -165,26 +160,6 @@ public class ServiceController { //todo -> some action should be more authentica
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-    //DELETE ALL
-    @PostMapping("/delete-all/{shopId}")
-    public ResponseEntity<?> deleteAllServiceByShopId(@PathVariable("shopId") int shopId) {
-        try {
-            var response = serviceService.deleteAllServiceByShopId(shopId);
-            return Objects.nonNull(response) ?
-                    ResponseEntity.ok(response)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while delete all service by shopId");
-        }
-    }
-
-    //DELETE SERVICE CATEGORY
-
-    //CREATE SERVICE CATEGORY (maybe no need)
-
-    //UPDATE SERVICE CATEGORY (maybe no need too)
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {

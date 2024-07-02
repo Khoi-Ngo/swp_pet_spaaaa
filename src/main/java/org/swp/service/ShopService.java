@@ -47,11 +47,6 @@ public class ShopService {
         return shopRepository.findAll();
     }
 
-    public Object getMostRcmdShops(TypePet typePet, int numberOfRecords) {
-//        return shopRepository.findMostRcmdShops(typePet, numberOfRecords);
-        return shopRepository.findAll();
-    }
-
     //map to shop detail dto
     private ShopDetailDto mapToDto(Shop shopEntity) {
         ModelMapper localModelMapper = new ModelMapper();
@@ -64,24 +59,6 @@ public class ShopService {
         // Ensure the openTime and closeTime are mapped as LocalTime
         dto.setOpenTime(shopEntity.getOpenTime().toLocalTime());
         dto.setCloseTime(shopEntity.getCloseTime().toLocalTime());
-        //get list booking of shop
-//        List<Booking> bookings = bookingRepository.findByShopId(dto.getId());
-//        bookings.forEach(booking -> {
-//            BookingHistoryListItemDto bookingDto = modelMapper.map(booking, BookingHistoryListItemDto.class);
-//            bookingDto.setServiceName(booking.getService().getServiceName());
-//            bookingDto.setServiceId(booking.getService().getId());
-//            bookingDto.setShopName(booking.getShop().getShopName());
-//            if (dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDate()) != null) {
-//                dto.getBookingHistory().get(booking.getCacheShopTimeSlot().getLocalDate()).add(bookingDto);
-//            } else {
-//                List<BookingHistoryListItemDto> historyListDate = new ArrayList<>();
-//                historyListDate.add(bookingDto);
-//                dto.getBookingHistory().put(
-//                        booking.getCacheShopTimeSlot().getLocalDate().atStartOfDay(),
-//                        historyListDate
-//                );
-//            }
-//        });
         return dto;
     }
 
@@ -94,12 +71,13 @@ public class ShopService {
                 })
                 .collect(Collectors.toList());
     }
+
     //get shop for shop owner
     public Object getShopDetail(String token) {
         String username = getUserNameFromToken(token);
         Shop shop = shopRepository.findByUserName(username);
         if (shop.isDeleted() == true) {
-           return "Shop is deleted!";
+            return "Shop is deleted!";
         }
         return mapToDto(shop);
     }
@@ -119,8 +97,11 @@ public class ShopService {
         return modelMapper.map(savedShop, ShopDetailDto.class);
     }
 
-    public Object updateShop(UpdateShopRequest request) {
+    public Object updateShop(UpdateShopRequest request, String token) {
         Shop shop = shopRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("Shop not found with id: " + request.getId()));
+        if (!shop.getUser().getUsername().equals(getUserNameFromToken(token)))
+            throw new RuntimeException("User not shop owner");
+
         LocalDateTime openDateTime = LocalDateTime.of(LocalDate.now(), request.getOpenTime());
         LocalDateTime closeDateTime = LocalDateTime.of(LocalDate.now(), request.getCloseTime());
         shop.setCloseTime(closeDateTime);
@@ -130,14 +111,16 @@ public class ShopService {
         return mapToDto(shop);
     }
 
-    public Object deleteShop(int id) {
+    public Object deleteShop(int id, String token) {
         Shop shop = shopRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Shop not found with id: " + id));
+        String userName = getUserNameFromToken(token);
+        if (!userName.equals(shop.getUser().getUsername())) throw new RuntimeException("User not shop owner");
         shop.setDeleted(true);
-        //call delete all service by shop id
-        serviceService.deleteAllServiceByShopId(shop.getId());
         shopRepository.save(shop);
-        return mapToDto(shop);
+        //update all service and booking deleted also
+
+        return "Deleted";
     }
 
     private String getUserNameFromToken(String token) {
@@ -150,15 +133,12 @@ public class ShopService {
     }
 
 
-    public Object getShopDetailById(int id){
-
+    public Object getShopDetailById(int id) {
         Shop shop = shopRepository.findById(id).get();
         if (shop.isDeleted() == true) {
             return "Shop is deleted!";
         }
-
         return mapToDto(shop);
-
     }
 
 

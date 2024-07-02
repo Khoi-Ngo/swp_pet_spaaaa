@@ -60,11 +60,13 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the pet");
         }
     }
+
     //DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePet(@PathVariable("id") int id) {
+    public ResponseEntity<?> deletePet(@PathVariable("id") int id,
+                                       @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(petService.deletePet(id));
+            return ResponseEntity.ok(petService.deletePet(id, token));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete the pet");
         }
@@ -74,10 +76,7 @@ public class PetController {
     @PutMapping
     public ResponseEntity<?> updatePet(@RequestBody UpdatePetRequest request) {
         try {
-            return Objects.nonNull(request) ?
-                    ResponseEntity.ok(petService.updatePet(request)) :
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
-
+            return ResponseEntity.ok(petService.updatePet(request));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot update the pet");
@@ -88,9 +87,7 @@ public class PetController {
     @PostMapping
     public ResponseEntity<?> createPet(@RequestBody CreatePetRequest request) {
         try {
-            return Objects.nonNull(request) ?
-                    ResponseEntity.ok(petService.createPet(request)) :
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
+            return ResponseEntity.ok(petService.createPet(request));
 
         } catch (Exception e) {
             logger.error(e.getMessage());

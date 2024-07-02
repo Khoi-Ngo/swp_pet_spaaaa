@@ -13,7 +13,7 @@ import org.swp.service.ShopTimeSlotService;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/v1/shop-timeslot")
+@RequestMapping("/api/v1/shop-timeslot/atuh")
 public class ShopTimeSlotController {
 
     @Autowired
@@ -21,58 +21,38 @@ public class ShopTimeSlotController {
 
     @Autowired
     private ShopTimeSlotService shopTimeSlotService;
-    /*
-     * SHOP timeslot
-     *
-     */
-    //create
 
     @PostMapping
     public ResponseEntity<?> createShopTimeSlot(@RequestBody CreateShopTimeSlotRequest request) {
         try {
-            return Objects.nonNull(request) ?
-                    ResponseEntity.ok(shopTimeSlotService.createShopTimeSlot(request))
-                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
+            return ResponseEntity.ok(shopTimeSlotService.createShopTimeSlot(request));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot create time slot");
         }
     }
 
-
-
-//
-//    //delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteShopTimeSlot(@PathVariable("id") int id) {
+    public ResponseEntity<?> deleteShopTimeSlot(@PathVariable("id") int id,
+                                                @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(shopTimeSlotService.deleteShopTimeSlot(id));
+            return ResponseEntity.ok(shopTimeSlotService.deleteShopTimeSlot(id, token));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot delete shop time slot");
         }
     }
-//
 
-
-
-
-    //update
     @PatchMapping
     public ResponseEntity<?> updateShopTimeSlot(@RequestBody UpdateShopTimeSlotRequest request) {
         try {
-            return Objects.nonNull(request) ?
-                    ResponseEntity.ok(shopTimeSlotService.updateShopTimeSlot(request))
-                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
+            return ResponseEntity.ok(shopTimeSlotService.updateShopTimeSlot(request));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot update time slot");
         }
     }
 
-
-//
-//    //get all (note no need to get any detail)
     @GetMapping("/all/auth")
     public ResponseEntity<?> getAllShopTimeSlots(@RequestHeader(name = "Authorization") String token) {
         try {
@@ -82,7 +62,6 @@ public class ShopTimeSlotController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot get all shop time slot");
         }
     }
-
 
 
 }

@@ -32,16 +32,15 @@ public class ShopController {
     }
 
     //LATEST SHOPS
-
     @GetMapping("/all")
     public ResponseEntity<?> getAllShops() {
-        try{
+        try {
             var shops = shopService.getAllShops();
-            if(shops == null){
+            if (shops == null) {
                 return ResponseEntity.status(404).body("Shops not found");
             }
             return ResponseEntity.ok(shops);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error while getting all shops", e);
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -65,38 +64,36 @@ public class ShopController {
     public ResponseEntity<?> createShop(@RequestBody CreateShopRequest request) {
         logger.info("Creating shop with request: {}", request);
         try {
-            return Objects.nonNull(request) ?
-                    ResponseEntity.ok(shopService.createShop(request)) :
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid information");
-        }
-        catch (Exception e) {
+            return ResponseEntity.ok(shopService.createShop(request));
+        } catch (Exception e) {
             logger.error("Error while creating shop", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
     //update shop
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateShop(@RequestBody UpdateShopRequest request) {
+    @PatchMapping
+    public ResponseEntity<?> updateShop(@RequestBody UpdateShopRequest request,
+                                        @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(shopService.updateShop(request));
+            return ResponseEntity.ok(shopService.updateShop(request, token));
         } catch (Exception e) {
-            logger.error("Cannot update the shop" + e);
+            logger.error("Cannot update the shop", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot update the shop");
         }
     }
 
-
     //delete shop
-    @PostMapping("delete/{id}")
-    public ResponseEntity<?> deleteShop(@PathVariable("id") int id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteShop(@PathVariable("id") int id,
+                                        @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(shopService.deleteShop(id));
+            return ResponseEntity.ok(shopService.deleteShop(id, token));
         } catch (Exception e) {
             logger.error("Cannot delete the shop" + e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete the shop");
         }
     }
-
 
     //get shop detail by id
     @GetMapping("/{id}")

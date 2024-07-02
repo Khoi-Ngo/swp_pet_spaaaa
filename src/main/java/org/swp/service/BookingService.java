@@ -177,8 +177,6 @@ public class BookingService {
             //create booking here
             Booking booking = new Booking();
             booking.setBookingNote(request.getAdditionalMessage());
-            booking.setDone(false);
-            booking.setCanceled(false);
             booking.setStatus(BookingStatus.SCHEDULED.name());
             booking.setShop(shop);
             booking.setService(service.get());
@@ -220,35 +218,37 @@ public class BookingService {
     }
 
 
-    public Object cancel(@NotNull RequestCancelBookingRequest request) {
-        var booking = bookingRepository.findById(request.getBookingId());
-        if (booking.isPresent()) {
-            Booking entity = booking.get();
-            entity.setCanceled(true);
-            entity.setDone(false);
-            entity.setStatus(BookingStatus.CANCELLED.name());
-            CacheShopTimeSlot cacheShopTimeSlot = entity.getCacheShopTimeSlot();
-            if (Objects.nonNull(cacheShopTimeSlot)) {
-                cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() + 1);
-                cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() - 1);
-            }
-            bookingRepository.save(entity);
-            cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+    public Object cancel(@NotNull RequestCancelBookingRequest request, String token) {
+        Booking booking = bookingRepository.findById(request.getBookingId()).get();
+        if (!doInvoleBooking(booking, token)) throw new RuntimeException("User not invole the booking");
+        booking.setStatus(BookingStatus.CANCELLED.name());
+        CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
+        if (Objects.nonNull(cacheShopTimeSlot)) {
+            cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() + 1);
+            cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() - 1);
         }
+        bookingRepository.save(booking);
+        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
         return "Canceled";
     }
 
 
-    public Object markBooking(int id, BookingStatus bookingStatus) {
-        Optional<Booking> booking = bookingRepository.findById(id);
-        if (booking.isPresent()) {
-            Booking entity = booking.get();
-            entity.setStatus(bookingStatus.name());
-            bookingRepository.save(entity);
-            return "Booking marked!";
-        }
-        return "Booking not found!";
+    public Object markBooking(int id, BookingStatus bookingStatus, String token) {
+        Booking booking = bookingRepository.findById(id).get();
+        if (!doInvoleBooking(booking, token)) throw new RuntimeException("User not invole the booking");
+        booking.setStatus(bookingStatus.name());
+        bookingRepository.save(booking);
+        return "Booking marked!";
     }
+
+    private boolean doInvoleBooking(Booking booking, String token) {
+        String userName = getUserNameFromToken(token);
+        UserRole role = userRepository.findRoleByUserName(userName); // just need role
+        return role.equals(UserRole.CUSTOMER) ?
+                booking.getUser().getUsername().equals(userName) :
+                booking.getShop().getUser().getUsername().equals(userName);
+    }
+
     public Object getAllBookingsByShop(String token) {
         String userName = getUserNameFromToken(token);
         List<Booking> res = isShopOwner(userName) ?

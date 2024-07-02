@@ -3,8 +3,7 @@ package org.swp.dto.request;
 import lombok.Data;
 
 @Data
-public class FeedbackRequest {
-    private int serviceId;
+public class FeedbackReplyCreateRequest {
+    private int feedbackId;
     private String content;
-    private int shopId;
 }

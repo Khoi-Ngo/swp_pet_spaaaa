@@ -104,24 +104,28 @@ public class PetService {
 
     public Object getPetDetail(int id) {
         Pet pet = petrepository.findById(id).get();
-        if( pet.isDeleted() == true)
+        if (pet.isDeleted() == true)
             return "pet is deleted!";
         return mapToDto(pet);
     }
 
-    public Object deletePet(int id) {
+    public Object deletePet(int id, String token) {
+        String userName = getUserNameFromToken(token);
         Pet pet = petrepository.findById(id).get();
+        if (!pet.getUser().getUsername().equals(userName)) throw new RuntimeException("User not own the pet");
         pet.setDeleted(true);
         petrepository.save(pet);
-        return modelMapper.map(pet, PetDetailDto.class);
+        //update booking also
+        return "Deleted";
     }
 
     public Object updatePet(UpdatePetRequest request) {
-        User owner = userRepository.findById(request.getUserId()).get();
         Pet pet = modelMapper.map(request, Pet.class);
+        if (!pet.getUser().getId().equals(request.getUserId())) throw new RuntimeException("User not own the pet");
+        User owner = userRepository.findById(request.getUserId()).get();
         pet.setUser(owner);
         petrepository.save(pet);
-        return modelMapper.map(pet, PetDetailDto.class);
+        return "Updated";
     }
 
     public Object createPet(CreatePetRequest request) {

@@ -34,4 +34,11 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query(value = "SELECT * FROM tbl_booking WHERE shop_id = :shopId ", nativeQuery = true)
     List<Booking> findByShopId(@Param("shopId") Integer shopId);
+
+    @Query(value = "update\n" +
+            "    tbl_booking\n" +
+            "set is_deleted = 1\n" +
+            "where cache_shop_time_slot_id in\n" +
+            "      (select e.id from tbl_cache_shop_time_slot e where e.shop_time_slot_id = :id);", nativeQuery = true)
+    void deleteAllByShopTimeSlot(@Param("id") int id);
 }

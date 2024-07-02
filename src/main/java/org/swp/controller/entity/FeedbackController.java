@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.feedback.FeedbackConstantNumber;
-import org.swp.dto.request.FeedbackReplyRequest;
-import org.swp.dto.request.FeedbackRequest;
+import org.swp.dto.request.FeedbackCreateRequest;
+import org.swp.dto.request.FeedbackUpdateRequest;
 import org.swp.service.FeedBackService;
 
 @RestController
@@ -26,41 +26,32 @@ public class FeedbackController {
     public ResponseEntity<?> getAllFeedbacks(@PathVariable("serviceId") int serviceId) {
         try {
             var feedbacks = feedbackService.getAllFeedbacks(serviceId);
-            if (feedbacks == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feedback not found");
-            }
             return ResponseEntity.ok(feedbacks);
         } catch (Exception e) {
-            logger.error("Error while getting feedbacks", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            logger.error("Error while getting all feedbacks", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    //Feedback list
-    @GetMapping("/latest-feedback/{serviceId}")
-    public ResponseEntity<?> getLatestFeedbackOfServiceByServiceId(@PathVariable("serviceId") int serviceId){
+    //Feedback latest list
+    @GetMapping("/latest/{serviceId}")
+    public ResponseEntity<?> getLatestFeedbackOfServiceByServiceId(@PathVariable("serviceId") int serviceId) {
         try {
             var feedbacks = feedbackService.getLatestFeedback(serviceId, FeedbackConstantNumber.NUMBER_OF_LATEST_FEEDBACK.getValue());
-            if (feedbacks == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Latest feedback not found");
-            }
             return ResponseEntity.ok(feedbacks);
         } catch (Exception e) {
-            logger.error("Error while getting latest feedback", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            logger.error("Error while getting latest feedbacks", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     //Create feedback
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createFeedback(@RequestHeader("Authorization") String token,
-                                            @RequestBody FeedbackRequest feedbackRequest) {
+                                            @RequestBody FeedbackCreateRequest request) {
         try {
-            boolean isCreated = feedbackService.createFeedback(token, feedbackRequest);
-            if (!isCreated) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create feedback");
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body("Feedback created successfully");
+            var response = feedbackService.createFeedback(token, request);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error while creating feedback", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -68,33 +59,40 @@ public class FeedbackController {
     }
 
 
-    //Feedback reply create
-    @PostMapping("/create-reply")
-    public ResponseEntity<?> createFeedbackReply(@RequestHeader("Authorization") String token,
-                                             @RequestBody FeedbackReplyRequest feedbackRequest) {
+    //feedback detail
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getFeedbackById(@PathVariable("id") int id) {
         try {
-            boolean isCreated = feedbackService.createFeedbackReply(token, feedbackRequest);
-            if (!isCreated) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create feedback reply");
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body("Feedback reply created successfully");
+            var response = feedbackService.getDetailFeedback(id);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            logger.error("Error while creating feedback reply", e);
+            logger.error("Error while getting feedback", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    //delete feedback
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFeedback(@PathVariable("id") int id,
+                                            @RequestHeader("Authorization") String token) {
+        try {
+            var response = feedbackService.deleteFeedback(id, token);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error while deleting feedback", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    //Feedback reply list
-    @GetMapping("/latest-feedback-reply/{feedbackId}")
-    public ResponseEntity<?> getLatestFeedbackReply(@PathVariable("feedbackId") int feedbackId){
+    //update
+    @PutMapping
+    public ResponseEntity<?> updateFeedback(@RequestBody FeedbackUpdateRequest request,
+                                            @RequestHeader("Authorization") String token) {
         try {
-            var feedback_re = feedbackService.getLatestFeedbackRe(feedbackId, FeedbackConstantNumber.NUMBER_OF_LATEST_FEEDBACK.getValue());
-            if (feedback_re == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Latest feedback reply not found");
-            }
-            return ResponseEntity.ok(feedback_re);
+            var response = feedbackService.updateFeedback(request, token);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            logger.error("Error while getting latest feedback reply", e);
+            logger.error("Error while updating feedback", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

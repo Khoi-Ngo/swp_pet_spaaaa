@@ -41,8 +41,6 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
-        //if create for existed pet -> petId
-        //if new pet todo compare with create pet
         try {
             var response = bookingService.createBooking(request);
             return Objects.nonNull(response) ?
@@ -55,41 +53,28 @@ public class BookingController {
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<?> cancelBooking(@RequestBody RequestCancelBookingRequest request) {
+    public ResponseEntity<?> cancelBooking(@RequestBody RequestCancelBookingRequest request,
+                                           @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(bookingService.cancel(request));
+            return ResponseEntity.ok(bookingService.cancel(request, token));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while cancelling booking");
         }
     }
 
-
     //MARK COMPLETED
     @PutMapping("{id}")
-    public ResponseEntity<?> markCompleted(@PathVariable("id") int id) {
+    public ResponseEntity<?> markCompleted(@PathVariable("id") int id,
+                                           @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED));
+            return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED, token));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while marking booking");
         }
     }
 
-
-    //MARK CANCELED
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> markCanceled(@PathVariable("id") int id) {
-        try {
-            return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED));
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while marking booking");
-        }
-    }
-
-
-    //==========
     @GetMapping("{id}")
     public ResponseEntity<?> getBookingById(@PathVariable("id") int id) {
         Object responseData = bookingService.getBookingById(id);

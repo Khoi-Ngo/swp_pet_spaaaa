@@ -27,7 +27,7 @@ public class AdminController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @GetMapping("/manageShopOwner/viewAll")
-    public ResponseEntity<?> getAllAccShopOwner(){
+    public ResponseEntity<?> getAllAccShopOwner() {
         try {
             var accountsShopOwner = adminService.getAllShopOwner();
             if (accountsShopOwner == null) {
@@ -54,8 +54,9 @@ public class AdminController {
         }
     }
 
+    // need admin role
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAccountById(@PathVariable("id") int id){
+    public ResponseEntity<?> deleteAccountById(@PathVariable("id") int id) {
         try {
             return ResponseEntity.ok(adminService.deleteUserById(id));
         } catch (Exception e) {
@@ -63,7 +64,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    // need admin role
     @PostMapping("manageShopOwner/addShopOwner")
     public ResponseEntity<?> addShopOwner(@RequestBody SignUpRequest signUpRequest) {
         try {
@@ -79,7 +80,7 @@ public class AdminController {
     }
 
     @GetMapping("/viewDetail/{id}")
-    public ResponseEntity<?> viewDetailAccById(@PathVariable("id") int id){
+    public ResponseEntity<?> viewDetailAccById(@PathVariable("id") int id) {
         try {
             return ResponseEntity.ok(adminService.viewAccById(id));
         } catch (Exception e) {

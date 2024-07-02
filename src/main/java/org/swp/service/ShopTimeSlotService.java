@@ -34,67 +34,59 @@ public class ShopTimeSlotService {
 
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IBookingRepository bookingRepository;
 
     // create
-    public Object createShopTimeSlot(CreateShopTimeSlotRequest request){
+    public Object createShopTimeSlot(CreateShopTimeSlotRequest request) {
         ShopTimeSlot shopTimeSlot = modelMapper.map(request, ShopTimeSlot.class);
-
         TimeSlot timeSlot = timeSlotRepository.findById(request.getTimeSlotId()).get();
         shopTimeSlot.setTimeSlot(timeSlot);
-
         Shop shop = shopRepository.findById(request.getShopId()).get();
         shopTimeSlot.setShop(shop);
-
         shopTimeSlotRepository.save(shopTimeSlot);
-
-        CacheShopTimeSlot cacheShopTimeSlot = new CacheShopTimeSlot();
-        cacheShopTimeSlot.setAvailableSlots(request.getTotalSlot());
-        cacheShopTimeSlot.setTotalSlots(request.getTotalSlot());
-        cacheShopTimeSlot.setShop(shop);
-        cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
-        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
         return "create shop time slot ok";
     }
 
 
     //delete
-    public Object deleteShopTimeSlot(int id){
+    public Object deleteShopTimeSlot(int id, String token) {
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findById(id).get();
+        if (!isShopOwner(shopTimeSlot, token)) throw new RuntimeException("User not shop owner");
         shopTimeSlot.setDeleted(true);
         shopTimeSlotRepository.save(shopTimeSlot);
+        //affect booking, cacheshoptimeslot -> all booking will be canceled
+        bookingRepository.deleteAllByShopTimeSlot(id);
+        cacheShopTimeSlotRepository.deleteAllByShopTimeSlot(id);
+        return "delete shop time slot successfully";
+    }
 
-        CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopIdShopTimeSlotId(shopTimeSlot.getShop().getId(), shopTimeSlot.getId());
-        cacheShopTimeSlot.setDeleted(true);
-        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+    private boolean isShopOwner(ShopTimeSlot shopTimeSlot, String token) {
+        String userName = getUserNameFromToken(token);
+        return userName.equals(shopTimeSlot.getShop().getUser().getUsername());
+    }
 
-        return "delete shop time slot successful";
+    private boolean isShopOwner(ShopTimeSlot shopTimeSlot, Integer userId) {
+        return userId.equals(shopTimeSlot.getShop().getUser().getId());
     }
 
 
     //update
-    public Object updateShopTimeSlot(UpdateShopTimeSlotRequest request){
+    public Object updateShopTimeSlot(UpdateShopTimeSlotRequest request) {
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findById(request.getId()).get();
-        modelMapper.map(request,shopTimeSlot);
-
+        if (!isShopOwner(shopTimeSlot, request.getUserId())) throw new RuntimeException("User not shop owner");
+        modelMapper.map(request, shopTimeSlot);
         Shop shop = shopRepository.findById(request.getShopId()).get();
         shopTimeSlot.setShop(shop);
-
         TimeSlot timeSlot = timeSlotRepository.findById(request.getTimeSlotId()).get();
         shopTimeSlot.setTimeSlot(timeSlot);
-
-        CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopIdShopTimeSlotId(request.getShopId(), request.getId());
-        cacheShopTimeSlot.setTotalSlots(request.getTotalSlot());
-        cacheShopTimeSlot.setAvailableSlots(request.getTotalSlot()-cacheShopTimeSlot.getUsedSlots());
-        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
-
         shopTimeSlotRepository.save(shopTimeSlot);
-
         return "update shop time slot successful";
     }
 
 
     //get all
-    public Object getAllShopTimeSlot(String token){
+    public Object getAllShopTimeSlot(String token) {
         String username = getUserNameFromToken(token);
         User user = userRepository.findByUsername(username).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
@@ -127,8 +119,6 @@ public class ShopTimeSlotService {
         }
         return userName;
     }
-
-
 
 
 }

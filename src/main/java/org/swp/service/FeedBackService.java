@@ -3,16 +3,16 @@ package org.swp.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.swp.dto.request.FeedbackReplyRequest;
-import org.swp.dto.request.FeedbackRequest;
-import org.swp.dto.response.FeedbackListDto;
-import org.swp.entity.Shop;
+import org.swp.dto.request.FeedbackCreateRequest;
+import org.swp.dto.request.FeedbackUpdateRequest;
+import org.swp.dto.response.FeedbackDetailDto;
+import org.swp.dto.response.FeedbackListItemDto;
 import org.swp.entity.User;
 import org.swp.entity.other.Feedback;
 import org.swp.entity.other.FeedbackReply;
-import org.swp.enums.UserRole;
 import org.swp.repository.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -31,142 +31,69 @@ public class FeedBackService {
     private IUserRepository userRepository;
     @Autowired
     private IServiceRepository serviceRepository;
-    @Autowired
-    private IShopRepository shopRepository;
-
-
 
     public Object getAllFeedbacks(int serviceId) {
-        return feedbackRepository.findAllFeedbackByServiceId(serviceId).stream()
-                .map(feedback -> {
-                    FeedbackListDto dto = modelMapper.map(feedback, FeedbackListDto.class);
-                    dto.setUserName(
-                            Objects.nonNull(feedback.getUser()) ?
-                                    feedback.getUser().getUsername()
-                                    : "Khong xac dinh"
-                    );
-                    dto.setServiceName(
-                            Objects.nonNull(feedback.getService()) ?
-                                    feedback.getService().getServiceName()
-                                    : "Khong xac dinh"
-                    );
-                    dto.setShopName(
-                            Objects.nonNull(feedback.getService()) ?
-                                    feedback.getService().getShop().getShopName()
-                                    : "Khong xac dinh"
-                    );
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        List<Feedback> feedbackList = feedbackRepository.findAllFeedbackByServiceId(serviceId);
+        return feedbackList.stream().map(entity -> {
+            FeedbackListItemDto dto = modelMapper.map(entity, FeedbackListItemDto.class);
+            dto.setUserName(entity.getUser().getUsername());
+            dto.setLocalDateTime(entity.getCreatedTime());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public Object getLatestFeedback(int serviceId, int numberOfRecords) {
-        return feedbackRepository.findLatestFeedbackByServiceId(serviceId, numberOfRecords).stream()
-                .map(feedback -> {
-                    FeedbackListDto dto = modelMapper.map(feedback, FeedbackListDto.class);
-                    dto.setUserName(
-                            Objects.nonNull(feedback.getUser()) ?
-                                    feedback.getUser().getUsername()
-                                    : "Khong xac dinh"
-                    );
-                    dto.setServiceName(
-                            Objects.nonNull(feedback.getService()) ?
-                                    feedback.getService().getServiceName()
-                                    : "Khong xac dinh"
-                    );
-                    dto.setShopName(
-                            Objects.nonNull(feedback.getService()) ?
-                                    feedback.getService().getShop().getShopName()
-                                    : "Khong xac dinh"
-                    );
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        List<Feedback> feedbackList = feedbackRepository.findLatestFeedbackByServiceId(serviceId, numberOfRecords);
+        return feedbackList.stream().map(entity -> {
+            FeedbackListItemDto dto = modelMapper.map(entity, FeedbackListItemDto.class);
+            dto.setUserName(entity.getUser().getUsername());
+            dto.setLocalDateTime(entity.getCreatedTime());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
-    public Object getLatestFeedbackRe(int feedbackId, int numberOfRecords) {
-        return feedBackReplyRepository.findFeedbackRe(feedbackId, numberOfRecords).stream()
-                .map(feedbackReply -> {
-                    FeedbackListDto dto = modelMapper.map(feedbackReply, FeedbackListDto.class);
-                    dto.setUserName(
-                            Objects.nonNull(feedbackReply.getUser()) ?
-                                    feedbackReply.getUser().getUsername()
-                                    : "Khong xac dinh"
-                    );
-                    dto.setServiceName(
-                            Objects.nonNull(feedbackReply.getFeedback()) ?
-                                    feedbackReply.getFeedback().getService().getServiceName()
-                                    : "Khong xac dinh"
-                    );
-                    dto.setShopName(
-                            Objects.nonNull(feedbackReply.getFeedback()) ?
-                                    feedbackReply.getFeedback().getService().getShop().getShopName()
-                                    : "Khong xac dinh"
-                    );
-                    return dto;
-                })
-                .collect(Collectors.toList());
+    public Object createFeedback(String token, FeedbackCreateRequest request) {
+        String userName = getUserNameFromToken(token);
+        User user = userRepository.findByUsername(userName).get();
+        org.swp.entity.Service service = serviceRepository.findById(request.getServiceId()).get();
+        Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service);
+        feedbackRepository.save(feedback);
+        return "Create feedback successfully";
     }
 
-
-    public boolean createFeedback(String token, FeedbackRequest feedbackRequest) {
-        try {
-            String username = getUserNameFromToken(token);
-            User user = userRepository.findByUsername(username).orElse(null);
-
-            if (user == null) {
-                return false;
-            }
-
-            org.swp.entity.Service service = serviceRepository.findById(feedbackRequest.getServiceId()).orElse(null);
-            Shop shop = shopRepository.findById(feedbackRequest.getShopId()).orElse(null);
-
-            if (service == null || shop == null || !isServiceLinkedToShop(service, shop)) {
-                return false;
-            }
-
-            Feedback feedback = modelMapper.map(feedbackRequest, Feedback.class);
-            feedback.setUser(user);
-            feedback.setService(service);
-            feedback.setShop(shop);
-            feedbackRepository.save(feedback);
-
-            return true;
-        } catch (Exception e) {
-            // Log the exception
-            return false;
-        }
+    public Object getDetailFeedback(int id) {
+        Feedback feedback = feedbackRepository.findById(id).get();
+        FeedbackDetailDto dto = modelMapper.map(feedback, FeedbackDetailDto.class);
+        dto.setUserName(feedback.getUser().getUsername());
+        dto.setLocalDateTime(feedback.getCreatedTime());
+        return dto;
     }
 
-    public boolean createFeedbackReply(String token, FeedbackReplyRequest feedbackRequest) {
-        try {
-            String username = getUserNameFromToken(token);
-            User user = userRepository.findByUsername(username).orElse(null);
-
-            //check role of user
-            if (!isShopOwner(username)) {
-                return false;
-            }
-            //check feedback exist
-            Feedback feedback = feedbackRepository.findById(feedbackRequest.getFeedbackId()).orElse(null);
-            if (feedback == null) {
-                return false;
-            }
-            FeedbackReply feedbackReply = modelMapper.map(feedbackRequest, FeedbackReply.class);
-            feedbackReply.setUser(user);
-            feedbackReply.setFeedback(feedback);
-            feedbackReply.setContent(feedbackRequest.getContent());
-            feedBackReplyRepository.save(feedbackReply);
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public Object deleteFeedback(int id, String token) {
+        Feedback feedback = feedbackRepository.findById(id).get();
+        if (!doOwnFeedback(feedback, token)) throw new RuntimeException("User not own the feedback");
+        feedback.setDeleted(true);
+        List<FeedbackReply> feedbackReplyList = feedBackReplyRepository.findByFeedbackId(id);
+        feedbackReplyList.stream().peek(r -> r.setDeleted(true));
+        feedBackReplyRepository.saveAll(feedbackReplyList);
+        feedbackRepository.save(feedback);
+        return "Delete feedback successfully";
     }
 
-    private boolean isServiceLinkedToShop(org.swp.entity.Service service, Shop shop) {
-        return service.getShop().getId() == shop.getId();
-        }
+    private boolean doOwnFeedback(Feedback feedback, String token) {
+        String userName = getUserNameFromToken(token);
+        return userName.equals(feedback.getUser().getUsername());
+    }
+
+    public Object updateFeedback(FeedbackUpdateRequest request, String token) {
+        Feedback feedback = feedbackRepository.findById(request.getFeedbackId()).get();
+        if (!doOwnFeedback(feedback, token)) throw new RuntimeException("User not own the feedback");
+        feedback.setContent(Objects.nonNull(request.getUpdateContent()) ? request.getUpdateContent() : feedback.getContent());
+        feedback.setRatingType(Objects.nonNull(request.getUpdateRatingType()) ? request.getUpdateRatingType() : feedback.getRatingType());
+        feedback.setEdited(true);
+        feedbackRepository.save(feedback);
+        return "Update feedback successfully";
+    }
 
     private String getUserNameFromToken(String token) {
         String userName = null;
@@ -175,11 +102,6 @@ public class FeedBackService {
             userName = jwtService.extractUserName(jwtToken);
         }
         return userName;
-    }
-
-    private boolean isShopOwner(String username) {
-        User user = userRepository.findByUsername(username).get();
-        return UserRole.SHOP_OWNER.equals(user.getRole());
     }
 
 }

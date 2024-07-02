@@ -1,33 +1,41 @@
 package org.swp.entity.other;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.swp.entity.Service;
-import org.swp.entity.ServiceCategory;
-import org.swp.entity.Shop;
-import org.swp.entity.User;
+import lombok.NoArgsConstructor;
+import org.swp.entity.*;
+import org.swp.enums.RatingType;
 
 @Entity
 @Table(name = "tbl_feedback")
 @Data
-public class Feedback {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Feedback extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Lob
     private String content;
+    private RatingType ratingType;
+    private boolean isEdited = false;
 
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    //feedback -> service + shop
     @ManyToOne
     @JoinColumn(name = "service_id")
     private Service service;
-    @ManyToOne
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
+
+    public Feedback(String content, RatingType ratingType, boolean isEdited, User user, Service service) {
+        this.content = content;
+        this.ratingType = ratingType;
+        this.isEdited = isEdited;
+        this.user = user;
+        this.service = service;
+    }
 }

@@ -14,8 +14,6 @@ public class Booking extends BaseEntity {
     private Integer id;
     @Lob
     private String bookingNote;
-    private boolean isDone;
-    private boolean isCanceled;
     private String status;
 
 

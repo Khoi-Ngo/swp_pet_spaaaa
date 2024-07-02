@@ -11,4 +11,8 @@ import java.util.List;
 
 public interface IFeedBackReplyRepository extends JpaRepository<FeedbackReply, Integer> {
     @Query(value = "SELECT * FROM tbl_feedback_reply WHERE feedback_id = :feedbackId ORDER BY id DESC LIMIT :numberOfRecords", nativeQuery = true)
-    List<FeedbackReply> findFeedbackRe(@Param("feedbackId") int feedbackId, @Param("numberOfRecords") int numberOfRecords);}
+    List<FeedbackReply> findByFeedbackId(@Param("feedbackId") int feedbackId, @Param("numberOfRecords") int numberOfRecords);
+
+    @Query(value = "SELECT * FROM tbl_feedback_reply WHERE feedback_id = :feedbackId", nativeQuery = true)
+    List<FeedbackReply> findByFeedbackId(@Param("feedbackId") int feedbackId);
+}

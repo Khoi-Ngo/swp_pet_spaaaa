@@ -15,7 +15,7 @@ import org.swp.enums.NominationType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Nomination {
+public class Nomination extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
