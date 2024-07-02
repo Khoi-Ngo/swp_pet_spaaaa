@@ -101,9 +101,9 @@ public class ShopTimeSlotService {
                     dto.setStartLocalTime(timeSlot.getStartLocalDateTime());
                     dto.setEndLocalTime(timeSlot.getEndLocalDateTime());
 
-                    CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopIdShopTimeSlotId(shop.getId(), shopTimeSlot.getId());
-                    dto.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots());
-                    dto.setUsedSlots(cacheShopTimeSlot.getUsedSlots());
+//                    CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopIdShopTimeSlotId(shop.getId(), shopTimeSlot.getId());
+//                    dto.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots());
+//                    dto.setUsedSlots(cacheShopTimeSlot.getUsedSlots());
 
                     dto.setStatus(shopTimeSlot.isDeleted());
 
