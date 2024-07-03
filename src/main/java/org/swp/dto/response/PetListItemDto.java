@@ -14,6 +14,8 @@ public class PetListItemDto {
     private int petWeight;
     private Integer ownerId;
     private String ownerName;
+    private String petDescription;
+    private String petNote;
 
     //booking overview detail
     private boolean doHaveUpcomingSchedule;

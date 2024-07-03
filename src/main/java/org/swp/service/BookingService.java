@@ -142,6 +142,7 @@ public class BookingService {
         return dto;
 
     }
+
     @Transactional
     public Object createBooking(RequestBookingRequest request) {
         var service = serviceRepository.findById(request.getServiceId()).get();
@@ -150,9 +151,9 @@ public class BookingService {
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
         CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository
                 .findByShopDateAndTimeSlot(
-                shop.getId()
-                , request.getLocalDate()
-                , shopTimeSlot);
+                        shop.getId()
+                        , request.getLocalDate()
+                        , shopTimeSlot);
         cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
         cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
         cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
@@ -205,8 +206,8 @@ public class BookingService {
 
     private boolean doInvoleBooking(Booking booking, String token) {
         String userName = getUserNameFromToken(token);
-        UserRole role = userRepository.findRoleByUserName(userName); // just need role
-        return role.equals(UserRole.CUSTOMER) ?
+        Integer role = userRepository.findRoleByUserName(userName); // just need role
+        return role.equals(UserRole.CUSTOMER.getValue()) ?
                 booking.getUser().getUsername().equals(userName) :
                 booking.getShop().getUser().getUsername().equals(userName);
     }
