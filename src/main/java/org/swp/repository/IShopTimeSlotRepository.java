@@ -18,7 +18,15 @@ public interface IShopTimeSlotRepository extends JpaRepository<ShopTimeSlot, Int
     @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id")
     List<ShopTimeSlot> findByShopId(@Param("id") Integer id);
 
-    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.timeSlot = :timeSlot")
-    ShopTimeSlot findByShopIdAndTimeSlot(@Param("id") Integer id, @Param("timeSlot") TimeSlot timeSlot);
+    @Query(value = "select *\n" +
+            "from tb_shop_time_slot\n" +
+            "where shop_id = :id\n" +
+            "  and time_slot_id = (select id\n" +
+            "                      from tbl_time_slot\n" +
+            "                      where start_local_date_time = :start\n" +
+            "                        and end_local_date_time = :end\n" +
+            "                      limit 1) limit 1\n" +
+            ";", nativeQuery = true)
+    ShopTimeSlot findByShopIdAndTimeSlot(@Param("id") Integer id, @Param("start") LocalTime start, @Param("end") LocalTime end);
 
 }

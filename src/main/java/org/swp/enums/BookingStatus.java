@@ -3,5 +3,7 @@ package org.swp.enums;
 public enum BookingStatus {
     CANCELLED,
     COMPLETED,
-    SCHEDULED;
+    SCHEDULED,
+    NEED_CONFIRMED,
+    ;
 }

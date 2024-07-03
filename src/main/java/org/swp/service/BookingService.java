@@ -150,7 +150,7 @@ public class BookingService {
             }
 
             TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime());
-            ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot);
+            ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
 
 
             CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopDateAndTimeSlot(
