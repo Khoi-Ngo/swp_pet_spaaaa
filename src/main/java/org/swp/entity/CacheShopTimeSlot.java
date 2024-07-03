@@ -28,8 +28,4 @@ public class CacheShopTimeSlot extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
-
-    @ManyToMany
-    @JoinTable(name = "tbl_cache_shop_time_slot_booking")
-    private List<Booking> bookings;
 }

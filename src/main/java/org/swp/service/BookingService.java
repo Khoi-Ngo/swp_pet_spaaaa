@@ -143,8 +143,8 @@ public class BookingService {
     }
 
     public Object createBooking(RequestBookingRequest request) {
-        var service = serviceRepository.findById(request.getServiceId());
-        Shop shop = service.get().getShop();
+        var service = serviceRepository.findById(request.getServiceId()).get();
+        Shop shop = service.getShop();
 
         TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime());
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
@@ -165,17 +165,14 @@ public class BookingService {
             cacheShopTimeSlot.setLocalDate(request.getLocalDate());
             cacheShopTimeSlot.setShop(shop);
             cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
-            cacheShopTimeSlot.setBookings(new ArrayList<>());
             cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
         }
-
         //create booking here
         Booking booking = new Booking();
         booking.setBookingNote(request.getAdditionalMessage());
         booking.setStatus(BookingStatus.SCHEDULED.name());
         booking.setShop(shop);
-        booking.setService(service.get());
-
+        booking.setService(service);
         //pet also
         Pet pet = null;
         User customer = userRepository.findById(request.getCustomerId()).get();
@@ -188,23 +185,12 @@ public class BookingService {
             petrepository.save(pet);
         }
 
-
         booking.setUser(customer);
         booking.setPet(pet);
         bookingRepository.save(booking);
-
-        List<Booking> bookings = cacheShopTimeSlot.getBookings();
-        bookings.add(booking);
-        cacheShopTimeSlot.setBookings(bookings);
-        //save
-        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
-
-
         booking.setCacheShopTimeSlot(cacheShopTimeSlot);
         bookingRepository.save(booking);
         return "Create booking ok!";
-
-
     }
 
 
