@@ -38,20 +38,26 @@ public class CacheShopTimeSlotService {
             List<CacheShopTimeSlot> cacheShopTimeSlots = cacheShopTimeSlotRepository.findByShopIdAndDate(shop.getId(), date);
             dtos = new ArrayList<>();
             for (ShopTimeSlot timeSlot : shopTimeSlot) {
+                CacheShopTimeSlot cacheShopTimeSlot = null;
                 if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {
-                    dtos.add(new CacheShopTimeSlotDto(
-                            timeSlot.getTotalSlot(),
-                            0,
-                            timeSlot.getTotalSlot(),
-                            modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
+                    //silently creating cacheshoptimeslot here
+                    cacheShopTimeSlot = new CacheShopTimeSlot();
+                    cacheShopTimeSlot.setTotalSlots(timeSlot.getTotalSlot());
+                    cacheShopTimeSlot.setUsedSlots(0);
+                    cacheShopTimeSlot.setAvailableSlots(timeSlot.getTotalSlot());
+                    cacheShopTimeSlot.setLocalDate(date);
+                    cacheShopTimeSlot.setShop(shop);
+                    cacheShopTimeSlot.setShopTimeSlot(timeSlot);
+                    cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
                 } else {
-                    CacheShopTimeSlot cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
-                    dtos.add(new CacheShopTimeSlotDto(
-                            cacheShopTimeSlot.getTotalSlots(),
-                            cacheShopTimeSlot.getUsedSlots(),
-                            cacheShopTimeSlot.getAvailableSlots(),
-                            modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
+                    cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
+
                 }
+                dtos.add(new CacheShopTimeSlotDto(
+                        cacheShopTimeSlot.getTotalSlots(),
+                        cacheShopTimeSlot.getUsedSlots(),
+                        cacheShopTimeSlot.getAvailableSlots(),
+                        modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
             }
 
 

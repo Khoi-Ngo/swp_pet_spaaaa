@@ -153,9 +153,9 @@ public class BookingService {
                 shop.getId()
                 , request.getLocalDate()
                 , shopTimeSlot);
-
-        createOrUpdateCacheShopTimeSlot(cacheShopTimeSlot, shopTimeSlot, request.getLocalDate(), shop);
-
+        cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
+        cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
+        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
         //create booking here
         Booking booking = new Booking();
         booking.setBookingNote(request.getAdditionalMessage());
@@ -178,23 +178,6 @@ public class BookingService {
         booking.setCacheShopTimeSlot(cacheShopTimeSlot);
         bookingRepository.save(booking);
         return "Create booking ok!";
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void createOrUpdateCacheShopTimeSlot(CacheShopTimeSlot cacheShopTimeSlot, ShopTimeSlot shopTimeSlot, LocalDate localDate, Shop shop) {
-        if (Objects.nonNull(cacheShopTimeSlot)) {
-            cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
-            cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
-        } else {
-            cacheShopTimeSlot = new CacheShopTimeSlot();
-            cacheShopTimeSlot.setTotalSlots(shopTimeSlot.getTotalSlot());
-            cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() > 0 ? cacheShopTimeSlot.getUsedSlots() + 1 : 1);
-            cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getTotalSlots() - cacheShopTimeSlot.getUsedSlots());
-            cacheShopTimeSlot.setLocalDate(localDate);
-            cacheShopTimeSlot.setShop(shop);
-            cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
-        }
-        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
     }
 
     public Object cancel(@NotNull RequestCancelBookingRequest request, String token) {
