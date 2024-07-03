@@ -187,6 +187,7 @@ public class ServiceService {
         return serviceRepository.findAllByShopId(shop.getId()).stream()
                 .map(service -> {
                     ListServiceDto dto = modelMapper.map(service, ListServiceDto.class);
+                    dto.setCategoryId(service.getCategory().getId());
                     return dto;
                 })
                 .collect(Collectors.toList());
