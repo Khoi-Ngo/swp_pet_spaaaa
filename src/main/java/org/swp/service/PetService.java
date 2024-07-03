@@ -120,10 +120,32 @@ public class PetService {
     }
 
     public Object updatePet(UpdatePetRequest request) {
-        Pet pet = modelMapper.map(request, Pet.class);
+        Pet pet = petrepository.findById(request.getId()).get();
         if (!pet.getUser().getId().equals(request.getUserId())) throw new RuntimeException("User not own the pet");
-        User owner = userRepository.findById(request.getUserId()).get();
-        pet.setUser(owner);
+        if (request.getPetName() != null) {
+            pet.setPetName(request.getPetName());
+        }
+        if (request.getPetType() != null) {
+            pet.setPetType(request.getPetType());
+        }
+        if (request.getPetAge() != 0) {
+            pet.setPetAge(request.getPetAge());
+        }
+        if (request.getPetGender() != null) {
+            pet.setPetGender(request.getPetGender());
+        }
+        if (request.getPetWeight() != 0) {
+            pet.setPetWeight(request.getPetWeight());
+        }
+        if (request.getPetDescription() != null) {
+            pet.setPetDescription(request.getPetDescription());
+        }
+        if (request.getPetPhoto() != null) {
+            pet.setPetPhoto(request.getPetPhoto());
+        }
+        if (request.getPetNote() != null) {
+            pet.setPetNote(request.getPetNote());
+        }
         petrepository.save(pet);
         return "Updated";
     }
