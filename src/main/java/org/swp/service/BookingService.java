@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
@@ -179,7 +180,8 @@ public class BookingService {
         return "Create booking ok!";
     }
 
-    private void createOrUpdateCacheShopTimeSlot(CacheShopTimeSlot cacheShopTimeSlot, ShopTimeSlot shopTimeSlot, LocalDate localDate, Shop shop) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void createOrUpdateCacheShopTimeSlot(CacheShopTimeSlot cacheShopTimeSlot, ShopTimeSlot shopTimeSlot, LocalDate localDate, Shop shop) {
         if (Objects.nonNull(cacheShopTimeSlot)) {
             cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
             cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
