@@ -16,6 +16,7 @@ import org.swp.enums.UserRole;
 import org.swp.repository.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -287,6 +288,11 @@ public class BookingService {
             dtos.add(dto);
         });
         return dtos;
+    }
+
+    public void trackBookingStatus(LocalDateTime now) {
+//        List<Integer> bookingIds = bookingRepository.findAllScheduledIdsAndLock(now);
+//        bookingRepository.updateStatus(bookingIds, BookingStatus.NEED_CONFIRM);
     }
 
 }

@@ -10,10 +10,9 @@ import org.swp.dto.request.CreateShopTimeSlotRequest;
 import org.swp.dto.request.UpdateShopTimeSlotRequest;
 import org.swp.service.ShopTimeSlotService;
 
-import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/v1/shop-timeslot/atuh")
+@RequestMapping("/api/v1/shop-timeslot/auth")
 public class ShopTimeSlotController {
 
     @Autowired

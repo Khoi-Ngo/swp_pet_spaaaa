@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.swp.entity.Booking;
+import org.swp.enums.BookingStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -41,4 +43,8 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "where cache_shop_time_slot_id in\n" +
             "      (select e.id from tbl_cache_shop_time_slot e where e.shop_time_slot_id = :id);", nativeQuery = true)
     void deleteAllByShopTimeSlot(@Param("id") int id);
+
+//    void updateStatus(List<Integer> bookingIds, BookingStatus bookingStatus);
+//
+//    List<Integer> findAllScheduledIdsAndLock(LocalDateTime now);
 }

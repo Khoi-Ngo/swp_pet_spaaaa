@@ -1,8 +1,11 @@
 package org.swp.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.swp.entity.Shop;
 import org.swp.entity.User;
 import org.swp.enums.UserRole;
@@ -13,8 +16,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
+@Component
 public class DataInit {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initData(IUserRepository IUserRepository, IShopRepository iShopRepository) {
@@ -23,9 +28,9 @@ public class DataInit {
             if (IUserRepository.count() == 0) {
                 // Create some initial users
                 List<User> initialUsers = Arrays.asList(
-                        createUser("admin", "admin", UserRole.ADMIN, "Admin", "User", "admin@example.com"),
-                        createUser("customer", "customer", UserRole.CUSTOMER, "Customer", "User", "customer@example.com"),
-                        createUser("shop_owner", "shop_owner", UserRole.SHOP_OWNER, "Shop", "Owner", "owner@example.com")
+                        createUser("admin", passwordEncoder.encode("123456"), UserRole.ADMIN, "Admin", "User", "admin@example.com"),
+                        createUser("customer", passwordEncoder.encode("123456"), UserRole.CUSTOMER, "Customer", "User", "customer@example.com"),
+                        createUser("shop_owner", passwordEncoder.encode("123456"), UserRole.SHOP_OWNER, "Shop", "Owner", "owner@example.com")
                 );
 
                 // Save the initial users to the database

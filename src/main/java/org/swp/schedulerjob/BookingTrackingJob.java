@@ -16,13 +16,8 @@ public class BookingTrackingJob {
     private static final int POLLING_INTERVAL = 1000;//millis
 
     @Scheduled(fixedRate = POLLING_INTERVAL)
-    public void logCurrentTime() {
-//        logger.info("Current time is " + LocalDateTime.now()  );
+    public void trackStatusBooking() {
+        logger.info("Tracking status booking triggered");
+        bookingService.trackBookingStatus(LocalDateTime.now());
     }
-
-//    @Scheduled
-//    public void trackStatusBooking() {
-//        logger.info("Tracking status booking triggered");
-//        bookingService.trackBookingStatus(LocalDateTime.now());
-//    }
 }
