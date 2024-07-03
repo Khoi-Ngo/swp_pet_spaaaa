@@ -15,6 +15,7 @@ import org.swp.repository.IUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NominationService {
@@ -71,10 +72,21 @@ public class NominationService {
         return dtos;
     }
 
+    public Object getAllNominationOfShop(int shopId) {
+        List<Nomination> nominations = nominationRepository.findAllByShopId(shopId);
+        return nominations.stream()
+                .map(this::createNominationListItemDto)
+                .collect(Collectors.toList());
+    }
+
     private NominationListItemDto createNominationListItemDto(Nomination nomination) {
         NominationListItemDto dto = modelMapper.map(nomination, NominationListItemDto.class);
+        dto.setId(nomination.getId());
         dto.setShopId(nomination.getShop().getId());
         dto.setShopName(nomination.getShop().getShopName());
+        dto.setUserName(nomination.getUser().getUsername());
+        dto.setNominationType(nomination.getNominationType());
         return dto;
     }
+
 }

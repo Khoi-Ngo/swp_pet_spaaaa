@@ -3,6 +3,7 @@ package org.swp.controller.entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.NomiCreateRequest;
@@ -52,6 +53,21 @@ public class NominationController {
         try {
             var response = nominationService.getNominationHistory(token);
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //get all nomination of shop
+    @GetMapping("all/{shopId}")
+    public ResponseEntity<?> getAllNominationOfShop(@PathVariable("shopId") int shopId) {
+        try {
+            var nomi = nominationService.getAllNominationOfShop(shopId);
+            if (Objects.isNull(nomi)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nomination not found for shopId: " + shopId);
+            }
+            return ResponseEntity.ok(nomi);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.notFound().build();

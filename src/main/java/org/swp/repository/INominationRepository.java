@@ -16,4 +16,6 @@ public interface INominationRepository extends JpaRepository<Nomination, Integer
 
     @Query(value = "SELECT * FROM tbl_nomination WHERE service_id = :serviceId AND user_id = :userId", nativeQuery = true)
     Nomination findByServiceIdAndUserId(@Param("serviceId") int serviceId, @Param("userId") int userId);
-}
+
+    @Query(value = "SELECT * FROM tbl_nomination WHERE shop_id = :shopId", nativeQuery = true)
+    List<Nomination> findAllByShopId(@Param("shopId") int shopId);}
