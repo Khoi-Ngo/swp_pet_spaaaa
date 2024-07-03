@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
 import org.swp.dto.response.*;
@@ -141,7 +141,7 @@ public class BookingService {
         return dto;
 
     }
-
+    @Transactional
     public Object createBooking(RequestBookingRequest request) {
         var service = serviceRepository.findById(request.getServiceId()).get();
         Shop shop = service.getShop();
@@ -172,10 +172,8 @@ public class BookingService {
             pet.setUser(customer);
             petrepository.save(pet);
         }
-
         booking.setUser(customer);
         booking.setPet(pet);
-        bookingRepository.save(booking);
         booking.setCacheShopTimeSlot(cacheShopTimeSlot);
         bookingRepository.save(booking);
         return "Create booking ok!";
