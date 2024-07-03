@@ -144,78 +144,67 @@ public class BookingService {
 
     public Object createBooking(RequestBookingRequest request) {
         var service = serviceRepository.findById(request.getServiceId());
-        if (service.isPresent()) {
-            Shop shop = service.get().getShop();
-            if (Objects.isNull(shop)) {
-                return null;
-            }
+        Shop shop = service.get().getShop();
 
-            TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime());
-            ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
+        TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime());
+        ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
 
 
-            CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopDateAndTimeSlot(
-                    shop.getId()
-                    , request.getLocalDate()
-                    , shopTimeSlot);
-            if (Objects.nonNull(cacheShopTimeSlot)) {
-                cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
-                cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
-                if (cacheShopTimeSlot.getTotalSlots() < cacheShopTimeSlot.getAvailableSlots() + cacheShopTimeSlot.getUsedSlots()) {
-                    return null;
-                }
-            } else {
-                //refer into -> Cache record and save
-                cacheShopTimeSlot = new CacheShopTimeSlot();
-                cacheShopTimeSlot.setTotalSlots(shopTimeSlot.getTotalSlot());
-                cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() > 0 ? cacheShopTimeSlot.getUsedSlots() + 1 : 1);
-                cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getTotalSlots() - cacheShopTimeSlot.getUsedSlots());
-                cacheShopTimeSlot.setLocalDate(request.getLocalDate());
-                cacheShopTimeSlot.setShop(shop);
-                cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
-            }
+        CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository.findByShopDateAndTimeSlot(
+                shop.getId()
+                , request.getLocalDate()
+                , shopTimeSlot);
+        if (Objects.nonNull(cacheShopTimeSlot)) {
+            cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
+            cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
+        } else {
+            cacheShopTimeSlot = new CacheShopTimeSlot();
+            cacheShopTimeSlot.setTotalSlots(shopTimeSlot.getTotalSlot());
+            cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() > 0 ? cacheShopTimeSlot.getUsedSlots() + 1 : 1);
+            cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getTotalSlots() - cacheShopTimeSlot.getUsedSlots());
+            cacheShopTimeSlot.setLocalDate(request.getLocalDate());
+            cacheShopTimeSlot.setShop(shop);
+            cacheShopTimeSlot.setShopTimeSlot(shopTimeSlot);
+            cacheShopTimeSlot.setBookings(new ArrayList<>());
+            cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+        }
 
-            //create booking here
-            Booking booking = new Booking();
-            booking.setBookingNote(request.getAdditionalMessage());
-            booking.setStatus(BookingStatus.SCHEDULED.name());
-            booking.setShop(shop);
-            booking.setService(service.get());
+        //create booking here
+        Booking booking = new Booking();
+        booking.setBookingNote(request.getAdditionalMessage());
+        booking.setStatus(BookingStatus.SCHEDULED.name());
+        booking.setShop(shop);
+        booking.setService(service.get());
 
-            //pet also
-            Pet pet = null;
-            if (Objects.nonNull(request.getPetId())) {
-                pet = petrepository.findById(request.getPetId()).get();
-            }
-            if (Objects.isNull(pet)) {
-                pet = modelMapper.map(request, Pet.class);
-            }
-
-
-            User customer = userRepository.findById(request.getCustomerId()).get();
+        //pet also
+        Pet pet = null;
+        User customer = userRepository.findById(request.getCustomerId()).get();
+        if (Objects.nonNull(request.getPetId())) {
+            pet = petrepository.findById(request.getPetId()).get();
+        }
+        if (Objects.isNull(pet)) {
+            pet = modelMapper.map(request, Pet.class);
             pet.setUser(customer);
             petrepository.save(pet);
-            booking.setUser(customer);
-            booking.setPet(pet);
-            bookingRepository.save(booking);
-
-            List<Booking> bookings = cacheShopTimeSlot.getBookings();
-            if (CollectionUtils.isEmpty(bookings)) {
-                bookings = new ArrayList<>();
-            }
-            bookings.add(booking);
-            cacheShopTimeSlot.setBookings(bookings);
-            //save
-            cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
-
-
-            booking.setCacheShopTimeSlot(cacheShopTimeSlot);
-            bookingRepository.save(booking);
-            return "Create booking ok!";
-
-
         }
-        return "Cannot find the service";
+
+
+        booking.setUser(customer);
+        booking.setPet(pet);
+        bookingRepository.save(booking);
+
+        List<Booking> bookings = cacheShopTimeSlot.getBookings();
+        bookings.add(booking);
+        cacheShopTimeSlot.setBookings(bookings);
+        //save
+        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+
+
+        booking.setCacheShopTimeSlot(cacheShopTimeSlot);
+        bookingRepository.save(booking);
+        return "Create booking ok!";
+
+
     }
 
 
