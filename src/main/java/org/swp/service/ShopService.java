@@ -144,7 +144,7 @@ public class ShopService {
 
 
     public Object getShopId(String token) {
-        String username = getUserNameFromToken(token);
-        return shopRepository.getShopIdFromUserName(username);
+        String userName = getUserNameFromToken(token);
+        return shopRepository.getShopIdFromUserName(userName);
     }
 }
