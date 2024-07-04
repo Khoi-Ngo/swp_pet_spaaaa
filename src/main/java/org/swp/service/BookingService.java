@@ -149,8 +149,14 @@ public class BookingService {
         Pet pet = getPet(request, customer);
         var service = serviceRepository.findById(request.getServiceId()).get();
         CacheShopTimeSlot cacheShopTimeSlot = getCacheShopTimeSlot(request.getLocalDate(), request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime(), service.getShop().getId());
+        if (!isValidPet(pet.getId(), cacheShopTimeSlot.getId()))
+            throw new RuntimeException("The pet is already booked this timeslot");
         createBooking(request.getAdditionalMessage(), service, customer, pet, cacheShopTimeSlot);
         return "Create booking ok!";
+    }
+
+    private boolean isValidPet(Integer petId, Integer cacheId) {
+        return Objects.isNull(bookingRepository.findAnyPetScheduled(petId, cacheId));
     }
 
     private Pet getPet(RequestBookingRequest request, User customer) {
@@ -206,10 +212,17 @@ public class BookingService {
 
     public Object markBooking(int bookingId, BookingStatus bookingStatus, String token) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        if (!doInvoleBooking(booking, token)) throw new RuntimeException("User not invole the booking");
+        if (!doInvoleBooking(booking, token) || !isOverdueBooking(booking)) throw new RuntimeException("Cannot mark");
         booking.setStatus(bookingStatus.name());
         bookingRepository.save(booking);
         return "Booking marked!";
+    }
+
+    private boolean isOverdueBooking(Booking booking) {
+        return (booking.getCacheShopTimeSlot().getLocalDate().isAfter(LocalDate.now()))
+                || (booking.getCacheShopTimeSlot().getLocalDate().isEqual(LocalDate.now())
+                && booking.getCacheShopTimeSlot().getShopTimeSlot().getTimeSlot().getEndLocalDateTime().isAfter(LocalTime.now())
+        );
     }
 
     private boolean doInvoleBooking(Booking booking, String token) {

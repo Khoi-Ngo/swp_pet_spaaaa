@@ -8,6 +8,7 @@ import org.swp.entity.Booking;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IBookingRepository extends JpaRepository<Booking, Integer> {
@@ -44,6 +45,9 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "where cache_shop_time_slot_id in\n" +
             "      (select e.id from tbl_cache_shop_time_slot e where e.shop_time_slot_id = :id);", nativeQuery = true)
     void deleteAllByShopTimeSlot(@Param("id") int id);
+
+    @Query(value = "SELECT * FROM tbl_booking WHERE pet_id = :petId AND cache_shop_time_slot_id = :cacheId", nativeQuery = true)
+    Booking findAnyPetScheduled(@Param("petId") Integer petId, @Param("cacheId") Integer cacheId);
 
 //    void updateStatus(List<Integer> bookingIds, BookingStatus bookingStatus);
 //
