@@ -15,7 +15,7 @@ import org.swp.dto.response.JwtAuthenticationResponse;
 import org.swp.entity.User;
 import org.swp.enums.UserRole;
 import org.swp.repository.IUserRepository;
-
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 @Service
@@ -36,6 +36,7 @@ public class AuthenticationService {
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(UserRole.CUSTOMER);
+        user.setCreatedTime(LocalDateTime.now());
         return IUserRepository.save(user);
     }
 

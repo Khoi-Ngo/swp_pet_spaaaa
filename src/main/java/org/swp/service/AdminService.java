@@ -15,7 +15,7 @@ import org.swp.entity.User;
 import org.swp.enums.UserRole;
 import org.swp.repository.IAdminRepository;
 import org.swp.repository.IUserRepository;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +71,7 @@ public class AdminService {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(UserRole.SHOP_OWNER);
         user.setPhone(signUpRequest.getPhoneNumber());
+        user.setCreatedTime(LocalDateTime.now());
         return userRepository.save(user);
     }
 
