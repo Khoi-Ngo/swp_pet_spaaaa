@@ -83,18 +83,4 @@ public class BookingController {
         }
     }
 
-
-    @GetMapping("/shop")
-    public ResponseEntity<?> getAllBookingsByShop(@RequestHeader(name = "Authorization") String token) {
-        try {
-            return Objects.nonNull(token) ?
-                    ResponseEntity.ok(bookingService.getAllBookingsByShop(token))
-                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of booking");
-        }
-    }
-
-
 }

@@ -212,46 +212,6 @@ public class BookingService {
                 booking.getShop().getUser().getUsername().equals(userName);
     }
 
-    public Object getAllBookingsByShop(String token) {
-        String userName = getUserNameFromToken(token);
-        List<Booking> res = isShopOwner(userName) ?
-                bookingRepository.findAllByShopOwnerUserName(userName)
-                : bookingRepository.findALlByCustomerUserName(userName);
-        //mapping
-        List<BookingListItemDto> dtos = new ArrayList<>();
-        res.forEach(b -> {
-            BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
-            org.swp.entity.Service service = b.getService();
-            if (service != null) {
-                dto.setServiceId(service.getId());
-                dto.setServiceName(service.getServiceName());
-            }
-            Shop shop = b.getShop();
-            if (shop != null) {
-                dto.setShopName(shop.getShopName());
-                dto.setShopId(shop.getId());
-            }
-            User user = b.getUser();
-            if (user != null) {
-                dto.setCustomerFullName(user.getFirstName() + " " + user.getLastName());
-            }
-            Pet pet = b.getPet();
-            if (pet != null) {
-                dto.setPetId(pet.getId());
-                dto.setPetName(pet.getPetName());
-            }
-            //local date + time slot
-            CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
-            if (cacheShopTimeSlot != null) {
-                dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
-                dto.setTimeSlotDto(modelMapper.map(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot(), TimeSlotDto.class));
-
-            }
-            dtos.add(dto);
-        });
-        return dtos;
-    }
-
     public void trackBookingStatus(LocalDateTime now) {
 //        List<Integer> bookingIds = bookingRepository.findAllScheduledIdsAndLock(now);
 //        bookingRepository.updateStatus(bookingIds, BookingStatus.NEED_CONFIRM);
