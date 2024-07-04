@@ -63,10 +63,10 @@ public class BookingController {
 
     //MARK COMPLETED
     @PostMapping("/complete")
-    public ResponseEntity<?> markCompleted(@RequestBody Integer id,
+    public ResponseEntity<?> markCompleted(@RequestBody Integer bookingId,
                                            @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED, token));
+            return ResponseEntity.ok(bookingService.markBooking(bookingId, BookingStatus.COMPLETED, token));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while marking booking");

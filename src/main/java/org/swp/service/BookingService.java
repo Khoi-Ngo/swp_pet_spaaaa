@@ -196,8 +196,8 @@ public class BookingService {
     }
 
 
-    public Object markBooking(int id, BookingStatus bookingStatus, String token) {
-        Booking booking = bookingRepository.findById(id).get();
+    public Object markBooking(int bookingId, BookingStatus bookingStatus, String token) {
+        Booking booking = bookingRepository.findById(bookingId).get();
         if (!doInvoleBooking(booking, token)) throw new RuntimeException("User not invole the booking");
         booking.setStatus(bookingStatus.name());
         bookingRepository.save(booking);
