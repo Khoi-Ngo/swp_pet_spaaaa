@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.swp.dto.request.RequestBookingRequest;
 import org.swp.dto.request.RequestCancelBookingRequest;
@@ -18,6 +17,7 @@ import org.swp.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -145,40 +145,48 @@ public class BookingService {
 
     @Transactional
     public Object createBooking(RequestBookingRequest request) {
-        var service = serviceRepository.findById(request.getServiceId()).get();
-        Shop shop = service.getShop();
-        TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime());
-        ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shop.getId(), timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
-        CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository
-                .findByShopDateAndTimeSlot(
-                        shop.getId()
-                        , request.getLocalDate()
-                        , shopTimeSlot);
-        cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
-        cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
-        cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
-        //create booking here
-        Booking booking = new Booking();
-        booking.setBookingNote(request.getAdditionalMessage());
-        booking.setStatus(BookingStatus.SCHEDULED.name());
-        booking.setShop(shop);
-        booking.setService(service);
-        //pet also
-        Pet pet = null;
         User customer = userRepository.findById(request.getCustomerId()).get();
+        Pet pet = getPet(request, customer);
+        var service = serviceRepository.findById(request.getServiceId()).get();
+        CacheShopTimeSlot cacheShopTimeSlot = getCacheShopTimeSlot(request.getLocalDate(), request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime(), service.getShop().getId());
+        createBooking(request.getAdditionalMessage(), service, customer, pet, cacheShopTimeSlot);
+        return "Create booking ok!";
+    }
+
+    private Pet getPet(RequestBookingRequest request, User customer) {
         if (Objects.nonNull(request.getPetId())) {
-            pet = petrepository.findById(request.getPetId()).get();
+            return petrepository.findById(request.getPetId()).get();
         }
-        if (Objects.isNull(pet)) {
-            pet = modelMapper.map(request, Pet.class);
-            pet.setUser(customer);
-            petrepository.save(pet);
-        }
+        Pet pet = modelMapper.map(request, Pet.class);
+        pet.setUser(customer);
+        return petrepository.save(pet);
+    }
+
+    private void createBooking(String additionalMessage, org.swp.entity.Service service,
+                               User customer, Pet pet, CacheShopTimeSlot cacheShopTimeSlot) {
+        Booking booking = new Booking();
+        booking.setBookingNote(additionalMessage);
+        booking.setStatus(BookingStatus.SCHEDULED.name());
+        booking.setShop(service.getShop());
+        booking.setService(service);
         booking.setUser(customer);
         booking.setPet(pet);
         booking.setCacheShopTimeSlot(cacheShopTimeSlot);
         bookingRepository.save(booking);
-        return "Create booking ok!";
+    }
+
+    private CacheShopTimeSlot getCacheShopTimeSlot(LocalDate localDate, LocalTime startLocalTime, LocalTime endLocalTime, Integer shopId) {
+
+        TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(startLocalTime, endLocalTime);
+        ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shopId, timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
+        CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository
+                .findByShopDateAndTimeSlot(
+                        shopId
+                        , localDate
+                        , shopTimeSlot);
+        cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
+        cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
+        return cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
     }
 
     public Object cancel(@NotNull RequestCancelBookingRequest request, String token) {
