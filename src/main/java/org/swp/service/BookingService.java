@@ -200,12 +200,10 @@ public class BookingService {
         if (!doInvoleBooking(booking, token)) throw new RuntimeException("User not invole the booking");
         booking.setStatus(BookingStatus.CANCELLED.name());
         CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
-        if (Objects.nonNull(cacheShopTimeSlot)) {
-            cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() + 1);
-            cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() - 1);
-        }
-        bookingRepository.save(booking);
+        cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() + 1);
+        cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() - 1);
         cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+        bookingRepository.save(booking);
         return "Canceled";
     }
 
