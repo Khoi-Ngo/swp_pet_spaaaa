@@ -106,5 +106,15 @@ public class ShopController {
         }
     }
 
+    @GetMapping("/shopId")
+    public ResponseEntity<?> getShopIdFromToken(@RequestHeader(name = "Authorization") String token){
+        try{
+            return ResponseEntity.ok(shopService.getShopId(token));
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

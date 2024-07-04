@@ -64,7 +64,10 @@ public interface IShopRepository extends JpaRepository<Shop, Integer> {
     @Query(value = "UPDATE tbl_refer_price SET is_deleted = 1 WHERE service_id IN (SELECT id FROM tbl_service WHERE shop_id = :id)", nativeQuery = true)
     void updateReFerPrice_DeletedByShopId(@Param("id") int id);
 
-
-
-
+    @Query(value = "select s.id\n" +
+            "from tbl_shop s\n" +
+            "         inner join tbl_user u on s.shop_owner_id = u.id\n" +
+            "where u.username = :userName\n" +
+            "; ", nativeQuery = true)
+    Integer getShopIdFromUserName(String username);
 }
