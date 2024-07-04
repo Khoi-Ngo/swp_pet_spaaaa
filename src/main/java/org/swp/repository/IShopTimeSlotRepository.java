@@ -15,7 +15,7 @@ import java.util.Set;
 public interface IShopTimeSlotRepository extends JpaRepository<ShopTimeSlot, Integer> {
 
 
-    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id")
+    @Query("SELECT sts FROM ShopTimeSlot sts WHERE sts.shop.id = :id AND sts.isDeleted = FALSE ")
     List<ShopTimeSlot> findByShopId(@Param("id") Integer id);
 
     @Query(value = "select *\n" +

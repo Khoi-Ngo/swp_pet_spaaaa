@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.List;
 
 public interface IFeedBackReplyRepository extends JpaRepository<FeedbackReply, Integer> {
-    @Query(value = "SELECT * FROM tbl_feedback_reply WHERE feedback_id = :feedbackId ORDER BY id DESC LIMIT :numberOfRecords", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_feedback_reply WHERE feedback_id = :feedbackId  AND is_deleted = FALSE ORDER BY id DESC LIMIT :numberOfRecords", nativeQuery = true)
     List<FeedbackReply> findByFeedbackId(@Param("feedbackId") int feedbackId, @Param("numberOfRecords") int numberOfRecords);
 
-    @Query(value = "SELECT * FROM tbl_feedback_reply WHERE feedback_id = :feedbackId", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_feedback_reply WHERE feedback_id = :feedbackId AND is_deleted = FALSE", nativeQuery = true)
     List<FeedbackReply> findByFeedbackId(@Param("feedbackId") int feedbackId);
 }

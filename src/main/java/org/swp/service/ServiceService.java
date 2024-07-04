@@ -42,6 +42,7 @@ public class ServiceService {
 
     public List<ServiceListItemDto> getAll() {
         return serviceRepository.findAll().stream()
+                .filter(service -> !service.isDeleted())
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
 
@@ -64,6 +65,9 @@ public class ServiceService {
     public Object getServiceById(int id) {
         //service detail
         org.swp.entity.Service service = serviceRepository.findById(id).orElse(null);// Return null if service is not found
+        if (service.isDeleted()){
+            return "service is deleted";
+        }
         ServiceDetailDto dto = modelMapper.map(service, ServiceDetailDto.class);
         dto.setShopId(Objects.nonNull(service.getShop()) ? service.getShop().getId() : -1);
         dto.setShopName(Objects.nonNull(service.getShop()) ? service.getShop().getShopName() : "Khong xac dinh shop");
