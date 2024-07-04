@@ -1,6 +1,9 @@
 package org.swp.entity.other;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +21,13 @@ public class Feedback extends BaseEntity {
     private Integer id;
 
     @Lob
+    @NotEmpty
+    @NotBlank
+    @NotNull
     private String content;
+    @NotEmpty
+    @NotBlank
+    @NotNull
     private RatingType ratingType;
     private boolean isEdited = false;
 
