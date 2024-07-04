@@ -62,8 +62,8 @@ public class BookingController {
     }
 
     //MARK COMPLETED
-    @PutMapping("{id}")
-    public ResponseEntity<?> markCompleted(@PathVariable("id") int id,
+    @PostMapping("/complete")
+    public ResponseEntity<?> markCompleted(@RequestBody Integer id,
                                            @RequestHeader(name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(bookingService.markBooking(id, BookingStatus.COMPLETED, token));
