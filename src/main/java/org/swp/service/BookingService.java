@@ -52,6 +52,50 @@ public class BookingService {
         return userName;
     }
 
+    public Object getAllBookings(int cacheShopTimeSlotId, String token) {
+        String userName = getUserNameFromToken(token);
+        List<Booking> bookingList = bookingRepository.findAllByShopOwnerUserNameAndTimeSlot(userName, cacheShopTimeSlotId);
+        List<BookingListItemDto> dtos = new ArrayList<>();
+        bookingList.forEach(b -> {
+            BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
+
+
+            org.swp.entity.Service service = b.getService();
+            if (service != null) {
+                dto.setServiceId(service.getId());
+                dto.setServiceName(service.getServiceName());
+            }
+
+            Shop shop = b.getShop();
+            if (shop != null) {
+                dto.setShopName(shop.getShopName());
+                dto.setShopId(shop.getId());
+            }
+
+            User user = b.getUser();
+            if (user != null) {
+                dto.setCustomerFullName(user.getFirstName() + " " + user.getLastName());
+            }
+
+            Pet pet = b.getPet();
+            if (pet != null) {
+                dto.setPetId(pet.getId());
+                dto.setPetName(pet.getPetName());
+            }
+
+            //local date + time slot
+            CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
+            if (cacheShopTimeSlot != null) {
+                dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
+                dto.setTimeSlotDto(modelMapper.map(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot(), TimeSlotDto.class));
+
+            }
+
+
+            dtos.add(dto);
+        });
+        return dtos;
+    }
 
     public Object getAllBookings(String token) {
         String userName = getUserNameFromToken(token);

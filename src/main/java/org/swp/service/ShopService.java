@@ -5,21 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateShopRequest;
 import org.swp.dto.request.UpdateShopRequest;
-import org.swp.dto.response.BookingHistoryListItemDto;
-import org.swp.dto.response.HomePageDetailOfShopDto;
-import org.swp.dto.response.ShopDetailDto;
-import org.swp.entity.Booking;
+import org.swp.dto.response.*;
+import org.swp.entity.CacheShopTimeSlot;
 import org.swp.entity.Shop;
 import org.swp.entity.User;
-import org.swp.enums.TypePet;
 import org.swp.repository.IBookingRepository;
+import org.swp.repository.ICacheShopTimeSlotRepository;
 import org.swp.repository.IShopRepository;
 import org.swp.repository.IUserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +36,8 @@ public class ShopService {
 
     @Autowired
     private IBookingRepository bookingRepository;
+    @Autowired
+    private ICacheShopTimeSlotRepository cacheShopTimeSlotRepository;
 
     public Object getMostRcmdShops(int numberOfRecords) {
 //        return shopRepository.findMostRcmdShops(numberOfRecords);
@@ -152,9 +151,9 @@ public class ShopService {
         String userName = getUserNameFromToken(token);
         return shopRepository.getShopIdFromUserName(userName);
     }
-    
-    
-    public Object getHomePageDetailOfShop(String token){
+
+
+    public Object getHomePageDetailOfShop(String token) {
         String userName = getUserNameFromToken(token);
         Shop shop = shopRepository.findById(shopRepository.getShopIdFromUserName(userName)).get();
 
@@ -164,5 +163,16 @@ public class ShopService {
         dto.setTotalBookings(totalBookings);
         dto.setTotalNominations(shop.getNomination());
         return dto;
+    }
+
+    public Object getAllInfoTimeSlotByDate(String token, LocalDate date) {
+        Integer shopId = (Integer) getShopId(token);
+        List<CacheShopTimeSlot> cacheShopTimeSlotList = cacheShopTimeSlotRepository.findByShopIdAndDate(shopId, date);
+        return cacheShopTimeSlotList.stream().map(e -> {
+            ListItemTimeSlotInfoInDateDto dto = modelMapper.map(e, ListItemTimeSlotInfoInDateDto.class);
+            dto.setStartTime(e.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
+            dto.setEndTime(e.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

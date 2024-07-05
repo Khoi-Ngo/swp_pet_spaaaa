@@ -3,15 +3,18 @@ package org.swp.controller.entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.shop.ShopConstantNumber;
 import org.swp.dto.request.CreateShopRequest;
 import org.swp.dto.request.UpdateShopRequest;
+import org.swp.service.CacheShopTimeSlotService;
 import org.swp.service.ServiceService;
 import org.swp.service.ShopService;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @RestController
@@ -126,6 +129,19 @@ public class ShopController {
         } catch (Exception e) {
             logger.error("Cannot find the shop" + e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
+
+    //shop owner checking infor of each timeslot per date
+    @GetMapping("{date}")
+    public ResponseEntity<?> getAllTimSlotInfoPerDate(@RequestHeader(name = "Authorization") String token,
+                                                       @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        try {
+            return ResponseEntity.ok(shopService.getAllInfoTimeSlotByDate(token, date));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 

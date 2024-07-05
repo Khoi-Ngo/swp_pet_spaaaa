@@ -83,4 +83,15 @@ public class BookingController {
         }
     }
 
+    @GetMapping("/cache/{cacheShopTimeSlotId}")
+    public ResponseEntity<?> getAllBookingByTimeSlot(@PathVariable("cacheShopTimeSlotId") int cacheShopTimeSlotId,
+                                                     @RequestHeader(name = "Authorization") String token) {
+        try {
+            return ResponseEntity.ok(bookingService.getAllBookings(cacheShopTimeSlotId, token));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
