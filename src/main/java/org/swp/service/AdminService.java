@@ -70,7 +70,6 @@ public class AdminService {
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(UserRole.SHOP_OWNER);
-        user.setPhone(signUpRequest.getPhoneNumber());
         user.setCreatedTime(LocalDateTime.now());
         return userRepository.save(user);
     }

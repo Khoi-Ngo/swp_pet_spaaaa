@@ -20,5 +20,5 @@ public class SignUpRequest {
     @NotNull
     private String username;
     @NotNull
-    private String phoneNumber;
+    private String phone;
 }
