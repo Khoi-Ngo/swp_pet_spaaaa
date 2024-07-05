@@ -117,4 +117,17 @@ public class ShopController {
     }
 
 
+    @GetMapping("/shop-detail-home-page")
+    public ResponseEntity<?> getHomePageDetailShop(@RequestHeader(name = "Authorization") String token) {
+        try {
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(shopService.getHomePageDetailOfShop(token)) :
+                    ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        } catch (Exception e) {
+            logger.error("Cannot find the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
+
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.swp.dto.request.CreateShopRequest;
 import org.swp.dto.request.UpdateShopRequest;
 import org.swp.dto.response.BookingHistoryListItemDto;
+import org.swp.dto.response.HomePageDetailOfShopDto;
 import org.swp.dto.response.ShopDetailDto;
 import org.swp.entity.Booking;
 import org.swp.entity.Shop;
@@ -35,6 +36,9 @@ public class ShopService {
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    private IBookingRepository bookingRepository;
 
     public Object getMostRcmdShops(int numberOfRecords) {
 //        return shopRepository.findMostRcmdShops(numberOfRecords);
@@ -147,5 +151,18 @@ public class ShopService {
     public Object getShopId(String token) {
         String userName = getUserNameFromToken(token);
         return shopRepository.getShopIdFromUserName(userName);
+    }
+    
+    
+    public Object getHomePageDetailOfShop(String token){
+        String userName = getUserNameFromToken(token);
+        Shop shop = shopRepository.findById(shopRepository.getShopIdFromUserName(userName)).get();
+
+        HomePageDetailOfShopDto dto = new HomePageDetailOfShopDto();
+        dto.setTotalServices(shop.getTotalServices());
+        int totalBookings = bookingRepository.findAllByShopOwnerUserName(userName).size();
+        dto.setTotalBookings(totalBookings);
+        dto.setTotalNominations(shop.getNomination());
+        return dto;
     }
 }
