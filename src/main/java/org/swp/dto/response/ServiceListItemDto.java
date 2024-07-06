@@ -13,4 +13,6 @@ public class ServiceListItemDto {
     private String address;
     private int nomination;
     private String shopName;
+    private int categoryId;
+    private String categoryName;
 }

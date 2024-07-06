@@ -57,6 +57,16 @@ public class ServiceService {
                                     service.getShop().getShopName()
                                     : "Khong xac dinh"
                     );
+                    dto.setCategoryId(
+                            Objects.nonNull(service.getCategory()) ?
+                                    service.getCategory().getId()
+                                    : -1
+                    );
+                    dto.setCategoryName(
+                            Objects.nonNull(service.getCategory()) ?
+                                    service.getCategory().getCategoryName()
+                                    : "Khong xac dinh"
+                    );
                     return dto;
                 })
                 .collect(Collectors.toList());
