@@ -36,7 +36,7 @@ public class AdminService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private JWTService jwtService;
 
     public List<ListAccountShopOwnerDto> getAllShopOwner(){
         return adminRepository.findAllShopOwnerAcc().stream()
@@ -60,21 +60,38 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    public User addShopOwner(@NotNull SignUpRequest signUpRequest) {
+    public User addShopOwner(@NotNull SignUpRequest signUpRequest, String token) {
+        String userName = getUserNameFromToken(token);
+
+        if (!isAdmin(userName)) {
+            throw new IllegalArgumentException("You do not have permission to use this function");
+        }
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
         if (userRepository.findByUsername(signUpRequest.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");
         }
+
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(UserRole.SHOP_OWNER);
         user.setCreatedTime(LocalDateTime.now());
+        user.setPhone(signUpRequest.getPhone());
         return userRepository.save(user);
     }
 
-    public Object deleteUserById(int id){
+    public Object deleteUserById(int id, String token) {
+        String userName = getUserNameFromToken(token);
+
+        if(userRepository.findById(id).isEmpty()){
+            return "user not found";
+        }
+
+        if (!isAdmin(userName)) {
+            throw new IllegalArgumentException("You do not have permission to use this function");
+        }
+
         User user = userRepository.findById(id).get();
         user.setDeleted(true);
         userRepository.save(user);
@@ -93,5 +110,18 @@ public class AdminService {
         return dto;
     }
 
+    private boolean isAdmin(String username) {
+        User user = userRepository.findByUsername(username).get();
+        return UserRole.ADMIN.equals(user.getRole());
+    }
+
+    private String getUserNameFromToken(String token) {
+        String userName = null;
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7); // Remove "Bearer " prefix
+            userName = jwtService.extractUserName(jwtToken);
+        }
+        return userName;
+    }
 
 }

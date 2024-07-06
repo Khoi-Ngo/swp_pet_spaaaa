@@ -51,23 +51,25 @@ public class AdminController {
         }
     }
 
-    // need admin role
+
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAccountById(@PathVariable("id") int id) {
+    public ResponseEntity<?> deleteAccountById(@PathVariable("id") int id,
+                                               @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.ok(adminService.deleteUserById(id));
+            return ResponseEntity.ok(adminService.deleteUserById(id, token));
         } catch (Exception e) {
             logger.error("Error while getting delete shopOwner", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    // need admin role
-    @PostMapping("manageShopOwner/addShopOwner")
-    public ResponseEntity<?> addShopOwner(@RequestBody SignUpRequest signUpRequest) {
+
+    @PostMapping("/manageShopOwner/addShopOwner")
+    public ResponseEntity<?> addShopOwner(@RequestBody SignUpRequest signUpRequest,
+                                          @RequestHeader(name = "Authorization") String token) {
         try {
-            User newShopOwner = adminService.addShopOwner(signUpRequest);
+            User newShopOwner = adminService.addShopOwner(signUpRequest, token);
             return Objects.isNull(newShopOwner) ?
-                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Maybe the username or email is in use already")
+                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error occurred while adding shop owner")
                     : ResponseEntity.ok(newShopOwner)
                     ;
         } catch (Exception e) {
