@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/oauth2/authorization/google")
-                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/home"))
+                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/api/v1/service/all"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .oidcUserService(this.oidcUserService())
                                 .userService(this.oauth2UserService())
