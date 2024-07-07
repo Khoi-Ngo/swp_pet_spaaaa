@@ -21,12 +21,8 @@ public class Feedback extends BaseEntity {
     private Integer id;
 
     @Lob
-    @NotEmpty
-    @NotBlank
     @NotNull
     private String content;
-    @NotEmpty
-    @NotBlank
     @NotNull
     private RatingType ratingType;
     private boolean isEdited = false;
