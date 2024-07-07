@@ -1,14 +1,13 @@
 package org.swp.repository;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.swp.entity.Booking;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface IBookingRepository extends JpaRepository<Booking, Integer> {
@@ -62,6 +61,21 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "    )\n" +
             "  ) AND cache_shop_time_slot_id = :cacheShopTimeSlotId;", nativeQuery = true)
     List<Booking> findAllByShopOwnerUserNameAndTimeSlot(@Param("userName") String userName, @Param("cacheShopTimeSlotId") int cacheShopTimeSlotId);
+
+
+    @Query(value = "SELECT\n" +
+            "    DATE_FORMAT(csts.local_date, '%Y-%m') AS month,\n" +
+            "    COUNT(*) AS bookings\n" +
+            "FROM\n" +
+            "    tbl_booking b\n" +
+            "JOIN\n" +
+            "    tbl_cache_shop_time_slot csts ON b.cache_shop_time_slot_id = csts.id\n" +
+            "WHERE\n" +
+            "    YEAR(csts.local_date) = YEAR(CURDATE())\n" +
+            "    AND b.shop_id = :shopId \n" +
+            "GROUP BY\n" +
+            "    DATE_FORMAT(csts.local_date, '%Y-%m');", nativeQuery = true)
+    List<Object[]> findMonthlyBookings(@Param("shopId") int shopId);
 
 //    void updateStatus(List<Integer> bookingIds, BookingStatus bookingStatus);
 //

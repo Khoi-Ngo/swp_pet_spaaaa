@@ -17,6 +17,7 @@ import org.swp.repository.IUserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class ShopService {
 
     @Autowired
     private IBookingRepository bookingRepository;
+
     @Autowired
     private ICacheShopTimeSlotRepository cacheShopTimeSlotRepository;
 
@@ -153,15 +155,23 @@ public class ShopService {
     }
 
 
-    public Object getHomePageDetailOfShop(String token) {
+    public Object getDashboardOfShop(String token) {
         String userName = getUserNameFromToken(token);
         Shop shop = shopRepository.findById(shopRepository.getShopIdFromUserName(userName)).get();
 
-        HomePageDetailOfShopDto dto = new HomePageDetailOfShopDto();
+        DashboardDto dto = new DashboardDto();
         dto.setTotalServices(shop.getTotalServices());
-        int totalBookings = bookingRepository.findAllByShopOwnerUserName(userName).size();
-        dto.setTotalBookings(totalBookings);
+        dto.setTotalBookings(bookingRepository.findAllByShopOwnerUserName(userName).size());
         dto.setTotalNominations(shop.getNomination());
+        List<MonthlyBookingDto> monthlyBookings = bookingRepository.findMonthlyBookings(shop.getId()).stream()
+                .map(a ->{
+                        MonthlyBookingDto mbDto = new MonthlyBookingDto();
+                        mbDto.setMonth((String) a[0]);
+                        mbDto.setBookings(((Number) a[1]).intValue());
+                        return mbDto;
+                })
+                .collect(Collectors.toList());
+        dto.setMonthlyBookings(monthlyBookings);
         return dto;
     }
 

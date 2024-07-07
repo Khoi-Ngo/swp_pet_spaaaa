@@ -99,7 +99,7 @@ public class ShopController {
     }
 
     //get shop detail by id
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<?> getShopDetailById(@PathVariable("id") int id) {
         try {
             return ResponseEntity.ok(shopService.getShopDetailById(id));
@@ -120,11 +120,11 @@ public class ShopController {
     }
 
 
-    @GetMapping("/shop-detail-home-page")
-    public ResponseEntity<?> getHomePageDetailShop(@RequestHeader(name = "Authorization") String token) {
+    @GetMapping("/dashboard/auth")
+    public ResponseEntity<?> getDashboard(@RequestHeader(name = "Authorization") String token) {
         try {
             return Objects.nonNull(token) ?
-                    ResponseEntity.ok(shopService.getHomePageDetailOfShop(token)) :
+                    ResponseEntity.ok(shopService.getDashboardOfShop(token)) :
                     ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
         } catch (Exception e) {
             logger.error("Cannot find the shop" + e);
