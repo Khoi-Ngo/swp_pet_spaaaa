@@ -15,22 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.Md4PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.swp.entity.User;
 import org.swp.enums.UserRole;
-import org.swp.repository.IUserRepository;
 import org.swp.service.UserService;
-
-import java.time.LocalDate;
 
 @Configuration
 @EnableWebSecurity
@@ -40,8 +28,6 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private final UserService userService;
-    @Autowired
-    private IUserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,19 +43,11 @@ public class SecurityConfiguration {
                                 .anyRequest().permitAll()
 
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/oauth2/authorization/google")
-                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/home"))
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(this.oidcUserService())
-                                .userService(this.oauth2UserService())
-                        )
-                )
+
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-
+                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
@@ -92,63 +70,6 @@ public class SecurityConfiguration {
 //        return http.build();
 //    }
 //
-private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-    DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-    return request -> {
-        OAuth2User oAuth2User = delegate.loadUser(request);
-
-        String email = oAuth2User.getAttribute("email");
-        String givenName = oAuth2User.getAttribute("given_name");
-        String familyName = oAuth2User.getAttribute("family_name");
-        String birthday = oAuth2User.getAttribute("birthday"); // Note: Might need to extract this from other claims
-        String phoneNumber = oAuth2User.getAttribute("phone_number");
-
-        // Kiểm tra và tạo mới người dùng nếu chưa tồn tại
-
-        userRepository.findByEmail(email).orElseGet(() -> {
-            User user = new User();
-            user.setEmail(email);
-            user.setFirstName(givenName);
-            user.setLastName(familyName);
-            user.setBirthday(LocalDate.parse(birthday)); // cần xử lý để đảm bảo định dạng đúng
-            user.setPhone(phoneNumber);
-            user.setUsername(email);
-            user.setRole(UserRole.CUSTOMER); // Đặt role mặc định là STUDENT
-            return userRepository.save(user);
-        });
-
-        return oAuth2User;
-    };
-}
-
-    private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        OidcUserService delegate = new OidcUserService();
-        return request -> {
-            OidcUser oidcUser = delegate.loadUser(request);
-
-            String email = oidcUser.getEmail();
-            String givenName = oidcUser.getGivenName();
-            String familyName = oidcUser.getFamilyName();
-            String imageUrl = oidcUser.getPicture();
-            String birthday = oidcUser.getClaim("birthday"); // Note: This might need to be extracted from claims
-            String gender = oidcUser.getClaim("gender");
-            String phoneNumber = oidcUser.getClaim("phone_number");
-
-            // Kiểm tra và tạo mới người dùng nếu chưa tồn tại
-            userRepository.findByEmail(email).orElseGet(() -> {
-                User user = new User();
-                user.setEmail(email);
-                user.setFirstName(givenName);
-                user.setLastName(familyName);
-                user.setBirthday(LocalDate.parse(birthday)); // cần xử lý để đảm bảo định dạng đúng
-                user.setPhone(phoneNumber);
-                user.setUsername(email);
-                user.setRole(UserRole.CUSTOMER); // Đặt role mặc định là STUDENT
-                return userRepository.save(user);
-            });
-            return oidcUser;
-        };
-    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
