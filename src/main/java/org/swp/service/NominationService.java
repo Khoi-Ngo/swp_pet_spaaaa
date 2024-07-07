@@ -42,7 +42,11 @@ public class NominationService {
     public Object createNomination(String token, NomiCreateRequest request) {//todo: this action need refresh page if no using websocket
         String userName = getUserNameFromToken(token);
         User user = userRepository.findByUsername(userName).get();
-        Nomination nomination = new Nomination(user, request.getNominationType());
+        Nomination nomination;
+        nomination = nominationRepository.findByShopIdAndUserId(request.getShopId(), user.getId());
+        if (nomination != null) throw new RuntimeException("Cannot nomi more");
+
+        nomination = new Nomination(user, request.getNominationType());
         Shop shop = shopRepository.findById(request.getShopId()).get();
         nomination.setShop(shop);
         shop.setNomination(shop.getNomination() + request.getNominationType().getValue());
