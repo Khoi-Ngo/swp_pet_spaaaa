@@ -34,7 +34,6 @@ public class ShopController {
                         .NUMBER_OF_MOST_RCMD_SHOP.getValue()));
     }
 
-    //LATEST SHOPS
     @GetMapping("/all")
     public ResponseEntity<?> getAllShops() {
         try {

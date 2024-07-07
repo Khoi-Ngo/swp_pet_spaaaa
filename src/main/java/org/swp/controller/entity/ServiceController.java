@@ -81,7 +81,7 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{id}")//done
     public ResponseEntity<?> getServiceById(@PathVariable("id") int id) {
         try {
             var service = serviceService.getServiceById(id);
@@ -111,7 +111,7 @@ public class ServiceController { //todo -> some action should be more authentica
     }
 
     //UPDATE
-    @PutMapping
+    @PutMapping//done
     public ResponseEntity<?> updateService(@RequestBody UpdateServiceRequest request) {
         try {
             var response = serviceService.updateService(request);
@@ -123,7 +123,7 @@ public class ServiceController { //todo -> some action should be more authentica
     }
 
     //CREATE
-    @PostMapping
+    @PostMapping//done
     public ResponseEntity<?> createService(@RequestBody CreateServiceRequest request) {
         try {
             var response = serviceService.createService(request);
@@ -135,7 +135,7 @@ public class ServiceController { //todo -> some action should be more authentica
     }
 
     //DELETE
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//done
     public ResponseEntity<?> deleteService(@PathVariable("id") int id,
                                            @RequestHeader(name = "Authorization") String token) {
         try {
@@ -147,7 +147,7 @@ public class ServiceController { //todo -> some action should be more authentica
         }
     }
 
-    @GetMapping("/all/auth")
+    @GetMapping("/all/auth")//done
     public ResponseEntity<?> getAllServicesOfShopowner(@RequestHeader(name = "Authorization") String token) {
         try {
             var services = serviceService.getAllOfShopowner(token);

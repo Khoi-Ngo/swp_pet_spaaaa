@@ -34,8 +34,8 @@ public class NominationController {
     }
 
     //customer delete nomination
-    @DeleteMapping
-    public ResponseEntity<?> createNomination(
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteNomination(
             @RequestHeader(name = "Authorization") String token,
             @RequestBody NominationDeleteRequest request) {
         try {

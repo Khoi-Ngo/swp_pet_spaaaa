@@ -26,18 +26,18 @@ public class PetController {
     }
 
 
-    @GetMapping("/pet-types")
-    public ResponseEntity<?> getAllPetTypesIntSystem() {
-        try {
-            var petTypes = TypePet.values();
-            return ResponseEntity.ok(petTypes);
-
-        } catch (Exception e) {
-            logger.error("There was an error while getting pet types in system");
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot find all pet types");
-        }
-    }
+//    @GetMapping("/pet-types")
+//    public ResponseEntity<?> getAllPetTypesIntSystem() {
+//        try {
+//            var petTypes = TypePet.values();
+//            return ResponseEntity.ok(petTypes);
+//
+//        } catch (Exception e) {
+//            logger.error("There was an error while getting pet types in system");
+//            logger.error(e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot find all pet types");
+//        }
+//    }
 
     @GetMapping("/all/auth")
     public ResponseEntity<?> getAllPets(@RequestHeader(name = "Authorization") String token) {
