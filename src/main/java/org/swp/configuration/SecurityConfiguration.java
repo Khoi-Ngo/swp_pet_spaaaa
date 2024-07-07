@@ -110,9 +110,7 @@ private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
             user.setEmail(email);
             user.setFirstName(givenName);
             user.setLastName(familyName);
-            user.setBirthday(LocalDate.parse(birthday));
-            user.setPassword("123456");
-            // cần xử lý để đảm bảo định dạng đúng
+            user.setBirthday(LocalDate.parse(birthday)); // cần xử lý để đảm bảo định dạng đúng
             user.setPhone(phoneNumber);
             user.setUsername(email);
             user.setRole(UserRole.CUSTOMER); // Đặt role mặc định là STUDENT
@@ -144,7 +142,6 @@ private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
                 user.setLastName(familyName);
                 user.setBirthday(LocalDate.parse(birthday)); // cần xử lý để đảm bảo định dạng đúng
                 user.setPhone(phoneNumber);
-                user.setPassword("123456");
                 user.setUsername(email);
                 user.setRole(UserRole.CUSTOMER); // Đặt role mặc định là STUDENT
                 return userRepository.save(user);
