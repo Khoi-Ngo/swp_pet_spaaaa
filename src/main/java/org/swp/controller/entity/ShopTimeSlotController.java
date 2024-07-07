@@ -42,15 +42,15 @@ public class ShopTimeSlotController {
         }
     }
 
-    @PatchMapping
-    public ResponseEntity<?> updateShopTimeSlot(@RequestBody UpdateShopTimeSlotRequest request) {
-        try {
-            return ResponseEntity.ok(shopTimeSlotService.updateShopTimeSlot(request));
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot update time slot");
-        }
-    }
+//    @PatchMapping
+//    public ResponseEntity<?> updateShopTimeSlot(@RequestBody UpdateShopTimeSlotRequest request) {
+//        try {
+//            return ResponseEntity.ok(shopTimeSlotService.updateShopTimeSlot(request));
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot update time slot");
+//        }
+//    }
 
     @GetMapping("/all/auth")
     public ResponseEntity<?> getAllShopTimeSlots(@RequestHeader(name = "Authorization") String token) {
