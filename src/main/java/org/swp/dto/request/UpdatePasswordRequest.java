@@ -1,14 +1,15 @@
 package org.swp.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NonNull;
 
 @Data
 public class UpdatePasswordRequest {
-    @NonNull
+    @NotNull
     private String oldPassword;
-    @NonNull
+    @NotNull
     private String newPassword;
-    @NonNull
+    @NotNull
     private String confirmPassword;
 }
