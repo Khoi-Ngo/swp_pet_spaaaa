@@ -84,18 +84,18 @@ public class FeedbackController {
         }
     }
 
-    //update
-    @PutMapping
-    public ResponseEntity<?> updateFeedback(@RequestBody FeedbackUpdateRequest request,
-                                            @RequestHeader("Authorization") String token) {
-        try {
-            var response = feedbackService.updateFeedback(request, token);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            logger.error("Error while updating feedback", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
+//    //update
+//    @PutMapping
+//    public ResponseEntity<?> updateFeedback(@RequestBody FeedbackUpdateRequest request,
+//                                            @RequestHeader("Authorization") String token) {
+//        try {
+//            var response = feedbackService.updateFeedback(request, token);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            logger.error("Error while updating feedback", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//        }
+//    }
 
 
     @ExceptionHandler(Exception.class)

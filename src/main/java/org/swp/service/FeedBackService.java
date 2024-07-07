@@ -12,6 +12,8 @@ import org.swp.entity.other.Feedback;
 import org.swp.entity.other.FeedbackReply;
 import org.swp.repository.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,6 +59,7 @@ public class FeedBackService {
         User user = userRepository.findByUsername(userName).get();
         org.swp.entity.Service service = serviceRepository.findById(request.getServiceId()).get();
         Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service);
+        feedback.setCreatedTime(LocalDateTime.now());
         feedbackRepository.save(feedback);
         return "Create feedback successfully";
     }
