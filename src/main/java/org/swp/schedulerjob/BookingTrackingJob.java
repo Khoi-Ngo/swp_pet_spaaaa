@@ -18,6 +18,6 @@ public class BookingTrackingJob {
     @Scheduled(fixedRate = POLLING_INTERVAL)
     public void trackStatusBooking() {
         logger.info("Tracking status booking triggered");
-//        bookingService.trackBookingStatus(LocalDateTime.now());
+        bookingService.trackBookingStatus(LocalDateTime.now());
     }
 }
