@@ -55,15 +55,14 @@ public class NominationService {
         return "Create nomination successfully";
     }
 
-    public Object deleteNomination(String token, NominationDeleteRequest request) {//todo: this action need refresh page if no using websocket
-        String userName = getUserNameFromToken(token);
-        User user = userRepository.findByUsername(userName).get();
-        Nomination nomination = nominationRepository.findByShopIdAndUserId(request.getShopId(), user.getId());
-        Shop shop = nomination.getShop();
-        shop.setNomination(shop.getNomination() - request.getNominationType().getValue());
-        shopRepository.save(shop);
+    public Object deleteNomination(String token, int nominationId) {//todo: this action need refresh page if no using websocket
+        Nomination nomination = nominationRepository.findById(nominationId).get();
+        if (!isValidUser(token, nomination)) throw new RuntimeException("No valid user");
         nomination.setDeleted(true);
         nominationRepository.save(nomination);
+        Shop shop = nomination.getShop();
+        shop.setNomination(shop.getNomination() - nomination.getNominationType().getValue());
+        shopRepository.save(shop);
         return "Remove nomination successfully";
     }
 
@@ -93,4 +92,13 @@ public class NominationService {
         return dto;
     }
 
+    private boolean isValidUser(String token, Nomination nomination) {
+        return nomination.getUser().getUsername().equals(getUserNameFromToken(token));
+    }
+
+    public Object getNominationByUserAndShop(String token, Integer shopId) {
+        int userId = userRepository.findByUsername(getUserNameFromToken(token)).get().getId();
+        Nomination nomination = nominationRepository.findByShopIdAndUserId(shopId, userId);
+        return createNominationListItemDto(nomination);
+    }
 }

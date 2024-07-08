@@ -34,16 +34,27 @@ public class NominationController {
     }
 
     //customer delete nomination
-    @PostMapping("/delete")
+    @DeleteMapping("/{nominationId}")
     public ResponseEntity<?> deleteNomination(
             @RequestHeader(name = "Authorization") String token,
-            @RequestBody NominationDeleteRequest request) {
+            @PathVariable("nominationId") int nominationId) {
         try {
-            var response = nominationService.deleteNomination(token, request);
+            var response = nominationService.deleteNomination(token, nominationId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body("There was an error deleting nomination");
+        }
+    }
+
+    @GetMapping("{shopId}")
+    public ResponseEntity<?> getNominationDetail(@RequestHeader(name = "Authorization") String token,
+                                                 @PathVariable("shopId") Integer shopId) {
+        try {
+            return ResponseEntity.ok(nominationService.getNominationByUserAndShop(token, shopId));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
