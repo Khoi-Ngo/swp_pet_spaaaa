@@ -80,6 +80,7 @@ public class NominationService {
         dto.setShopName(nomination.getShop().getShopName());
         dto.setUserName(nomination.getUser().getUsername());
         dto.setNominationType(nomination.getNominationType());
+        dto.setUserId(nomination.getUser().getId());
         return dto;
     }
 

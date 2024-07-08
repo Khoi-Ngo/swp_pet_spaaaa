@@ -40,6 +40,7 @@ public class FeedBackService {
             FeedbackListItemDto dto = modelMapper.map(entity, FeedbackListItemDto.class);
             dto.setUserName(entity.getUser().getUsername());
             dto.setLocalDateTime(entity.getCreatedTime());
+            dto.setUserId(entity.getUser().getId());
             return dto;
         }).collect(Collectors.toList());
     }

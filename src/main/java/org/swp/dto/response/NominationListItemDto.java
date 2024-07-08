@@ -9,4 +9,5 @@ public class NominationListItemDto {
     private String shopName;
     private NominationType nominationType;
     private String userName;
+    private int userId;
 }

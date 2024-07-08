@@ -13,4 +13,5 @@ public class FeedbackListItemDto {
     private RatingType ratingType;
     private boolean isEdited;
     private LocalDateTime localDateTime;
+    private int userId;
 }
