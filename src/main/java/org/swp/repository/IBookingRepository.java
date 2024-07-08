@@ -51,7 +51,7 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
 //            "      (select e.id from tbl_cache_shop_time_slot e where e.shop_time_slot_id = :id);", nativeQuery = true)
 //    void deleteAllByShopTimeSlot(@Param("id") int id);
 
-    @Query(value = "SELECT * FROM tbl_booking WHERE pet_id = :petId AND cache_shop_time_slot_id = :cacheId AND (status = 'SCHEDULED') AND is_deleted = 0", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_booking WHERE pet_id = :petId AND cache_shop_time_slot_id = :cacheId AND status = 'SCHEDULED' AND is_deleted = 0", nativeQuery = true)
     Booking findAnyPetScheduled(@Param("petId") Integer petId, @Param("cacheId") Integer cacheId);
 
     @Query(value = "SELECT *\n" +
