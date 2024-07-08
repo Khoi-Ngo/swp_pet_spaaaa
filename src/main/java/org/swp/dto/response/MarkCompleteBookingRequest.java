@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class MarkCompleteBookingRequest {
-    private Integer bookingId;
+    private int bookingId;
 }
