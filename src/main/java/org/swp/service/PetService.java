@@ -35,7 +35,7 @@ public class PetService {
 
     //get all pet for customer
     public Object getAllPets(String token) {
-        String username = getUserNameFromToken(token);
+        String username = jwtService.getUserNameFromToken(token);
         List<Pet> pets;
         pets = isAdmin(username) ?
                 petrepository.findAll() :
@@ -87,15 +87,6 @@ public class PetService {
         return dto;
     }
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
     private boolean isAdmin(String username) {
         User user = userRepository.findByUsername(username).get();
         return UserRole.ADMIN.equals(user.getRole());
@@ -110,7 +101,7 @@ public class PetService {
     }
 
     public Object deletePet(int id, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         Pet pet = petrepository.findById(id).get();
         if (!pet.getUser().getUsername().equals(userName)) throw new RuntimeException("User not own the pet");
         pet.setDeleted(true);

@@ -61,7 +61,7 @@ public class AdminService {
     }
 
     public User addShopOwner(@NotNull SignUpRequest signUpRequest, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
 
         if (!isAdmin(userName)) {
             throw new IllegalArgumentException("You do not have permission to use this function");
@@ -82,7 +82,7 @@ public class AdminService {
     }
 
     public Object deleteUserById(int id, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
 
         if(userRepository.findById(id).isEmpty()){
             return "user not found";
@@ -113,15 +113,6 @@ public class AdminService {
     private boolean isAdmin(String username) {
         User user = userRepository.findByUsername(username).get();
         return UserRole.ADMIN.equals(user.getRole());
-    }
-
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
     }
 
 }

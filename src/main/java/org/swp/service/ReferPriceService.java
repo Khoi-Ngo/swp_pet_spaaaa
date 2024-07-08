@@ -33,7 +33,7 @@ public class ReferPriceService {
 
     public Object updateReferPrice(ReferPriceUpdateRequest request, String token) {
         ReferPrice referPrice = referPriceRepository.findById(request.getId()).get();
-        if (!referPrice.getService().getShop().getUser().getUsername().equals(getUserNameFromToken(token)))
+        if (!referPrice.getService().getShop().getUser().getUsername().equals(jwtService.getUserNameFromToken(token)))
             throw new RuntimeException("User not shop owner");
         referPrice.setMaxWeight(Objects.nonNull(request.getMaxWeight()) ? request.getMaxWeight() : referPrice.getMaxWeight());
         referPrice.setMinWeight(Objects.nonNull(request.getMinWeight()) ? request.getMinWeight() : referPrice.getMinWeight());
@@ -44,7 +44,7 @@ public class ReferPriceService {
 
     public Object deleteReferPrice(int id, String token) {
         ReferPrice referPrice = referPriceRepository.findById(id).get();
-        if (!referPrice.getService().getShop().getUser().getUsername().equals(getUserNameFromToken(token)))
+        if (!referPrice.getService().getShop().getUser().getUsername().equals(jwtService.getUserNameFromToken(token)))
             throw new RuntimeException("User not shop owner");
         referPrice.setDeleted(true);
         referPriceRepository.save(referPrice);
@@ -55,12 +55,4 @@ public class ReferPriceService {
         return referPriceRepository.findByServiceId(serviceId).stream().map(e -> modelMapper.map(e, ReferPriceDto.class)).collect(Collectors.toList());
     }
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
 }

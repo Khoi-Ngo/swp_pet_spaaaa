@@ -20,8 +20,8 @@ public interface ICacheShopTimeSlotRepository extends JpaRepository<CacheShopTim
     CacheShopTimeSlot findByShopDateAndTimeSlot(@Param("id") Integer id, @Param("localDate") LocalDate localDate, @Param("shopTimeSlot") ShopTimeSlot shopTimeSlot);
 
 
-    @Query(value = "update tbl_cache_shop_time_slot\n" +
-            "set is_deleted = 1\n" +
-            "where shop_time_slot_id = :id", nativeQuery = true)
-    void deleteAllByShopTimeSlot(@Param("id") int id);
+//    @Query(value = "update tbl_cache_shop_time_slot\n" +
+//            "set is_deleted = 1\n" +
+//            "where shop_time_slot_id = :id", nativeQuery = true)
+//    void deleteAllByShopTimeSlot(@Param("id") int id);
 }

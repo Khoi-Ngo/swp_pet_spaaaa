@@ -17,7 +17,6 @@ import org.swp.repository.IUserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +73,7 @@ public class ShopService {
 
     //get shop for shop owner
     public Object getShopDetail(String token) {
-        String username = getUserNameFromToken(token);
+        String username = jwtService.getUserNameFromToken(token);
         Shop shop = shopRepository.findByUserName(username);
         if (shop.isDeleted() == true) {
             return "Shop is deleted!";
@@ -99,7 +98,7 @@ public class ShopService {
 
     public Object updateShop(UpdateShopRequest request, String token) {
         Shop shop = shopRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("Shop not found with id: " + request.getId()));
-        if (!shop.getUser().getUsername().equals(getUserNameFromToken(token)))
+        if (!shop.getUser().getUsername().equals(jwtService.getUserNameFromToken(token)))
             throw new RuntimeException("User not shop owner");
 
         LocalDateTime openDateTime = LocalDateTime.of(LocalDate.now(), request.getOpenTime());
@@ -114,7 +113,7 @@ public class ShopService {
     public Object deleteShop(int id, String token) {
         Shop shop = shopRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Shop not found with id: " + id));
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         if (!userName.equals(shop.getUser().getUsername())) throw new RuntimeException("User not shop owner");
         shop.setDeleted(true);
         shopRepository.save(shop);
@@ -130,16 +129,6 @@ public class ShopService {
         return "Deleted";
     }
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
-
     public Object getShopDetailById(int id) {
         Shop shop = shopRepository.findById(id).get();
         if (shop.isDeleted() == true) {
@@ -150,13 +139,13 @@ public class ShopService {
 
 
     public Object getShopId(String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         return shopRepository.getShopIdFromUserName(userName);
     }
 
 
     public Object getDashboardOfShop(String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         Shop shop = shopRepository.findById(shopRepository.getShopIdFromUserName(userName)).get();
 
         DashboardDto dto = new DashboardDto();

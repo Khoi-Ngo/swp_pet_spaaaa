@@ -76,4 +76,13 @@ public class JWTService {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
+    public String getUserNameFromToken(String token) {
+        String userName = null;
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7); // Remove "Bearer " prefix
+            userName = extractUserName(jwtToken);
+        }
+        return userName;
+    }
+
 }

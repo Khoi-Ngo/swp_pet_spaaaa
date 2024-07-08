@@ -55,7 +55,7 @@ public class FeedBackService {
     }
 
     public Object createFeedback(String token, FeedbackCreateRequest request) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(userName).get();
         org.swp.entity.Service service = serviceRepository.findById(request.getServiceId()).get();
         Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service);
@@ -84,7 +84,7 @@ public class FeedBackService {
     }
 
     private boolean doOwnFeedback(Feedback feedback, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         return userName.equals(feedback.getUser().getUsername());
     }
 
@@ -96,15 +96,6 @@ public class FeedBackService {
         feedback.setEdited(true);
         feedbackRepository.save(feedback);
         return "Update feedback successfully";
-    }
-
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
     }
 
 }

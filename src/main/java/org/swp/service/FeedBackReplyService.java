@@ -28,7 +28,7 @@ public class FeedBackReplyService {
     private IFeedBackReplyRepository feedBackReplyRepository;
 
     public Object createFeedbackReply(String token, FeedbackReplyCreateRequest request) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(userName).get();
         Feedback feedback = feedbackRepository.findById(request.getFeedbackId()).get();
         FeedbackReply feedbackReply = new FeedbackReply(request.getContent(), user, feedback);
@@ -36,17 +36,8 @@ public class FeedBackReplyService {
         return "Create feedback reply successfully";
     }
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
     private boolean doOwnFeedbackReply(FeedbackReply feedbackReply, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         return userName.equals(feedbackReply.getUser().getUsername());
     }
 

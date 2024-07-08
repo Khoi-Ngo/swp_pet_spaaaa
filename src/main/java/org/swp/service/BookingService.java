@@ -43,17 +43,8 @@ public class BookingService {
     @Autowired
     private JWTService jwtService;
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
     public Object getAllBookings(int cacheShopTimeSlotId, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         List<Booking> bookingList = bookingRepository.findAllByShopOwnerUserNameAndTimeSlot(userName, cacheShopTimeSlotId);
         List<BookingListItemDto> dtos = new ArrayList<>();
         bookingList.forEach(b -> {
@@ -98,7 +89,7 @@ public class BookingService {
     }
 
     public Object getAllBookings(String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         List<Booking> res = isCustomer(userName) ?
                 bookingRepository.findALlByCustomerUserName(userName)
                 : bookingRepository.findAllByShopOwnerUserName(userName);
@@ -193,8 +184,10 @@ public class BookingService {
         Pet pet = getPet(request, customer);
         var service = serviceRepository.findById(request.getServiceId()).get();
         CacheShopTimeSlot cacheShopTimeSlot = getCacheShopTimeSlot(request.getLocalDate(), request.getTimeSlotDto().getStartLocalDateTime(), request.getTimeSlotDto().getEndLocalDateTime(), service.getShop().getId());
+
         if (!isValidPet(pet.getId(), cacheShopTimeSlot.getId()))
             throw new RuntimeException("The pet is already booked this timeslot");
+
         createBooking(request.getAdditionalMessage(), service, customer, pet, cacheShopTimeSlot);
         return "Create booking ok!";
     }
@@ -268,7 +261,7 @@ public class BookingService {
     }
 
     private boolean doInvoleBooking(Booking booking, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         Integer role = userRepository.findRoleByUserName(userName); // just need role
         return role.equals(UserRole.CUSTOMER.getValue()) ?
                 booking.getUser().getUsername().equals(userName) :
@@ -276,8 +269,9 @@ public class BookingService {
     }
 
     public void trackBookingStatus(LocalDateTime now) {
-//        List<Integer> bookingIds = bookingRepository.findAllScheduledIdsAndLock(now);
-//        bookingRepository.updateStatus(bookingIds, BookingStatus.NEED_CONFIRM);
+        List<Booking> bookingList = bookingRepository.findAllScheduledBoookingsAndLock(now.toLocalTime(), now.toLocalDate());
+        bookingList.forEach(b -> b.setStatus(BookingStatus.NEED_CONFIRM.name()));
+        bookingRepository.saveAll(bookingList);
     }
 
 }

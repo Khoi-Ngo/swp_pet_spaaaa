@@ -180,7 +180,7 @@ public class ServiceService {
     }
 
     private boolean isShopOwnerOfService(org.swp.entity.Service service, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         return userName.equals(service.getShop().getUser().getUsername());
     }
 
@@ -195,7 +195,7 @@ public class ServiceService {
     }
 
     public Object getAllOfShopowner(String token) {
-        String username = getUserNameFromToken(token);
+        String username = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(username).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
         return serviceRepository.findAllByShopId(shop.getId()).stream()
@@ -205,15 +205,6 @@ public class ServiceService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-    }
-
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
     }
 
 }

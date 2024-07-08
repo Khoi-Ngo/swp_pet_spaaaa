@@ -52,17 +52,19 @@ public class ShopTimeSlotService {
     //delete
     public Object deleteShopTimeSlot(int id, String token) {
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findById(id).get();
+
         if (!isShopOwner(shopTimeSlot, token)) throw new RuntimeException("User not shop owner");
+
         shopTimeSlot.setDeleted(true);
         shopTimeSlotRepository.save(shopTimeSlot);
         //affect booking, cacheshoptimeslot -> all booking will be canceled
-        bookingRepository.deleteAllByShopTimeSlot(id);
-        cacheShopTimeSlotRepository.deleteAllByShopTimeSlot(id);
+//        bookingRepository.deleteAllByShopTimeSlot(id);
+//        cacheShopTimeSlotRepository.deleteAllByShopTimeSlot(id);
         return "delete shop time slot successfully";
     }
 
     private boolean isShopOwner(ShopTimeSlot shopTimeSlot, String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         return userName.equals(shopTimeSlot.getShop().getUser().getUsername());
     }
 
@@ -87,7 +89,7 @@ public class ShopTimeSlotService {
 
     //get all
     public Object getAllShopTimeSlot(String token) {
-        String username = getUserNameFromToken(token);
+        String username = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(username).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
 
@@ -104,17 +106,6 @@ public class ShopTimeSlotService {
                 })
                 .collect(Collectors.toList());
     }
-
-
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
 
 }
 

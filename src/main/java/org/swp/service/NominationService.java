@@ -30,17 +30,8 @@ public class NominationService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
     public Object createNomination(String token, NomiCreateRequest request) {//todo: this action need refresh page if no using websocket
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(userName).get();
         Nomination nomination;
         nomination = nominationRepository.findByShopIdAndUserId(request.getShopId(), user.getId());
@@ -67,7 +58,7 @@ public class NominationService {
     }
 
     public Object getNominationHistory(String token) {
-        String userName = getUserNameFromToken(token);
+        String userName = jwtService.getUserNameFromToken(token);
         Integer userId = userRepository.findByUsername(userName).get().getId();
         List<Nomination> nominationList = nominationRepository.findAllByUserId(userId);
         List<NominationListItemDto> dtos = new ArrayList<>();
@@ -93,11 +84,11 @@ public class NominationService {
     }
 
     private boolean isValidUser(String token, Nomination nomination) {
-        return nomination.getUser().getUsername().equals(getUserNameFromToken(token));
+        return nomination.getUser().getUsername().equals(jwtService.getUserNameFromToken(token));
     }
 
     public Object getNominationByUserAndShop(String token, Integer shopId) {
-        int userId = userRepository.findByUsername(getUserNameFromToken(token)).get().getId();
+        int userId = userRepository.findByUsername(jwtService.getUserNameFromToken(token)).get().getId();
         Nomination nomination = nominationRepository.findByShopIdAndUserId(shopId, userId);
         return createNominationListItemDto(nomination);
     }

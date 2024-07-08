@@ -50,23 +50,14 @@ public class UserService {
 
 
     public Object getUserProfile(String token) {
-        String username = getUserNameFromToken(token);
+        String username = jwtService.getUserNameFromToken(token);
         User user = IUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
         PrivateUserDto dto = modelMapper.map(user, PrivateUserDto.class);
         return dto;
     }
 
-    private String getUserNameFromToken(String token) {
-        String userName = null;
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7); // Remove "Bearer " prefix
-            userName = jwtService.extractUserName(jwtToken);
-        }
-        return userName;
-    }
-
-    public Object updateUserProfile(UpdateUserProfileRequest request){
+    public Object updateUserProfile(UpdateUserProfileRequest request) {
         User user = IUserRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -91,7 +82,7 @@ public class UserService {
 
     public Object updatePassword(String token, UpdatePasswordRequest request) {
         try {
-            String username = getUserNameFromToken(token);
+            String username = jwtService.getUserNameFromToken(token);
             User user = IUserRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
