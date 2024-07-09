@@ -88,6 +88,16 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getDashboard() {
+        try {
+            return ResponseEntity.ok(adminService.getDashboardOfAdmin());
+        } catch (Exception e) {
+            logger.error("Cannot find the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {
         logger.error("Unhandled exception occurred", ex);

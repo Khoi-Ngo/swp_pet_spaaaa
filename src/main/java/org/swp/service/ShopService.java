@@ -157,7 +157,7 @@ public class ShopService {
         dto.setTotalBookings(bookingRepository.findAllByShopOwnerUserName(userName).size());
         dto.setTotalNominations(shop.getNomination());
 
-        List<Object[]> queryResult = bookingRepository.findMonthlyBookings(shop.getId());
+        List<Object[]> queryResult = bookingRepository.findMonthlyBookingsOfShop(shop.getId());
 
         List<MonthlyBookingDto> monthlyBookings = new ArrayList<>();
         YearMonth currentMonth = YearMonth.now();

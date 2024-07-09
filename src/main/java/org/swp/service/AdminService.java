@@ -8,15 +8,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.SignUpRequest;
-import org.swp.dto.response.DetailAccountDto;
-import org.swp.dto.response.ListAccountCustomerDto;
-import org.swp.dto.response.ListAccountShopOwnerDto;
+import org.swp.dto.response.*;
 import org.swp.entity.User;
 import org.swp.enums.UserRole;
 import org.swp.repository.IAdminRepository;
+import org.swp.repository.IServiceRepository;
+import org.swp.repository.IShopRepository;
 import org.swp.repository.IUserRepository;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -107,6 +111,41 @@ public class AdminService {
         }
         DetailAccountDto dto = modelMapper.map(user, DetailAccountDto.class);
         dto.setStatus(user.isDeleted());
+        return dto;
+    }
+
+    public Object getDashboardOfAdmin(){
+        AdminDashboardDto dto = new AdminDashboardDto();
+        dto.setTotalShop(adminRepository.countTotalShops());
+        dto.setTotalServices(adminRepository.countTotalServices());
+        dto.setTotalCustomer(adminRepository.countTotalCustomer());
+        dto.setTotalBookings(adminRepository.countTotalBookings());
+        dto.setTotalPets(adminRepository.countTotalPets());
+        List<Object[]> queryResult = adminRepository.findMonthlyBookings();
+
+        List<MonthlyBookingDto> monthlyBookings = new ArrayList<>();
+        YearMonth currentMonth = YearMonth.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+
+        for (int month = 1; month <= 12; month++) {
+            YearMonth ym = YearMonth.of(currentMonth.getYear(), month);
+            String monthStr = ym.format(formatter);
+
+            Optional<Object[]> matchingResult = queryResult.stream()
+                    .filter(result -> monthStr.equals(result[0]))
+                    .findFirst();
+
+            MonthlyBookingDto mbDto = new MonthlyBookingDto();
+            mbDto.setMonth(monthStr);
+            if (matchingResult.isPresent()) {
+                mbDto.setBookings(((Number) matchingResult.get()[1]).intValue());
+            } else {
+                mbDto.setBookings(0);
+            }
+            monthlyBookings.add(mbDto);
+        }
+
+        dto.setMonthlyBookings(monthlyBookings);
         return dto;
     }
 

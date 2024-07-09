@@ -78,10 +78,10 @@ public interface IBookingRepository extends JpaRepository<Booking, Integer> {
             "    tbl_cache_shop_time_slot csts ON b.cache_shop_time_slot_id = csts.id\n" +
             "WHERE\n" +
             "    YEAR(csts.local_date) = YEAR(CURDATE())\n" +
-            "    AND b.shop_id = :shopId \n" +
+            "    AND b.shop_id = :shopId AND b.is_deleted = false\n" +
             "GROUP BY\n" +
             "    DATE_FORMAT(csts.local_date, '%Y-%m');", nativeQuery = true)
-    List<Object[]> findMonthlyBookings(@Param("shopId") int shopId);
+    List<Object[]> findMonthlyBookingsOfShop(@Param("shopId") int shopId);
 
     @Transactional
     @Lock(LockModeType.PESSIMISTIC_WRITE) // Locks the selected rows for writing
