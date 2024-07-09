@@ -34,11 +34,11 @@ BEGIN
         SET bookingid = NEW.id;
 
         -- Insert into notification -> customer
-        INSERT INTO tbl_notification (content, user_id, booking_id)
-        VALUES (CONCAT('Your booking status on : ', bookedDate, ' is updated'), customerid, bookingid);
+        INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read )
+        VALUES (CONCAT('Your booking status on : ', bookedDate, ' is updated'), customerid, bookingid, false, false);
         -- Insert into notification -> shop owner
-        INSERT INTO tbl_notification (content, user_id, booking_id)
-        VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate, ' is updated'), shopownerid, bookingid);
+        INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
+        VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate, ' is updated'), shopownerid, bookingid, false, false);
 
     END IF;
 END //
@@ -82,12 +82,12 @@ BEGIN
     SET bookingid = NEW.id;
 
     -- insert into notification for customer
-    INSERT INTO tbl_notification (content, user_id, booking_id)
-    VALUES (CONCAT('Your booking status on : ', bookedDate, ' is created'), customerid, bookingid);
+    INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
+    VALUES (CONCAT('Your booking status on : ', bookedDate, ' is created'), customerid, bookingid, false, false);
 
     -- insert into notification for shopowner
-    INSERT INTO tbl_notification (content, user_id, booking_id)
-    VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate,' is created'), shopownerid, bookingid);
+    INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
+    VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate,' is created'), shopownerid, bookingid, false, false);
 END //
 
 DELIMITER ;
