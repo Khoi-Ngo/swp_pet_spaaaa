@@ -9,6 +9,7 @@ import org.swp.repository.ICategorySerivceRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceService {
@@ -18,7 +19,9 @@ public class CategoryServiceService {
     private ModelMapper modelMapper;
 
     public List<ServiceCategoryDto> getAll() {
-        List<ServiceCategory> serviceCategories = categorySerivceRepository.findAll();
+        List<ServiceCategory> serviceCategories = categorySerivceRepository.findAll().stream()
+                .filter(serviceCategory -> !serviceCategory.isDeleted())
+                .toList();
         List<ServiceCategoryDto> serviceCategoryDtos = new ArrayList<>();
         serviceCategories.forEach(sc -> serviceCategoryDtos.add(modelMapper.map(sc, ServiceCategoryDto.class)));
         return serviceCategoryDtos;

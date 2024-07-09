@@ -38,6 +38,10 @@ public class PetService {
     //get all pet for customer
     public Object getAllPets(String token) {
         String username = jwtService.getUserNameFromToken(token);
+        User user = userRepository.findByUsername(username).get();
+        if(user.isDeleted()){
+            return "user is deleted";
+        }
         List<Pet> pets;
         pets = isAdmin(username) ?
                 petrepository.findAll() :

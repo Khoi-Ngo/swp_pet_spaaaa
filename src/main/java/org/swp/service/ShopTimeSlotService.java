@@ -94,6 +94,7 @@ public class ShopTimeSlotService {
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
 
         return shopTimeSlotRepository.findByShopId(shop.getId()).stream()
+                .filter(shopTimeSlot -> !shopTimeSlot.getTimeSlot().isDeleted())
                 .map(shopTimeSlot -> {
                     ListShopTimeSlotDto dto = modelMapper.map(shopTimeSlot, ListShopTimeSlotDto.class);
 

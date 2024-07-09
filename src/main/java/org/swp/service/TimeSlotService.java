@@ -20,6 +20,7 @@ public class TimeSlotService {
 
     public Object getAllTimeSlot() {
         return timeSlotRepository.findAll().stream()
+                .filter(timeSlot -> !timeSlot.isDeleted())
                 .map(timeSlot -> {
                     ListTimeSlotDto dto = modelMapper.map(timeSlot, ListTimeSlotDto.class);
                     return dto;

@@ -82,8 +82,10 @@ public class BookingService {
 
             }
 
+            if(!b.getCacheShopTimeSlot().getShopTimeSlot().isDeleted()){
+                dtos.add(dto);
+            }
 
-            dtos.add(dto);
         });
         return dtos;
     }
@@ -130,8 +132,10 @@ public class BookingService {
 
             }
 
+            if(!b.getCacheShopTimeSlot().getShopTimeSlot().isDeleted()){
+                dtos.add(dto);
+            }
 
-            dtos.add(dto);
         });
         return dtos;
     }
@@ -147,6 +151,9 @@ public class BookingService {
 
     public Object getBookingById(int id) {
         Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking.isDeleted()){
+            return "booking is deleted";
+        }
         BookingDetailDto dto = modelMapper.map(booking, BookingDetailDto.class);
         CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
         dto.setLocalDate(cacheShopTimeSlot.getLocalDate());

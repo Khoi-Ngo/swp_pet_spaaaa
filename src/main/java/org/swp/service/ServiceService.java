@@ -16,6 +16,7 @@ import org.swp.repository.IServiceRepository;
 import org.swp.repository.IShopRepository;
 import org.swp.repository.IUserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -185,10 +186,20 @@ public class ServiceService {
     }
 
     public Object updateService(UpdateServiceRequest request) {
+        if(request.getId() <= 0 ){
+            return "serviceId is null";
+        }
+        if(request.getServiceCategoryId() <= 0){
+            return "categoryId is null";
+        }
         org.swp.entity.Service service = modelMapper.map(request, org.swp.entity.Service.class);
         User user = userRepository.findById(request.getUserId()).get();
         Shop shop = shopRepository.findByShopOwnerId(user.getId());
+        if (shop == null) {
+            return "Shop not found";
+        }
         service.setCategory(categorySerivceRepository.findById(request.getServiceCategoryId()).get());
+        service.setCreatedTime(LocalDateTime.now());
         service.setShop(shop);
         serviceRepository.save(service);
         return request;

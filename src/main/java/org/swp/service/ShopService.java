@@ -17,7 +17,11 @@ import org.swp.repository.IUserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -152,14 +156,31 @@ public class ShopService {
         dto.setTotalServices(shop.getTotalServices());
         dto.setTotalBookings(bookingRepository.findAllByShopOwnerUserName(userName).size());
         dto.setTotalNominations(shop.getNomination());
-        List<MonthlyBookingDto> monthlyBookings = bookingRepository.findMonthlyBookings(shop.getId()).stream()
-                .map(a ->{
-                        MonthlyBookingDto mbDto = new MonthlyBookingDto();
-                        mbDto.setMonth((String) a[0]);
-                        mbDto.setBookings(((Number) a[1]).intValue());
-                        return mbDto;
-                })
-                .collect(Collectors.toList());
+
+        List<Object[]> queryResult = bookingRepository.findMonthlyBookings(shop.getId());
+
+        List<MonthlyBookingDto> monthlyBookings = new ArrayList<>();
+        YearMonth currentMonth = YearMonth.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+
+        for (int month = 1; month <= 12; month++) {
+            YearMonth ym = YearMonth.of(currentMonth.getYear(), month);
+            String monthStr = ym.format(formatter);
+
+            Optional<Object[]> matchingResult = queryResult.stream()
+                    .filter(result -> monthStr.equals(result[0]))
+                    .findFirst();
+
+            MonthlyBookingDto mbDto = new MonthlyBookingDto();
+            mbDto.setMonth(monthStr);
+            if (matchingResult.isPresent()) {
+                mbDto.setBookings(((Number) matchingResult.get()[1]).intValue());
+            } else {
+                mbDto.setBookings(0);
+            }
+            monthlyBookings.add(mbDto);
+        }
+
         dto.setMonthlyBookings(monthlyBookings);
         return dto;
     }
