@@ -20,4 +20,6 @@ public class ReferPrice extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "service_id")
     private Service service;
+    private String petType;
+
 }

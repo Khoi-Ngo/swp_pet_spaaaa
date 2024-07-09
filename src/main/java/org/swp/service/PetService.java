@@ -17,6 +17,8 @@ import org.swp.repository.IBookingRepository;
 import org.swp.repository.IPetrepository;
 import org.swp.repository.IUserRepository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,9 +56,20 @@ public class PetService {
             dto.setOwnerId(petEntity.getUser().getId());
             dto.setOwnerName(petEntity.getUser().getFirstName() + petEntity.getUser().getLastName());
             List<Booking> bookings = bookingRepository.findByPetIdAndStatus(petEntity.getId(), BookingStatus.SCHEDULED.name());
-            boolean doHaveUpcomingSchedule = true;
-            if (Objects.isNull(bookings) || bookings.isEmpty()) doHaveUpcomingSchedule = false;
+            boolean doHaveUpcomingSchedule = false;
+            LocalDate localDate = null;
+            LocalTime startTime = null;
+            LocalTime endTime = null;
+            if (Objects.nonNull(bookings) && !bookings.isEmpty()) {
+                doHaveUpcomingSchedule = true;
+                localDate = bookings.get(0).getCacheShopTimeSlot().getLocalDate();
+                startTime = bookings.get(0).getCacheShopTimeSlot().getShopTimeSlot().getTimeSlot().getStartLocalDateTime();
+                endTime = bookings.get(0).getCacheShopTimeSlot().getShopTimeSlot().getTimeSlot().getEndLocalDateTime();
+            }
             dto.setDoHaveUpcomingSchedule(doHaveUpcomingSchedule);
+            dto.setNearestBookingDate(localDate);
+            dto.setStartTime(startTime);
+            dto.setEndTime(endTime);
             return dto;
         }).collect(Collectors.toList());
 

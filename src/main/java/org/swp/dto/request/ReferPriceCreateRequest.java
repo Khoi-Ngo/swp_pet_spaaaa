@@ -12,4 +12,5 @@ public class ReferPriceCreateRequest {
     @NotNull
     private double referPrice;
     private Integer serviceId;
+    private String petType;
 }

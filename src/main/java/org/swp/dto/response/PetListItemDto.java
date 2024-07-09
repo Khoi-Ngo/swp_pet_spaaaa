@@ -3,6 +3,9 @@ package org.swp.dto.response;
 import lombok.Data;
 import org.swp.enums.TypePet;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Data
 public class PetListItemDto {
     private Integer id;
@@ -19,4 +22,8 @@ public class PetListItemDto {
 
     //booking overview detail
     private boolean doHaveUpcomingSchedule;
+    //nearest booking
+    private LocalDate nearestBookingDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
 }
