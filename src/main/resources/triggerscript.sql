@@ -17,13 +17,13 @@ BEGIN
         INTO bookedDate
         FROM tbl_booking b
                  INNER JOIN tbl_cache_shop_time_slot c ON c.id = b.cache_shop_time_slot_id
-        WHERE b.id = NEW.id;
+        WHERE b.id = NEW.id limit 1;
 
         SELECT DISTINCT u.id
         INTO shopownerid
         FROM tbl_user u
                  INNER JOIN tbl_shop s ON u.id = s.shop_owner_id
-        WHERE s.id = NEW.shop_id;
+        WHERE s.id = NEW.shop_id limit 1;
 
         SELECT u.username
         INTO customername
@@ -65,13 +65,13 @@ BEGIN
     INTO bookedDate
     FROM tbl_booking b
              INNER JOIN tbl_cache_shop_time_slot c ON c.id = b.cache_shop_time_slot_id
-    WHERE b.id = NEW.id;
+    WHERE b.id = NEW.id limit 1;
 
     SELECT DISTINCT u.id
     INTO shopownerid
     FROM tbl_user u
              INNER JOIN tbl_shop s ON u.id = s.shop_owner_id
-    WHERE s.id = NEW.shop_id;
+    WHERE s.id = NEW.shop_id limit 1;
 
     SELECT u.username
     INTO customername
