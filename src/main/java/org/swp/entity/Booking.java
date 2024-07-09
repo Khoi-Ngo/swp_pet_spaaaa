@@ -15,6 +15,7 @@ public class Booking extends BaseEntity {
     @Lob
     private String bookingNote;
     private String status;
+    private String additionalMessage;// -> used for cancel booking only
 
 
     @ManyToOne

@@ -34,5 +34,7 @@ public class BookingDetailDto {
     private String petName;
     private Integer petWeight;
     @Lob
-    private String note;
+    private String note;//bookingNote
+
+    private String additionalMessage;//in case of view of CANCELED booking
 }
