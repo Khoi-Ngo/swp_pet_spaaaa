@@ -161,6 +161,10 @@ public class BookingService {
         dto.setEndTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
         dto.setBookingNote(booking.getBookingNote());
 
+        if (booking.getStatus().equals(BookingStatus.CANCELLED.name())) {
+            dto.setAdditionalMessage(booking.getAdditionalMessage());
+        }
+
         //user info
         User user = booking.getUser();
         dto.setFirstName(user.getFirstName());
@@ -181,8 +185,8 @@ public class BookingService {
         org.swp.entity.Service service = booking.getService();
         dto.setServiceId(service.getId());
         dto.setServiceName(service.getServiceName());
-        return dto;
 
+        return dto;
     }
 
     @Transactional
