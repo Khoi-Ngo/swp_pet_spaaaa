@@ -12,7 +12,6 @@ import java.util.List;
 public interface INotificationRepository extends JpaRepository<Notification, Integer> {
     @Query(value = "SELECT * FROM tbl_notification where user_id = (SELECT id FROM tbl_user WHERE username = :username) and is_deleted = false and is_read = false ORDER BY id DESC", nativeQuery = true)
     List<Notification> findAllByUser(@Param("username") String username);
-//
-//    @Query(value = "SELECT * FROM tbl_notification where is_deleted = false and is_read = false ORDER BY id DESC", nativeQuery = true)
-//    List<Notification> findAllNotRead();
+    @Query(value = "SELECT count(id) FROM tbl_notification where user_id = (SELECT id FROM tbl_user WHERE username = :username) and is_deleted = false and is_read = false ORDER BY id DESC", nativeQuery = true)
+    Integer getTotalUnread(@Param("username") String username);
 }

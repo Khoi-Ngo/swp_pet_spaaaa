@@ -25,6 +25,15 @@ public class NotificationController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/total")
+    public ResponseEntity<?> getTotalUnreadNotification(@RequestHeader(name = "Authorization") String token) {
+        try {
+            return ResponseEntity.ok(notificationService.getTotalUnreadNotification(token));
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     //onclick single notification
     @PostMapping("/onclick/{id}")

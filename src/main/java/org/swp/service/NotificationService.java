@@ -52,6 +52,10 @@ public class NotificationService {
         return notification.getUser().getUsername().equals(jwtService.getUserNameFromToken(token));
     }
 
+    public Integer getTotalUnreadNotification(String token) {
+        return notificationRepository.getTotalUnread(jwtService.getUserNameFromToken(token));
+    }
+
 //    @Scheduled(fixedRate = 10000)
 //    public void checkNewNotificationOfUser() throws Exception {
 //        List<NotificationDto> notificationDtoList = notificationRepository.findAllNotRead().stream()
