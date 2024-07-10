@@ -48,6 +48,9 @@ public class AuthenticationService {
                 .findByUsername(
                         signInRequest.getUsername()).orElseThrow(()
                         -> new IllegalArgumentException("Invalid username or password."));
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("User account has been deleted.");
+        }
         var jwt = jwtService.generrateToken(user, user.getId(), user.getEmail(), user.getRole());
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user,
                 user.getId(), user.getEmail(), user.getRole()
