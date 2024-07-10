@@ -154,4 +154,12 @@ public class AdminService {
         return UserRole.ADMIN.equals(user.getRole());
     }
 
+    public Object getTotalAccountCustomer() {
+        return adminRepository.countTotalCustomer();
+    }
+
+
+    public Object getTotalAccountShopOwner() {
+        return adminRepository.countTotalShopOwners();
+    }
 }

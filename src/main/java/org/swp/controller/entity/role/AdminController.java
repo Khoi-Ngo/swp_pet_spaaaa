@@ -98,6 +98,26 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/total/customer")
+    public ResponseEntity<?> getTotalAccountCustomer() {
+        try {
+            return ResponseEntity.ok(adminService.getTotalAccountCustomer());
+        } catch (Exception e) {
+            logger.error("Cannot find the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
+    @GetMapping("/total/shopOwner")
+    public ResponseEntity<?> getTotalAccountShopOwner() {
+        try {
+            return ResponseEntity.ok(adminService.getTotalAccountShopOwner());
+        } catch (Exception e) {
+            logger.error("Cannot find the shop" + e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the shop");
+        }
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {
         logger.error("Unhandled exception occurred", ex);

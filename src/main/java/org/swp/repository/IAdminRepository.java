@@ -33,6 +33,9 @@ public interface IAdminRepository extends JpaRepository<User, Integer> {
     @Query(value = "select count(*) from tbl_pet where is_deleted = false", nativeQuery = true)
     int countTotalPets();
 
+    @Query(value = "select count(*) from tbl_user where is_deleted = false and role = 2", nativeQuery = true)
+    int countTotalShopOwners();
+
     @Query(value = "SELECT\n" +
             "    DATE_FORMAT(csts.local_date, '%Y-%m') AS month,\n" +
             "    COUNT(*) AS bookings\n" +
