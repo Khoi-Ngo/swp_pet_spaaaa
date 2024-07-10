@@ -155,11 +155,15 @@ public class AdminService {
     }
 
     public Object getTotalAccountCustomer() {
-        return adminRepository.countTotalCustomer();
+        TotalAccountDto dto = new TotalAccountDto();
+        dto.setTotalAccount(adminRepository.countTotalCustomer());
+        return dto;
     }
 
 
     public Object getTotalAccountShopOwner() {
-        return adminRepository.countTotalShopOwners();
+        TotalAccountDto dto = new TotalAccountDto();
+        dto.setTotalAccount(adminRepository.countTotalShopOwners());
+        return dto;
     }
 }
