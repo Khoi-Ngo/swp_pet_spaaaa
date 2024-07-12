@@ -12,7 +12,7 @@ public class DetailAccountDto {
     private String email;
     private String username;
     private String phone;
-    private boolean status;
+    private boolean isDeleted;
     private LocalDate birthday;
 
 }

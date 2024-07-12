@@ -60,6 +60,7 @@ public class User extends BaseEntity implements UserDetails {
     //fundamental personal information
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String phone;
     //other

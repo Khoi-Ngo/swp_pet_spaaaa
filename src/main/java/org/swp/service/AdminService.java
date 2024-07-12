@@ -15,11 +15,13 @@ import org.swp.repository.IAdminRepository;
 import org.swp.repository.IServiceRepository;
 import org.swp.repository.IShopRepository;
 import org.swp.repository.IUserRepository;
+
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,79 +44,55 @@ public class AdminService {
     @Autowired
     private JWTService jwtService;
 
-    public List<ListAccountShopOwnerDto> getAllShopOwner(){
+    public List<ListAccountShopOwnerDto> getAllShopOwner() {
         return adminRepository.findAllShopOwnerAcc().stream()
-                .map(user ->{
-                    ListAccountShopOwnerDto dto = modelMapper.map(user, ListAccountShopOwnerDto.class);
-                    User shopOwner = userRepository.findById(dto.getId()).get();
-                    dto.setStatus(shopOwner.isDeleted());
-                    return dto;
-                })
+                .map(user -> modelMapper.map(user, ListAccountShopOwnerDto.class))
                 .collect(Collectors.toList());
     }
 
     public List<ListAccountCustomerDto> getAllCustomer() {
         return adminRepository.findAllCustomerACC().stream()
-                .map(service -> {
-                    ListAccountCustomerDto dto = modelMapper.map(service, ListAccountCustomerDto.class);
-                    User user = userRepository.findById(dto.getId()).get();
-                    dto.setStatus(user.isDeleted());
-                    return dto;
-                })
+                .map(service -> modelMapper.map(service, ListAccountCustomerDto.class))
                 .collect(Collectors.toList());
     }
 
-    public User addShopOwner(@NotNull SignUpRequest signUpRequest, String token) {
+    public Object addShopOwner(@NotNull SignUpRequest signUpRequest, String token) {
         String userName = jwtService.getUserNameFromToken(token);
 
         if (!isAdmin(userName)) {
             throw new IllegalArgumentException("You do not have permission to use this function");
         }
-        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-        if (userRepository.findByUsername(signUpRequest.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-
         User user = modelMapper.map(signUpRequest, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(UserRole.SHOP_OWNER);
         user.setCreatedTime(LocalDateTime.now());
-        user.setPhone(signUpRequest.getPhone());
-        return userRepository.save(user);
+        userRepository.save(user);
+        return "Created";
     }
 
     public Object deleteUserById(int id, String token) {
-        String userName = jwtService.getUserNameFromToken(token);
-
-        if(userRepository.findById(id).isEmpty()){
-            return "user not found";
+        User user = userRepository.findById(id).get();
+        if (Objects.isNull(user) || user.isDeleted() == true) {
+            return "user not found / deleted";
         }
-
-        if (!isAdmin(userName)) {
+        if (!isAdmin(jwtService.getUserNameFromToken(token))) {
             throw new IllegalArgumentException("You do not have permission to use this function");
         }
 
-        User user = userRepository.findById(id).get();
         user.setDeleted(true);
         userRepository.save(user);
-        ListAccountShopOwnerDto dto = modelMapper.map(user, ListAccountShopOwnerDto.class);
-        dto.setStatus(true);
-        return dto;
+        return "Deleted";
     }
 
-    public Object viewAccById(int id){
+    public Object viewAccById(int id) {
         User user = userRepository.findById(id).get();
-        if (user.isDeleted()){
-            return "user is deleted";
+        if (user.isDeleted()) {
+            return "User is deleted";
         }
-        DetailAccountDto dto = modelMapper.map(user, DetailAccountDto.class);
-        dto.setStatus(user.isDeleted());
-        return dto;
+        return modelMapper.map(user, DetailAccountDto.class);
     }
 
-    public Object getDashboardOfAdmin(){
+    public Object getDashboardOfAdmin() {
         AdminDashboardDto dto = new AdminDashboardDto();
         dto.setTotalShop(adminRepository.countTotalShops());
         dto.setTotalServices(adminRepository.countTotalServices());
@@ -155,15 +133,11 @@ public class AdminService {
     }
 
     public Object getTotalAccountCustomer() {
-        TotalAccountDto dto = new TotalAccountDto();
-        dto.setTotalAccount(adminRepository.countTotalCustomer());
-        return dto;
+        return new TotalAccountDto(adminRepository.countTotalCustomer());
     }
 
 
     public Object getTotalAccountShopOwner() {
-        TotalAccountDto dto = new TotalAccountDto();
-        dto.setTotalAccount(adminRepository.countTotalShopOwners());
-        return dto;
+        return new TotalAccountDto(adminRepository.countTotalShopOwners());
     }
 }

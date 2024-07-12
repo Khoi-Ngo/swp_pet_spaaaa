@@ -11,5 +11,5 @@ public class ListAccountShopOwnerDto {
     private String username;
     private String email;
     private String phone;
-    private boolean status;
+    private boolean isDeleted;
 }

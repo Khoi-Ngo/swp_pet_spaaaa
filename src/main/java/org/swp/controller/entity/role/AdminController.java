@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.SignUpRequest;
 import org.swp.entity.User;
 import org.swp.service.AdminService;
-import org.swp.service.AuthenticationService;
 
 import java.util.Objects;
 
@@ -26,28 +25,20 @@ public class AdminController {
     @GetMapping("/manageShopOwner/viewAll")
     public ResponseEntity<?> getAllAccShopOwner() {
         try {
-            var accountsShopOwner = adminService.getAllShopOwner();
-            if (accountsShopOwner == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("account shopOwner not found");
-            }
-            return ResponseEntity.ok(accountsShopOwner);
+            return ResponseEntity.ok(adminService.getAllShopOwner());
         } catch (Exception e) {
             logger.error("Error while getting all account shopOwner", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("account shopOwner not found");
         }
     }
 
     @GetMapping("/manageCustomer/viewAll")
     public ResponseEntity<?> getAllCustomer() {
         try {
-            var accountCustomer = adminService.getAllCustomer();
-            if (accountCustomer == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
-            }
-            return ResponseEntity.ok(accountCustomer);
+            return ResponseEntity.ok(adminService.getAllCustomer());
         } catch (Exception e) {
             logger.error("Error while getting all account Customer", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
         }
     }
 
@@ -67,13 +58,9 @@ public class AdminController {
     public ResponseEntity<?> addShopOwner(@RequestBody SignUpRequest signUpRequest,
                                           @RequestHeader(name = "Authorization") String token) {
         try {
-            User newShopOwner = adminService.addShopOwner(signUpRequest, token);
-            return Objects.isNull(newShopOwner) ?
-                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error occurred while adding shop owner")
-                    : ResponseEntity.ok(newShopOwner)
-                    ;
+            return ResponseEntity.ok(adminService.addShopOwner(signUpRequest, token));
         } catch (Exception e) {
-            logger.error("Error occurred during sign up: " + e.getMessage());
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
