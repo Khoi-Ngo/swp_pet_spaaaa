@@ -73,6 +73,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     private Shop shop;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     private PasswordResetToken passwordResetToken;
+
 }

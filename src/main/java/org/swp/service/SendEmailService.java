@@ -15,6 +15,7 @@ import org.swp.repository.IUserRepository;
 import org.swp.repository.ITokenRepository;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -57,6 +58,9 @@ public class SendEmailService implements EmailSender {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("User with email " + email + " does not exist"));
 
+        LocalDateTime now = LocalDateTime.now();
+        tokenRepository.deleteAllExpiredSince(now);
+
         String token = UUID.randomUUID().toString();
         System.out.println("token: " + token);
 
@@ -67,7 +71,7 @@ public class SendEmailService implements EmailSender {
 
         tokenRepository.save(passwordResetToken);
         // Generate the reset password link
-//        String link = "http://localhost:8080/api/v1/auth/password/changePassword?token=" + token;
+        //String link = "http://localhost:8080/api/v1/auth/password/changePassword?token=" + token;
         String link = "https://philfodennn.up.railway.app/api/v1/auth/password/changePassword?token=" + token;
         return link;
     }
@@ -84,8 +88,7 @@ public class SendEmailService implements EmailSender {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
 //        Optionally, delete the token after use
-//        passwordResetToken.setDeleted(true);
-//        tokenRepository.save(passwordResetToken);
+        tokenRepository.delete(passwordResetToken);
         return "Password has been changed successfully";
     }
 
@@ -93,6 +96,10 @@ public class SendEmailService implements EmailSender {
         String email = request.get("email");
         if (email == null || email.isEmpty()) {
             throw new IllegalStateException("Email is required");
+        }
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalStateException("User with email " + email + " does not exist");
         }
         return send(email);
     }
