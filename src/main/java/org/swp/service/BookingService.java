@@ -82,7 +82,7 @@ public class BookingService {
 
             }
 
-            if(!b.getCacheShopTimeSlot().getShopTimeSlot().isDeleted()){
+            if (!b.getCacheShopTimeSlot().getShopTimeSlot().isDeleted()) {
                 dtos.add(dto);
             }
 
@@ -92,74 +92,62 @@ public class BookingService {
 
     public Object getAllBookings(String token) {
         String userName = jwtService.getUserNameFromToken(token);
-        List<Booking> res = isCustomer(userName) ?
+        List<Booking> bookingList = isCustomer(userName) ?
                 bookingRepository.findALlByCustomerUserName(userName)
                 : bookingRepository.findAllByShopOwnerUserName(userName);
         //mapping
         List<BookingListItemDto> dtos = new ArrayList<>();
-        res.forEach(b -> {
-            BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
+        bookingList.forEach(b -> {
+            if (!isConsiderDeleted(b)) {
+                BookingListItemDto dto = modelMapper.map(b, BookingListItemDto.class);
 
-
-            org.swp.entity.Service service = b.getService();
-            if (service != null) {
+                org.swp.entity.Service service = b.getService();
                 dto.setServiceId(service.getId());
                 dto.setServiceName(service.getServiceName());
-            }
 
-            Shop shop = b.getShop();
-            if (shop != null) {
+                Shop shop = b.getShop();
                 dto.setShopName(shop.getShopName());
                 dto.setShopId(shop.getId());
-            }
 
-            User user = b.getUser();
-            if (user != null) {
+                User user = b.getUser();
                 dto.setCustomerFullName(user.getFirstName() + " " + user.getLastName());
-            }
 
-            Pet pet = b.getPet();
-            if (pet != null) {
+                Pet pet = b.getPet();
                 dto.setPetId(pet.getId());
                 dto.setPetName(pet.getPetName());
-            }
 
-            //local date + time slot
-            CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
-            if (cacheShopTimeSlot != null) {
+                //local date + time slot
+                CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();
                 dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
                 dto.setTimeSlotDto(modelMapper.map(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot(), TimeSlotDto.class));
 
-            }
-
-            if(!b.getCacheShopTimeSlot().getShopTimeSlot().isDeleted()){
                 dtos.add(dto);
             }
-
         });
         return dtos;
+    }
+
+    private boolean isConsiderDeleted(Booking booking) {
+        //any table relating to Booking if deleted then the booking will be considered to be deleted also.
+        return booking.getService().isDeleted() || booking.getUser().isDeleted() || booking.getShop().isDeleted()
+                || booking.getCacheShopTimeSlot().getShopTimeSlot().isDeleted();
     }
 
     private boolean isCustomer(String userName) {
         return userRepository.findByUsername(userName).get().getRole().equals(UserRole.CUSTOMER);
     }
 
-
-    private boolean isShopOwner(String userName) {
-        return userRepository.findByUsername(userName).get().getRole().equals(UserRole.SHOP_OWNER);
-    }
-
     public Object getBookingById(int id) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking.isDeleted()){
-            return "booking is deleted";
+        Booking booking = bookingRepository.findById(id).get();
+        if (booking.isDeleted()) {
+            return "Booking is deleted";
         }
         BookingDetailDto dto = modelMapper.map(booking, BookingDetailDto.class);
+
         CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();
         dto.setLocalDate(cacheShopTimeSlot.getLocalDate());
         dto.setStartTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
         dto.setEndTime(cacheShopTimeSlot.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
-        dto.setBookingNote(booking.getBookingNote());
 
         //user info
         User user = booking.getUser();
@@ -182,7 +170,6 @@ public class BookingService {
         dto.setServiceId(service.getId());
         dto.setServiceName(service.getServiceName());
         return dto;
-
     }
 
     @Transactional
@@ -226,14 +213,10 @@ public class BookingService {
     }
 
     private CacheShopTimeSlot getCacheShopTimeSlot(LocalDate localDate, LocalTime startLocalTime, LocalTime endLocalTime, Integer shopId) {
-
         TimeSlot timeSlot = timeSlotRepository.findByStartAndEnd(startLocalTime, endLocalTime);
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findByShopIdAndTimeSlot(shopId, timeSlot.getStartLocalDateTime(), timeSlot.getEndLocalDateTime());
         CacheShopTimeSlot cacheShopTimeSlot = cacheShopTimeSlotRepository
-                .findByShopDateAndTimeSlot(
-                        shopId
-                        , localDate
-                        , shopTimeSlot);
+                .findByShopDateAndTimeSlot(shopId, localDate, shopTimeSlot);
         cacheShopTimeSlot.setUsedSlots(cacheShopTimeSlot.getUsedSlots() + 1);
         cacheShopTimeSlot.setAvailableSlots(cacheShopTimeSlot.getAvailableSlots() - 1);
         return cacheShopTimeSlotRepository.save(cacheShopTimeSlot);

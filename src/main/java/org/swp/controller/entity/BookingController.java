@@ -30,9 +30,7 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<?> getAllBookings(@RequestHeader(name = "Authorization") String token) {
         try {
-            return Objects.nonNull(token) ?
-                    ResponseEntity.ok(bookingService.getAllBookings(token))
-                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+            return ResponseEntity.ok(bookingService.getAllBookings(token));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of booking");
@@ -43,8 +41,7 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody RequestBookingRequest request) {
         try {
-            var response = bookingService.createBooking(request);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(bookingService.createBooking(request));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating booking");
