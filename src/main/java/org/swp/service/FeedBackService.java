@@ -60,7 +60,8 @@ public class FeedBackService {
         String userName = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(userName).get();
         org.swp.entity.Service service = serviceRepository.findById(request.getServiceId()).get();
-        Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service, LocalDateTime.now());
+        Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service);
+        feedback.setCreatedTime(LocalDateTime.now());
         feedbackRepository.save(feedback);
         return "Create feedback successfully";
     }

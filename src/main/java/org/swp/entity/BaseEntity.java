@@ -20,8 +20,4 @@ public class BaseEntity {
     private String modifiedBy;
     @Column(name = "is_deleted", nullable = true, updatable = true)
     private boolean isDeleted;
-
-    public BaseEntity(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
-    }
 }

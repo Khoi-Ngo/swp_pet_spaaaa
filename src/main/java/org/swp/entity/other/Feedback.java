@@ -38,8 +38,7 @@ public class Feedback extends BaseEntity {
     @JoinColumn(name = "service_id")
     private Service service;
 
-    public Feedback(String content, RatingType ratingType, boolean isEdited, User user, Service service, LocalDateTime createdTime) {
-        super(createdTime);
+    public Feedback(String content, RatingType ratingType, boolean isEdited, User user, Service service) {
         this.content = content;
         this.ratingType = ratingType;
         this.isEdited = isEdited;
