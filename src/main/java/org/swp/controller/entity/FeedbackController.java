@@ -59,8 +59,7 @@ public class FeedbackController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getFeedbackById(@PathVariable("id") int id) {
         try {
-            var response = feedbackService.getDetailFeedback(id);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(feedbackService.getDetailFeedback(id));
         } catch (Exception e) {
             logger.error("Error while getting feedback", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -72,8 +71,7 @@ public class FeedbackController {
     public ResponseEntity<?> deleteFeedback(@PathVariable("id") int id,
                                             @RequestHeader("Authorization") String token) {
         try {
-            var response = feedbackService.deleteFeedback(id, token);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(feedbackService.deleteFeedback(id, token));
         } catch (Exception e) {
             logger.error("Error while deleting feedback", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

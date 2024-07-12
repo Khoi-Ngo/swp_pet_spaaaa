@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.swp.entity.*;
 import org.swp.enums.RatingType;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tbl_feedback")
 @Data
@@ -36,7 +38,8 @@ public class Feedback extends BaseEntity {
     @JoinColumn(name = "service_id")
     private Service service;
 
-    public Feedback(String content, RatingType ratingType, boolean isEdited, User user, Service service) {
+    public Feedback(String content, RatingType ratingType, boolean isEdited, User user, Service service, LocalDateTime createdTime) {
+        super(createdTime);
         this.content = content;
         this.ratingType = ratingType;
         this.isEdited = isEdited;

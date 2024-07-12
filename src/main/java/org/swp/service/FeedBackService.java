@@ -60,8 +60,7 @@ public class FeedBackService {
         String userName = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(userName).get();
         org.swp.entity.Service service = serviceRepository.findById(request.getServiceId()).get();
-        Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service);
-        feedback.setCreatedTime(LocalDateTime.now());
+        Feedback feedback = new Feedback(request.getContent(), request.getRatingType(), false, user, service, LocalDateTime.now());
         feedbackRepository.save(feedback);
         return "Create feedback successfully";
     }
@@ -78,9 +77,6 @@ public class FeedBackService {
         Feedback feedback = feedbackRepository.findById(id).get();
         if (!doOwnFeedback(feedback, token)) throw new RuntimeException("User not own the feedback");
         feedback.setDeleted(true);
-        List<FeedbackReply> feedbackReplyList = feedBackReplyRepository.findByFeedbackId(id);
-        feedbackReplyList.stream().peek(r -> r.setDeleted(true));
-        feedBackReplyRepository.saveAll(feedbackReplyList);
         feedbackRepository.save(feedback);
         return "Delete feedback successfully";
     }
@@ -90,14 +86,14 @@ public class FeedBackService {
         return userName.equals(feedback.getUser().getUsername());
     }
 
-    public Object updateFeedback(FeedbackUpdateRequest request, String token) {
-        Feedback feedback = feedbackRepository.findById(request.getFeedbackId()).get();
-        if (!doOwnFeedback(feedback, token)) throw new RuntimeException("User not own the feedback");
-        feedback.setContent(Objects.nonNull(request.getUpdateContent()) ? request.getUpdateContent() : feedback.getContent());
-        feedback.setRatingType(Objects.nonNull(request.getUpdateRatingType()) ? request.getUpdateRatingType() : feedback.getRatingType());
-        feedback.setEdited(true);
-        feedbackRepository.save(feedback);
-        return "Update feedback successfully";
-    }
+//    public Object updateFeedback(FeedbackUpdateRequest request, String token) {
+//        Feedback feedback = feedbackRepository.findById(request.getFeedbackId()).get();
+//        if (!doOwnFeedback(feedback, token)) throw new RuntimeException("User not own the feedback");
+//        feedback.setContent(Objects.nonNull(request.getUpdateContent()) ? request.getUpdateContent() : feedback.getContent());
+//        feedback.setRatingType(Objects.nonNull(request.getUpdateRatingType()) ? request.getUpdateRatingType() : feedback.getRatingType());
+//        feedback.setEdited(true);
+//        feedbackRepository.save(feedback);
+//        return "Update feedback successfully";
+//    }
 
 }

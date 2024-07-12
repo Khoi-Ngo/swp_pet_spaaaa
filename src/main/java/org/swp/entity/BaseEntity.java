@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Column;
+
 @Data
 @MappedSuperclass
 public class BaseEntity {
@@ -18,6 +19,9 @@ public class BaseEntity {
     @Column(name = "modified_by", nullable = true, updatable = true)
     private String modifiedBy;
     @Column(name = "is_deleted", nullable = true, updatable = true)
-    private boolean isDeleted ;
+    private boolean isDeleted;
 
+    public BaseEntity(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
 }
