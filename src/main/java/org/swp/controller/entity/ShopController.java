@@ -85,17 +85,17 @@ public class ShopController {
         }
     }
 
-    //delete shop
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteShop(@PathVariable("id") int id,
-                                        @RequestHeader(name = "Authorization") String token) {
-        try {
-            return ResponseEntity.ok(shopService.deleteShop(id, token));
-        } catch (Exception e) {
-            logger.error("Cannot delete the shop" + e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete the shop");
-        }
-    }
+//    //delete shop
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> deleteShop(@PathVariable("id") int id,
+//                                        @RequestHeader(name = "Authorization") String token) {
+//        try {
+//            return ResponseEntity.ok(shopService.deleteShop(id, token));
+//        } catch (Exception e) {
+//            logger.error("Cannot delete the shop" + e);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete the shop");
+//        }
+//    }
 
     //get shop detail by id
     @GetMapping("/detail/{id}")

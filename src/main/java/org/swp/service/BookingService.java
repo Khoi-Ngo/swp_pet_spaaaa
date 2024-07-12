@@ -224,7 +224,8 @@ public class BookingService {
 
     public Object cancel(@NotNull RequestCancelBookingRequest request, String token) {
         Booking booking = bookingRepository.findById(request.getBookingId()).get();
-        if (!doInvoleBooking(booking, token)) throw new RuntimeException("User not invole the booking");
+        if (!doInvoleBooking(booking, token) || BookingStatus.CANCELLED.name().equals(booking.getStatus()))
+            throw new RuntimeException("User not invole the booking/ booking is deleted before");
         booking.setStatus(BookingStatus.CANCELLED.name());
         booking.setAdditionalMessage(request.getAdditionalMessage());
         CacheShopTimeSlot cacheShopTimeSlot = booking.getCacheShopTimeSlot();

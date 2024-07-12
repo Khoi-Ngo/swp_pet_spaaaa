@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.SignUpRequest;
 import org.swp.dto.response.*;
+import org.swp.entity.Shop;
 import org.swp.entity.User;
 import org.swp.enums.UserRole;
 import org.swp.repository.IAdminRepository;
@@ -43,6 +44,9 @@ public class AdminService {
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    private IShopRepository shopRepository;
 
     public List<ListAccountShopOwnerDto> getAllShopOwner() {
         return adminRepository.findAllShopOwnerAcc().stream()
@@ -79,6 +83,13 @@ public class AdminService {
             throw new IllegalArgumentException("You do not have permission to use this function");
         }
 
+        if (user.getRole().equals(UserRole.SHOP_OWNER)) {
+            Shop shop = shopRepository.findByShopOwnerId(user.getId());
+            if (!shop.isDeleted()) {
+                shop.setDeleted(true);
+                shopRepository.save(shop);
+            }
+        }
         user.setDeleted(true);
         userRepository.save(user);
         return "Deleted";
