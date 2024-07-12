@@ -29,7 +29,7 @@ public class CacheShopTimeSlotService {
     @Autowired
     private IServiceRepository serviceRepository;
 
-    public Object getSlotInfors(int id, LocalDate date) { //todo: using shop id only ->> require FrontEnd change
+    public Object getSlotInfors(int id, LocalDate date) {
         List<CacheShopTimeSlotDto> dtos = null;
         org.swp.entity.Service service = serviceRepository.findById(id).get();
         Shop shop = service.getShop();
@@ -39,28 +39,22 @@ public class CacheShopTimeSlotService {
             dtos = new ArrayList<>();
             for (ShopTimeSlot timeSlot : shopTimeSlot) {
                 CacheShopTimeSlot cacheShopTimeSlot = null;
+
                 if (isEmptyTimeSlot(timeSlot, cacheShopTimeSlots)) {
                     //silently creating cacheshoptimeslot here
-                    cacheShopTimeSlot = new CacheShopTimeSlot();
-                    cacheShopTimeSlot.setTotalSlots(timeSlot.getTotalSlot());
-                    cacheShopTimeSlot.setUsedSlots(0);
-                    cacheShopTimeSlot.setAvailableSlots(timeSlot.getTotalSlot());
-                    cacheShopTimeSlot.setLocalDate(date);
-                    cacheShopTimeSlot.setShop(shop);
-                    cacheShopTimeSlot.setShopTimeSlot(timeSlot);
+                    cacheShopTimeSlot = new CacheShopTimeSlot(timeSlot.getTotalSlot(), 0, timeSlot.getTotalSlot(), date, timeSlot, shop);
                     cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
                 } else {
                     cacheShopTimeSlot = (cacheShopTimeSlots.stream().filter(c -> c.getShopTimeSlot().equals(timeSlot))).findAny().get();
 
                 }
+
                 dtos.add(new CacheShopTimeSlotDto(
                         cacheShopTimeSlot.getTotalSlots(),
                         cacheShopTimeSlot.getUsedSlots(),
                         cacheShopTimeSlot.getAvailableSlots(),
                         modelMapper.map(timeSlot.getTimeSlot(), TimeSlotDto.class)));
             }
-
-
         }
         return dtos;
     }

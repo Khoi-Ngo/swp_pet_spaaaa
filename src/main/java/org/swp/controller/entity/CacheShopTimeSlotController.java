@@ -27,15 +27,11 @@ public class CacheShopTimeSlotController {
     public ResponseEntity<?> getAvailableTimeSlotsForDate(@PathVariable("serviceId") int id
             , @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
-            var slotInfors = cacheShopTimeSlotService.getSlotInfors(id, date);
-            return Objects.nonNull(slotInfors) ?
-                    ResponseEntity.ok(slotInfors)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found date or not found the service");
-
+            return ResponseEntity.ok(cacheShopTimeSlotService.getSlotInfors(id, date));
         } catch (Exception e) {
             logger.error("Error while getting information slots for a date in Service Detail page");
             logger.error(e.getMessage());
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found date or not found the service");
         }
     }
     //no need CRUD here

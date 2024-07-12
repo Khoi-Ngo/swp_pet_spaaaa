@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.configuration.constant.feedback.FeedbackConstantNumber;
 import org.swp.dto.request.FeedbackCreateRequest;
-import org.swp.dto.request.FeedbackUpdateRequest;
 import org.swp.service.FeedBackService;
 
 @RestController
@@ -25,8 +24,7 @@ public class FeedbackController {
     @GetMapping("/all/{serviceId}")
     public ResponseEntity<?> getAllFeedbacks(@PathVariable("serviceId") int serviceId) {
         try {
-            var feedbacks = feedbackService.getAllFeedbacks(serviceId);
-            return ResponseEntity.ok(feedbacks);
+            return ResponseEntity.ok(feedbackService.getAllFeedbacks(serviceId));
         } catch (Exception e) {
             logger.error("Error while getting all feedbacks", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -37,8 +35,7 @@ public class FeedbackController {
     @GetMapping("/latest/{serviceId}")
     public ResponseEntity<?> getLatestFeedbackOfServiceByServiceId(@PathVariable("serviceId") int serviceId) {
         try {
-            var feedbacks = feedbackService.getLatestFeedback(serviceId, FeedbackConstantNumber.NUMBER_OF_LATEST_FEEDBACK.getValue());
-            return ResponseEntity.ok(feedbacks);
+            return ResponseEntity.ok(feedbackService.getLatestFeedback(serviceId, FeedbackConstantNumber.NUMBER_OF_LATEST_FEEDBACK.getValue()));
         } catch (Exception e) {
             logger.error("Error while getting latest feedbacks", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -50,8 +47,7 @@ public class FeedbackController {
     public ResponseEntity<?> createFeedback(@RequestHeader("Authorization") String token,
                                             @RequestBody FeedbackCreateRequest request) {
         try {
-            var response = feedbackService.createFeedback(token, request);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(feedbackService.createFeedback(token, request));
         } catch (Exception e) {
             logger.error("Error while creating feedback", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
