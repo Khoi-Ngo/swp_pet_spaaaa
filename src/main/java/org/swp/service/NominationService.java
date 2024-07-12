@@ -48,7 +48,8 @@ public class NominationService {
 
     public Object deleteNomination(String token, int nominationId) {//todo: this action need refresh page if no using websocket
         Nomination nomination = nominationRepository.findById(nominationId).get();
-        if (!isValidUser(token, nomination)) throw new RuntimeException("No valid user");
+        if (!isValidUser(token, nomination) || nomination.isDeleted())
+            throw new RuntimeException("No valid user / nomi deleted before");
         nomination.setDeleted(true);
         nominationRepository.save(nomination);
         Shop shop = nomination.getShop();

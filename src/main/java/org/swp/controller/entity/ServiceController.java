@@ -28,70 +28,50 @@ public class ServiceController { //todo -> some action should be more authentica
     @GetMapping("/latest-services")
     public ResponseEntity<?> getLatestServices() {
         try {
-            var services = serviceService.getLatestServices(ServiceConstantNumber.NUMBER_OF_LATEST_SERVICES.getValue());
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Latest services not found");
-            }
-            return ResponseEntity.ok(services);
+            return ResponseEntity.ok(serviceService.getLatestServices(ServiceConstantNumber.NUMBER_OF_LATEST_SERVICES.getValue()));
         } catch (Exception e) {
             logger.error("Error while getting latest services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping("/most-rcmd-services")
     public ResponseEntity<?> getMostRcmdServices() {
         try {
-            var services = serviceService.getMostRcmdServices(ServiceConstantNumber.NUMBER_OF_MOST_RCMD_SERVICES.getValue());
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Most recommended services not found");
-            }
-            return ResponseEntity.ok(services);
+            return ResponseEntity.ok(serviceService.getMostRcmdServices(ServiceConstantNumber.NUMBER_OF_MOST_RCMD_SERVICES.getValue()));
         } catch (Exception e) {
             logger.error("Error while getting most recommended services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping("/category-services")
     public ResponseEntity<?> getAllCategoryServices() {
         try {
-            var categories = categoryServiceService.getAll();
-            if (categories == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category services not found");
-            }
-            return ResponseEntity.ok(categories);
+            return ResponseEntity.ok(categoryServiceService.getAll());
         } catch (Exception e) {
             logger.error("Error while getting all category services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllServices() {
         try {
-            var services = serviceService.getAll();
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Services not found");
-            }
-            return ResponseEntity.ok(services);
+            return ResponseEntity.ok(serviceService.getAll());
         } catch (Exception e) {
             logger.error("Error while getting all services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping("{id}")//done
     public ResponseEntity<?> getServiceById(@PathVariable("id") int id) {
         try {
-            var service = serviceService.getServiceById(id);
-            if (service == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Service not found with id: " + id);
-            }
-            return ResponseEntity.ok(service);
+            return ResponseEntity.ok(serviceService.getServiceById(id));
         } catch (Exception e) {
             logger.error("Error while getting service by id", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -99,14 +79,10 @@ public class ServiceController { //todo -> some action should be more authentica
     public ResponseEntity<?> getServiceByShopId(@PathVariable("shopId") int shopId) {
         //todo
         try {
-            var services = serviceService.getAllServiceByShopId(shopId);
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Services not found for shopId: " + shopId);
-            }
-            return ResponseEntity.ok(services);
+            return ResponseEntity.ok(serviceService.getAllServiceByShopId(shopId));
         } catch (Exception e) {
             logger.error("Error while getting service by shopId", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -114,8 +90,7 @@ public class ServiceController { //todo -> some action should be more authentica
     @PutMapping//done
     public ResponseEntity<?> updateService(@RequestBody UpdateServiceRequest request) {
         try {
-            var response = serviceService.updateService(request);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(serviceService.updateService(request));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while update service");
@@ -126,8 +101,7 @@ public class ServiceController { //todo -> some action should be more authentica
     @PostMapping//done
     public ResponseEntity<?> createService(@RequestBody CreateServiceRequest request) {
         try {
-            var response = serviceService.createService(request);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(serviceService.createService(request));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while creating service");
@@ -139,8 +113,7 @@ public class ServiceController { //todo -> some action should be more authentica
     public ResponseEntity<?> deleteService(@PathVariable("id") int id,
                                            @RequestHeader(name = "Authorization") String token) {
         try {
-            var response = serviceService.deleteService(id, token);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(serviceService.deleteService(id, token));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while deleting service");
@@ -150,14 +123,10 @@ public class ServiceController { //todo -> some action should be more authentica
     @GetMapping("/all/auth")//done
     public ResponseEntity<?> getAllServicesOfShopowner(@RequestHeader(name = "Authorization") String token) {
         try {
-            var services = serviceService.getAllOfShopowner(token);
-            if (services == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Services not found");
-            }
-            return ResponseEntity.ok(services);
+            return ResponseEntity.ok(serviceService.getAllOfShopowner(token));
         } catch (Exception e) {
             logger.error("Error while getting all services", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

@@ -88,7 +88,6 @@ public class PetController {
     public ResponseEntity<?> createPet(@RequestBody CreatePetRequest request) {
         try {
             return ResponseEntity.ok(petService.createPet(request));
-
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot create the pet");

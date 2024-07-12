@@ -109,10 +109,10 @@ public class ShopController {
     }
 
     @GetMapping("/shopId")
-    public ResponseEntity<?> getShopIdFromToken(@RequestHeader(name = "Authorization") String token){
-        try{
+    public ResponseEntity<?> getShopIdFromToken(@RequestHeader(name = "Authorization") String token) {
+        try {
             return ResponseEntity.ok(shopService.getShopId(token));
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.notFound().build();
         }
@@ -135,7 +135,7 @@ public class ShopController {
     //shop owner checking infor of each timeslot per date
     @GetMapping("{date}")
     public ResponseEntity<?> getAllTimSlotInfoPerDate(@RequestHeader(name = "Authorization") String token,
-                                                       @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+                                                      @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
             return ResponseEntity.ok(shopService.getAllInfoTimeSlotByDate(token, date));
         } catch (Exception e) {

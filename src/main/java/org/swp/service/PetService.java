@@ -39,7 +39,7 @@ public class PetService {
     public Object getAllPets(String token) {
         String username = jwtService.getUserNameFromToken(token);
         User user = userRepository.findByUsername(username).get();
-        if(user.isDeleted()){
+        if (user.isDeleted()) {
             return "user is deleted";
         }
         List<Pet> pets;
@@ -120,7 +120,8 @@ public class PetService {
     public Object deletePet(int id, String token) {
         String userName = jwtService.getUserNameFromToken(token);
         Pet pet = petrepository.findById(id).get();
-        if (!pet.getUser().getUsername().equals(userName)) throw new RuntimeException("User not own the pet");
+        if (!pet.getUser().getUsername().equals(userName) || pet.isDeleted())
+            throw new RuntimeException("User not own the pet / pet is deleted");
         pet.setDeleted(true);
         petrepository.save(pet);
         //update booking also

@@ -118,7 +118,8 @@ public class ShopService {
         Shop shop = shopRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Shop not found with id: " + id));
         String userName = jwtService.getUserNameFromToken(token);
-        if (!userName.equals(shop.getUser().getUsername())) throw new RuntimeException("User not shop owner");
+        if (!userName.equals(shop.getUser().getUsername()) || shop.isDeleted())
+            throw new RuntimeException("User not shop owner/ shop is deleted");
         shop.setDeleted(true);
         shopRepository.save(shop);
         //update all service and booking deleted also

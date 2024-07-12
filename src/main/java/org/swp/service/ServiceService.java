@@ -76,7 +76,7 @@ public class ServiceService {
     public Object getServiceById(int id) {
         //service detail
         org.swp.entity.Service service = serviceRepository.findById(id).orElse(null);// Return null if service is not found
-        if (service.isDeleted()){
+        if (service.isDeleted()) {
             return "service is deleted";
         }
         ServiceDetailDto dto = modelMapper.map(service, ServiceDetailDto.class);
@@ -170,7 +170,8 @@ public class ServiceService {
 
     public Object deleteService(int id, String token) {
         org.swp.entity.Service service = serviceRepository.findById(id).get();
-        if (!isShopOwnerOfService(service, token)) throw new RuntimeException("User not shop owner");
+        if (!isShopOwnerOfService(service, token) || service.isDeleted())
+            throw new RuntimeException("User not shop owner/ service is deleted");
         service.setDeleted(true);
         serviceRepository.save(service);
         Shop shop = service.getShop();
@@ -186,10 +187,10 @@ public class ServiceService {
     }
 
     public Object updateService(UpdateServiceRequest request) {
-        if(request.getId() <= 0 ){
+        if (request.getId() <= 0) {
             return "serviceId is null";
         }
-        if(request.getServiceCategoryId() <= 0){
+        if (request.getServiceCategoryId() <= 0) {
             return "categoryId is null";
         }
         org.swp.entity.Service service = modelMapper.map(request, org.swp.entity.Service.class);

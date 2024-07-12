@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swp.dto.request.NomiCreateRequest;
-import org.swp.dto.request.NominationDeleteRequest;
 import org.swp.service.NominationService;
 
 import java.util.Objects;
@@ -39,8 +38,7 @@ public class NominationController {
             @RequestHeader(name = "Authorization") String token,
             @PathVariable("nominationId") int nominationId) {
         try {
-            var response = nominationService.deleteNomination(token, nominationId);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(nominationService.deleteNomination(token, nominationId));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body("There was an error deleting nomination");

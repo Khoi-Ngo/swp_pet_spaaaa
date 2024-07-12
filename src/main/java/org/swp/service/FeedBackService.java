@@ -75,7 +75,8 @@ public class FeedBackService {
 
     public Object deleteFeedback(int id, String token) {
         Feedback feedback = feedbackRepository.findById(id).get();
-        if (!doOwnFeedback(feedback, token)) throw new RuntimeException("User not own the feedback");
+        if (!doOwnFeedback(feedback, token) || feedback.isDeleted())
+            throw new RuntimeException("User not own the feedback/ feedback deleted before");
         feedback.setDeleted(true);
         feedbackRepository.save(feedback);
         return "Delete feedback successfully";

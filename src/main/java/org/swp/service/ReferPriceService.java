@@ -44,8 +44,8 @@ public class ReferPriceService {
 
     public Object deleteReferPrice(int id, String token) {
         ReferPrice referPrice = referPriceRepository.findById(id).get();
-        if (!referPrice.getService().getShop().getUser().getUsername().equals(jwtService.getUserNameFromToken(token)))
-            throw new RuntimeException("User not shop owner");
+        if (!referPrice.getService().getShop().getUser().getUsername().equals(jwtService.getUserNameFromToken(token)) || referPrice.isDeleted())
+            throw new RuntimeException("User not shop owner/ referprice is deleted");
         referPrice.setDeleted(true);
         referPriceRepository.save(referPrice);
         return "Deleted";

@@ -53,13 +53,11 @@ public class ShopTimeSlotService {
     public Object deleteShopTimeSlot(int id, String token) {
         ShopTimeSlot shopTimeSlot = shopTimeSlotRepository.findById(id).get();
 
-        if (!isShopOwner(shopTimeSlot, token)) throw new RuntimeException("User not shop owner");
+        if (!isShopOwner(shopTimeSlot, token) || shopTimeSlot.isDeleted())
+            throw new RuntimeException("User not shop owner/ shop timeslot is deleted");
 
         shopTimeSlot.setDeleted(true);
         shopTimeSlotRepository.save(shopTimeSlot);
-        //affect booking, cacheshoptimeslot -> all booking will be canceled
-//        bookingRepository.deleteAllByShopTimeSlot(id);
-//        cacheShopTimeSlotRepository.deleteAllByShopTimeSlot(id);
         return "delete shop time slot successfully";
     }
 
