@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.swp.configuration.constant.MonthConstant;
 import org.swp.dto.request.SignUpRequest;
 import org.swp.dto.response.*;
 import org.swp.entity.Shop;
@@ -17,14 +18,14 @@ import org.swp.repository.IServiceRepository;
 import org.swp.repository.IShopRepository;
 import org.swp.repository.IUserRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @Service
@@ -104,38 +105,30 @@ public class AdminService {
     }
 
     public Object getDashboardOfAdmin() {
-        AdminDashboardDto dto = new AdminDashboardDto();
-        dto.setTotalShop(adminRepository.countTotalShops());
-        dto.setTotalServices(adminRepository.countTotalServices());
-        dto.setTotalCustomer(adminRepository.countTotalCustomer());
-        dto.setTotalBookings(adminRepository.countTotalBookings());
-        dto.setTotalPets(adminRepository.countTotalPets());
-        List<Object[]> queryResult = adminRepository.findMonthlyBookings();
+
+        Map<String, Integer> monthlyBookingMap = getMonthlyBookingMap();
 
         List<MonthlyBookingDto> monthlyBookings = new ArrayList<>();
-        YearMonth currentMonth = YearMonth.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        IntStream.rangeClosed(MonthConstant.JANUARY, MonthConstant.DECEMBER).forEach(month -> {
+            YearMonth ym = YearMonth.of(LocalDate.now().getYear(), month);
+            String monthStr = ym.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+            monthlyBookings.add(new MonthlyBookingDto(monthStr, monthlyBookingMap.getOrDefault(monthStr, 0)));
+        });
 
-        for (int month = 1; month <= 12; month++) {
-            YearMonth ym = YearMonth.of(currentMonth.getYear(), month);
-            String monthStr = ym.format(formatter);
+        return new AdminDashboardDto(adminRepository.countTotalShops()
+                , adminRepository.countTotalServices()
+                , adminRepository.countTotalCustomer()
+                , adminRepository.countTotalBookings()
+                , adminRepository.countTotalPets()
+                , monthlyBookings);
+    }
 
-            Optional<Object[]> matchingResult = queryResult.stream()
-                    .filter(result -> monthStr.equals(result[0]))
-                    .findFirst();
-
-            MonthlyBookingDto mbDto = new MonthlyBookingDto();
-            mbDto.setMonth(monthStr);
-            if (matchingResult.isPresent()) {
-                mbDto.setBookings(((Number) matchingResult.get()[1]).intValue());
-            } else {
-                mbDto.setBookings(0);
-            }
-            monthlyBookings.add(mbDto);
-        }
-
-        dto.setMonthlyBookings(monthlyBookings);
-        return dto;
+    private Map<String, Integer> getMonthlyBookingMap() {
+        return adminRepository.findMonthlyBookings().stream()
+                .collect(Collectors.toMap(
+                        result -> (String) result[0],
+                        result -> ((Number) result[1]).intValue()
+                ));
     }
 
     private boolean isAdmin(String username) {
