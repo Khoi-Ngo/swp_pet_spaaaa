@@ -1,0 +1,57 @@
+package org.swp.controller.entity;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.swp.dto.request.PasswordChangeRequest;
+import org.swp.service.SendEmailService;
+import java.util.Map;
+import java.util.Objects;
+
+@RestController
+@RequestMapping("/api/v1/auth/password")
+public class ForgotPasswordController {
+
+    @Autowired
+    SendEmailService sendEmailService;
+
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPasswordProcess(@RequestBody Map<String, String> request) {
+        try {
+            return Objects.nonNull(request) ?
+                    ResponseEntity.ok(sendEmailService.handleForgotPassword(request))
+                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of email");
+        }
+    }
+
+    // check if the token is valid or not
+    @GetMapping("/checkValidate")
+    public ResponseEntity<?> validateResetToken(@RequestParam("token") String token) {
+        try {
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(sendEmailService.validateResetToken(token))
+                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of email");
+        }
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestParam("token") String token, @RequestBody PasswordChangeRequest request) {
+        try {
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(sendEmailService.changePassword(token, request))
+                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of email");
+        }
+    }
+
+}
