@@ -76,4 +76,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/avata/auth")
+    public ResponseEntity<?> getUserAvata(@RequestHeader(name = "Authorization") String token) {
+        try {
+            return Objects.nonNull(token) ?
+                    ResponseEntity.ok(userService.getUserAvata(token))
+                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot get the profile");
+        }
+    }
+
+
 }

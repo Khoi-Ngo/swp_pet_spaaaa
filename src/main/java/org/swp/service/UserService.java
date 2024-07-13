@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swp.dto.request.UpdatePasswordRequest;
 import org.swp.dto.request.UpdateUserProfileRequest;
+import org.swp.dto.response.AvataDto;
 import org.swp.dto.response.PrivateUserDto;
 import org.swp.dto.response.PublicUserDto;
 import org.swp.entity.User;
@@ -103,5 +104,13 @@ public class UserService {
         } catch (Exception e) {
             return "Cannot find the user";
         }
+    }
+
+    public Object getUserAvata(String token) {
+        String username = jwtService.getUserNameFromToken(token);
+        User user = IUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        AvataDto dto = modelMapper.map(user, AvataDto.class);
+        return dto;
     }
 }
