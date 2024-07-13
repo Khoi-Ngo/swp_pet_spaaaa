@@ -19,8 +19,7 @@ public class CategoryServiceService {
     private ModelMapper modelMapper;
 
     public List<ServiceCategoryDto> getAll() {
-        List<ServiceCategory> serviceCategories = categorySerivceRepository.findAll().stream()
-                .filter(serviceCategory -> !serviceCategory.isDeleted())
+        List<ServiceCategory> serviceCategories = categorySerivceRepository.findAllServiceCategory().stream()
                 .toList();
         List<ServiceCategoryDto> serviceCategoryDtos = new ArrayList<>();
         serviceCategories.forEach(sc -> serviceCategoryDtos.add(modelMapper.map(sc, ServiceCategoryDto.class)));

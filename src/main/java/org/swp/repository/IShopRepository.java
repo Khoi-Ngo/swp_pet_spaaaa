@@ -66,4 +66,7 @@ public interface IShopRepository extends JpaRepository<Shop, Integer> {
 
     @Query(value = "select id from tbl_shop where shop_owner_id = (select u.id from tbl_user u where u.username = :userName limit 1);\n", nativeQuery = true)
     Integer getShopIdFromUserName(@Param("userName") String userName);
+
+    @Query(value = "select * from tbl_shop where is_deleted = false", nativeQuery = true)
+    List<Shop> findAllShops();
 }

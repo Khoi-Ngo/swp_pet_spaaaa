@@ -44,7 +44,7 @@ public class PetService {
         }
         List<Pet> pets;
         pets = isAdmin(username) ?
-                petrepository.findAll() :
+                petrepository.findAllPet() :
                 petrepository.findByUserName(username);
         return mapToDto(pets);
     }

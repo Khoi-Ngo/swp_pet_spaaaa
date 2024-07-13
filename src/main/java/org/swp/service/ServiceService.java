@@ -11,10 +11,7 @@ import org.swp.dto.response.ServiceListItemDto;
 import org.swp.entity.Shop;
 import org.swp.entity.User;
 import org.swp.enums.TypePet;
-import org.swp.repository.ICategorySerivceRepository;
-import org.swp.repository.IServiceRepository;
-import org.swp.repository.IShopRepository;
-import org.swp.repository.IUserRepository;
+import org.swp.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,9 +38,14 @@ public class ServiceService {
     @Autowired
     private JWTService jwtService;
 
+    @Autowired
+    private IFeedbackRepository feedbackRepository;
+
+    @Autowired
+    private IReferPriceRepository referPriceRepository;
+
     public List<ServiceListItemDto> getAll() {
-        return serviceRepository.findAll().stream()
-                .filter(service -> !service.isDeleted())
+        return serviceRepository.findAllService().stream()
                 .map(service -> {
                     ServiceListItemDto dto = modelMapper.map(service, ServiceListItemDto.class);
 
@@ -177,6 +179,8 @@ public class ServiceService {
         Shop shop = service.getShop();
         shop.setTotalServices(shop.getTotalServices() - 1);
         shopRepository.save(shop);
+        feedbackRepository.deletedAllFeedBackByServiceId(service.getId());
+        referPriceRepository.deleteAllByServiceId(service.getId());
         //update booking also
         return "Deleted";
     }

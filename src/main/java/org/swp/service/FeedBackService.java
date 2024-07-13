@@ -79,6 +79,7 @@ public class FeedBackService {
         if (!doOwnFeedback(feedback, token) || feedback.isDeleted())
             throw new RuntimeException("User not own the feedback/ feedback deleted before");
         feedback.setDeleted(true);
+        feedBackReplyRepository.deletedAllByFeedBackId(feedback.getId());
         feedbackRepository.save(feedback);
         return "Delete feedback successfully";
     }

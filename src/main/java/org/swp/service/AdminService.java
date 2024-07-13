@@ -13,10 +13,7 @@ import org.swp.dto.response.*;
 import org.swp.entity.Shop;
 import org.swp.entity.User;
 import org.swp.enums.UserRole;
-import org.swp.repository.IAdminRepository;
-import org.swp.repository.IServiceRepository;
-import org.swp.repository.IShopRepository;
-import org.swp.repository.IUserRepository;
+import org.swp.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +45,16 @@ public class AdminService {
 
     @Autowired
     private IShopRepository shopRepository;
+
+    @Autowired
+    private IPetrepository petrepository;
+
+    @Autowired
+    private IFeedbackRepository feedbackRepository;
+
+    @Autowired
+    private INominationRepository nominationRepository;
+
 
     public List<ListAccountShopOwnerDto> getAllShopOwner() {
         return adminRepository.findAllShopOwnerAcc().stream()
@@ -90,6 +97,11 @@ public class AdminService {
                 shop.setDeleted(true);
                 shopRepository.save(shop);
             }
+        }
+        if(user.getRole().equals(UserRole.CUSTOMER)){
+            petrepository.deletedAllPetByUserId(user.getId());
+            feedbackRepository.deletedAllFeedBackByUserId(user.getId());
+            nominationRepository.deletedAllNominationByUserId(user.getId());
         }
         user.setDeleted(true);
         userRepository.save(user);

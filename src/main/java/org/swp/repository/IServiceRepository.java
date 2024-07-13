@@ -24,4 +24,7 @@ public interface IServiceRepository extends JpaRepository<Service, Integer> {
 
     @Query(value = "SELECT * FROM tbl_service  WHERE shop_id = :shopId and is_deleted = false ORDER BY nomination DESC ", nativeQuery = true)
     List<Service> findAllByShopId(@Param("shopId") int shopId);
+
+    @Query(value = "SELECT * FROM tbl_service WHERE is_deleted = FALSE", nativeQuery = true)
+    List<Service> findAllService();
 }
