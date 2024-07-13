@@ -19,4 +19,5 @@ public class CreateShopRequest {
     private LocalTime closeTime;
     private boolean isAvailable;
     private String shopTitle;
+    private String shopProfileImangeUrl;
 }

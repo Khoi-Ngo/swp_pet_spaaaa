@@ -17,5 +17,5 @@ public class UpdateShopRequest {
     private LocalTime openTime;
     private LocalTime closeTime;
     private boolean isAvailable;
-
+    private String shopProfileImangeUrl;
 }
