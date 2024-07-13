@@ -31,12 +31,12 @@ public class ForgotPasswordController {
         }
     }
 
-    // check if the token is valid or not
+    // check if the token is valid or not (used in be)
     @GetMapping("/checkValidate")
     public ResponseEntity<?> validateResetToken(@RequestParam("token") String token) {
         try {
             return Objects.nonNull(token) ?
-                    ResponseEntity.ok(sendEmailService.validateResetToken(token))
+                    ResponseEntity.ok(sendEmailService.checkToken(token))
                     : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of email");
@@ -44,10 +44,10 @@ public class ForgotPasswordController {
     }
 
     @PostMapping("/changePassword")
-    public ResponseEntity<?> changePassword(@RequestParam("token") String token, @RequestBody PasswordChangeRequest request) {
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest request) {
         try {
-            return Objects.nonNull(token) ?
-                    ResponseEntity.ok(sendEmailService.changePassword(token, request))
+            return Objects.nonNull(request) ?
+                    ResponseEntity.ok(sendEmailService.changePassword(request))
                     : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of email");

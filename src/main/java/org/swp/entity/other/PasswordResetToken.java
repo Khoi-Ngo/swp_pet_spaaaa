@@ -18,7 +18,7 @@ public class PasswordResetToken {
     @Column(name = "expiry_date_time")
     private LocalDateTime expiryDateTime;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 }

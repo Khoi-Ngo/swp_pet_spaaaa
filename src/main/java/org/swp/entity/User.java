@@ -73,7 +73,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     private Shop shop;
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user")
     private PasswordResetToken passwordResetToken;
 
 }
