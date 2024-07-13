@@ -12,8 +12,8 @@ import java.util.Collection;
 @Repository
 public interface IAdminRepository extends JpaRepository<User, Integer> {
 
-    @Query(value = "SELECT u FROM User u WHERE u.role = 1 and is_deleted = false",nativeQuery = true)
-    Collection<Object> findAllCustomerACC();
+    @Query(value = "SELECT * FROM tbl_user WHERE role = 1 and is_deleted = false",nativeQuery = true)
+    List<User> findAllCustomerACC();
 
     @Query(value = "SELECT * FROM tbl_user WHERE role = 2 and is_deleted = false", nativeQuery = true)
     List<User> findAllShopOwnerAcc();
