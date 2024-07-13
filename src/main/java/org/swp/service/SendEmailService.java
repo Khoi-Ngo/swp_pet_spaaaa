@@ -97,10 +97,10 @@ public class SendEmailService implements EmailSender {
         if (email == null || email.isEmpty()) {
             throw new IllegalStateException("Email is required");
         }
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("User with email " + email + " does not exist");
-        }
+//        Optional<User> optionalUser = userRepository.findByEmail(email);
+//        if (optionalUser.isEmpty()) {
+//            throw new IllegalStateException("User with email " + email + " does not exist");
+//        }
         return send(email);
     }
 
