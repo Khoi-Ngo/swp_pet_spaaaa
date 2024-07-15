@@ -82,6 +82,7 @@ public class NominationService {
         dto.setUserName(nomination.getUser().getUsername());
         dto.setNominationType(nomination.getNominationType());
         dto.setUserId(nomination.getUser().getId());
+        dto.setUserPhoto(nomination.getUser().getProfileImageUrl());
         return dto;
     }
 

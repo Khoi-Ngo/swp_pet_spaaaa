@@ -52,6 +52,7 @@ public class FeedBackService {
             dto.setUserName(entity.getUser().getUsername());
             dto.setLocalDateTime(entity.getCreatedTime());
             dto.setUserId(entity.getUser().getId());
+            dto.setUserPhoto(entity.getUser().getProfileImageUrl());
             return dto;
         }).collect(Collectors.toList());
     }

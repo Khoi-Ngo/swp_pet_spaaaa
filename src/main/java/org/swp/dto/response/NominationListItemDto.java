@@ -10,4 +10,5 @@ public class NominationListItemDto {
     private NominationType nominationType;
     private String userName;
     private int userId;
+    private String userPhoto;
 }

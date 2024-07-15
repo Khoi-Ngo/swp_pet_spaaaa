@@ -19,7 +19,8 @@ public class Service extends BaseEntity {
     private double maxWeight;
     private String tags; //regex "tag1 - tag2 - tag3"
     private int nomination;
-
+    @Lob
+    private String servicePhoto;
 
     @ManyToOne
     @JoinColumn(name = "service_category_id")

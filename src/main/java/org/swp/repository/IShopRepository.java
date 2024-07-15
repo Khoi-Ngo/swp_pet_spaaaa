@@ -51,12 +51,12 @@ public interface IShopRepository extends JpaRepository<Shop, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE tbl_feedback SET is_deleted = 1 WHERE shop_id = :id", nativeQuery = true)
+    @Query(value = "UPDATE tbl_feedback SET is_deleted = 1 WHERE service_id IN (SELECT id FROM tbl_service WHERE shop_id = :id)", nativeQuery = true)
     void updateFeedBack_ByShopId(@Param("id") int id);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE tbl_feedback_reply SET is_deleted = 1 WHERE feedback_id IN (SELECT id FROM tbl_feedback WHERE shop_id = :id)", nativeQuery = true)
+    @Query(value = "UPDATE tbl_feedback_reply SET is_deleted = 1 WHERE feedback_id IN (SELECT id FROM tbl_feedback WHERE service_id IN (SELECT id FROM tbl_service WHERE shop_id = :id))", nativeQuery = true)
     void updateFeedbackReplyDeleted_ByShopId(@Param("id") int id);
 
     @Modifying

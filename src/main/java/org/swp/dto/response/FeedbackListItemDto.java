@@ -14,4 +14,5 @@ public class FeedbackListItemDto {
     private boolean isEdited;
     private LocalDateTime localDateTime;
     private int userId;
+    private String userPhoto;
 }

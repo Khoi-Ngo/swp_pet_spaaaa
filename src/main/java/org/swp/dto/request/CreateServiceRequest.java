@@ -14,4 +14,5 @@ public class CreateServiceRequest {
     private double maxWeight;
     private TypePet typePet;
     private String tags;
+    private String servicePhoto;
 }

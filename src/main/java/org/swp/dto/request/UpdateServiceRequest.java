@@ -14,4 +14,5 @@ public class UpdateServiceRequest {
     private double minWeight;
     private double maxWeight;
     private String tags;
+    private String servicePhoto;
 }

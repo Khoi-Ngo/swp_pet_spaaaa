@@ -13,4 +13,5 @@ public class ListServiceDto {
     private double minWeight;
     private double maxWeight;
     private int nomination;
+    private String servicePhoto;
 }

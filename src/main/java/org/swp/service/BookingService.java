@@ -104,6 +104,7 @@ public class BookingService {
                 org.swp.entity.Service service = b.getService();
                 dto.setServiceId(service.getId());
                 dto.setServiceName(service.getServiceName());
+                dto.setServicePhoto(service.getServicePhoto());
 
                 Shop shop = b.getShop();
                 dto.setShopName(shop.getShopName());
@@ -115,6 +116,7 @@ public class BookingService {
                 Pet pet = b.getPet();
                 dto.setPetId(pet.getId());
                 dto.setPetName(pet.getPetName());
+                dto.setPetPhoto(pet.getPetPhoto());
 
                 //local date + time slot
                 CacheShopTimeSlot cacheShopTimeSlot = b.getCacheShopTimeSlot();

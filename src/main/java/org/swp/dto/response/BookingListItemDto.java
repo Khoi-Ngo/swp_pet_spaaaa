@@ -17,5 +17,6 @@ public class BookingListItemDto {
     private String shopName;
     private Integer petId;
     private String petName;
-
+    private String servicePhoto;
+    private String petPhoto;
 }
