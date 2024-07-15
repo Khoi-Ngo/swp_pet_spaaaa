@@ -162,6 +162,7 @@ public class BookingService {
         dto.setPetName(pet.getPetName());
         dto.setTypePet(pet.getPetType());
         dto.setPetWeight(pet.getPetWeight());
+        dto.setPetPhoto(pet.getPetPhoto());
         //shop info
         Shop shop = booking.getShop();
         dto.setShopAddress(shop.getShopAddress());
@@ -171,6 +172,7 @@ public class BookingService {
         org.swp.entity.Service service = booking.getService();
         dto.setServiceId(service.getId());
         dto.setServiceName(service.getServiceName());
+        dto.setServicePhoto(service.getServicePhoto());
         return dto;
     }
 

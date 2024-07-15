@@ -37,4 +37,6 @@ public class BookingDetailDto {
     private String note;//bookingNote
 
     private String additionalMessage;//in case of view of CANCELED booking
+    private String servicePhoto;
+    private String petPhoto;
 }
