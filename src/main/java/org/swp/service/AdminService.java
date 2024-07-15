@@ -70,7 +70,9 @@ public class AdminService {
 
     public Object addShopOwner(@NotNull SignUpRequest signUpRequest, String token) {
         String userName = jwtService.getUserNameFromToken(token);
-
+        if(userRepository.findByEmail(signUpRequest.getEmail()).isPresent()){
+            return "Email already exists";
+        }
         if (!isAdmin(userName)) {
             throw new IllegalArgumentException("You do not have permission to use this function");
         }
@@ -93,9 +95,17 @@ public class AdminService {
 
         if (user.getRole().equals(UserRole.SHOP_OWNER)) {
             Shop shop = shopRepository.findByShopOwnerId(user.getId());
-            if (!shop.isDeleted()) {
+            if (shop != null && !shop.isDeleted()) {
                 shop.setDeleted(true);
                 shopRepository.save(shop);
+                shopRepository.updateServiceDeleted_ByShopId(id);
+                shopRepository.updateNominationDeleted_ByShopId(id);
+                shopRepository.updateCacheShopTimeSlotDeleted_ByShopId(id);
+                shopRepository.updateBookingDeleted_ByShopId(id);
+                shopRepository.updateShopTimeSlotDeleted_ByShopId(id);
+                shopRepository.updateFeedBack_ByShopId(id);
+                shopRepository.updateFeedbackReplyDeleted_ByShopId(id);
+                shopRepository.updateReFerPrice_DeletedByShopId(id);
             }
         }
         if(user.getRole().equals(UserRole.CUSTOMER)){
