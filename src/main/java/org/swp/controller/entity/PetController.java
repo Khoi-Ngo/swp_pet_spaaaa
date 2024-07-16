@@ -26,7 +26,7 @@ public class PetController {
     }
 
 
-//    @GetMapping("/pet-types")
+//    @GetMapping("/pet-types") // test to use VSCode
 //    public ResponseEntity<?> getAllPetTypesIntSystem() {
 //        try {
 //            var petTypes = TypePet.values();
