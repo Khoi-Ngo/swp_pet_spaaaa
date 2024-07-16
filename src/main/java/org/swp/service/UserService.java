@@ -82,28 +82,21 @@ public class UserService {
     }
 
     public Object updatePassword(String token, UpdatePasswordRequest request) {
-        try {
             String username = jwtService.getUserNameFromToken(token);
             User user = IUserRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Validate old password
             if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-                return "Old password is incorrect";
+                throw new RuntimeException("Old password is incorrect");
             }
-
-            // Check if new password and confirm password match
             if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-                return "New password and confirm password do not match";
+                throw new RuntimeException("New password and confirm password do not match");
             }
 
-            // Update password
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             IUserRepository.save(user);
             return "Password updated successfully";
-        } catch (Exception e) {
-            return "Cannot find the user";
-        }
+
     }
 
     public Object getUserAvata(String token) {

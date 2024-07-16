@@ -15,6 +15,7 @@ import org.swp.repository.IUserRepository;
 import org.swp.repository.ITokenRepository;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -78,13 +79,16 @@ public class SendEmailService implements EmailSender {
 
     public Object changePassword(PasswordChangeRequest request) {
         String token = request.getToken();
-        PasswordResetToken passwordResetToken = tokenRepository.findByToken(token);
+        PasswordResetToken passwordResetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired token."));
+
         if (passwordResetToken == null || passwordResetToken.getExpiryDateTime().isBefore(LocalDateTime.now())) {
-            return "Invalid or expired token.";
+            throw new RuntimeException ("Invalid or expired token.");
         }
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            return "New password and confirm password do not match";
+            throw new RuntimeException("New password and confirm password do not match");
         }
+
         User user = passwordResetToken.getUser();
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
@@ -102,10 +106,13 @@ public class SendEmailService implements EmailSender {
     }
 
     public boolean checkToken(String token) {
-        PasswordResetToken passwordResetToken = tokenRepository.findByToken(token);
+        PasswordResetToken passwordResetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired token."));;
+
         if (passwordResetToken == null || passwordResetToken.getExpiryDateTime().isBefore(LocalDateTime.now())) {
             return false;
         }
         return true;
     }
+
 }

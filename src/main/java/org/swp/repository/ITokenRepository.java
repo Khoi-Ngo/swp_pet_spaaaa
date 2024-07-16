@@ -8,10 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.swp.entity.other.PasswordResetToken;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface ITokenRepository extends JpaRepository<PasswordResetToken, Integer> {
 
-    PasswordResetToken findByToken(String token);
+    Optional<PasswordResetToken> findByToken(String token);
 
     @Transactional
     @Modifying

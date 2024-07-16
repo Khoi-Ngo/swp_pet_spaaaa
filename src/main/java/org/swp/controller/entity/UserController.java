@@ -66,13 +66,10 @@ public class UserController {
     public ResponseEntity<?> updatePassword(@RequestHeader("Authorization") String token,
                                             @RequestBody UpdatePasswordRequest request) {
         try {
-            var response = userService.updatePassword(token, request);
-            return Objects.nonNull(response) ?
-                    ResponseEntity.ok(response)
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are some invalid stuffs");
+                return ResponseEntity.ok(userService.updatePassword(token, request));
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find the user");
+            logger.error("Error while updating password", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

@@ -1,5 +1,7 @@
 package org.swp.controller.entity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ public class ForgotPasswordController {
     @Autowired
     SendEmailService sendEmailService;
 
+    private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
     @PostMapping("/forgotPassword")
     public ResponseEntity<?> forgotPasswordProcess(@RequestBody Map<String, String> request) {
@@ -46,11 +49,10 @@ public class ForgotPasswordController {
     @PostMapping("/changePassword")
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest request) {
         try {
-            return Objects.nonNull(request) ?
-                    ResponseEntity.ok(sendEmailService.changePassword(request))
-                    : ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not authenticated");
+            return ResponseEntity.ok(sendEmailService.changePassword(request));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot find data of email");
+            logger.error("Error while updating password", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
