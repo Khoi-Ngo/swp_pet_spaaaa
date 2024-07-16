@@ -1,4 +1,5 @@
 package org.swp.dto.response;
+
 import lombok.Data;
 import org.swp.enums.UserRole;
 import java.time.LocalDate;
@@ -16,5 +17,5 @@ public class ListAccountCustomerDto {
         private String profileImageUrl;
         private String coverImageUrl;
         private LocalDate birthday;
-        private boolean status;
+        private boolean isDeleted;
 }

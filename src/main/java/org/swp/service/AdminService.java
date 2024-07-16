@@ -63,7 +63,7 @@ public class AdminService {
     }
 
     public List<ListAccountCustomerDto> getAllCustomer() {
-        return adminRepository.findAllCustomerACC().stream()
+        return adminRepository.findAllCustomerAcc().stream()
                 .map(service -> modelMapper.map(service, ListAccountCustomerDto.class))
                 .collect(Collectors.toList());
     }

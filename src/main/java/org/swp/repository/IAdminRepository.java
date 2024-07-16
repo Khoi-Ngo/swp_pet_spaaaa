@@ -12,10 +12,10 @@ import java.util.Collection;
 @Repository
 public interface IAdminRepository extends JpaRepository<User, Integer> {
 
-    @Query(value = "SELECT * FROM tbl_user WHERE role = 1 and is_deleted = false",nativeQuery = true)
-    List<User> findAllCustomerACC();
+    @Query(value = "SELECT * FROM tbl_user WHERE role = 1 ", nativeQuery = true)
+    List<User> findAllCustomerAcc();
 
-    @Query(value = "SELECT * FROM tbl_user WHERE role = 2 and is_deleted = false", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_user WHERE role = 2 ", nativeQuery = true)
     List<User> findAllShopOwnerAcc();
 
     @Query(value = "select count(*) from tbl_shop where is_deleted = false", nativeQuery = true)
