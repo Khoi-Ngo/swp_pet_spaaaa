@@ -9,6 +9,7 @@ import org.swp.dto.response.ListShopTimeSlotDto;
 import org.swp.entity.*;
 import org.swp.repository.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,6 +102,15 @@ public class ShopTimeSlotService {
                     TimeSlot timeSlot = shopTimeSlot.getTimeSlot();
                     dto.setStartLocalTime(timeSlot.getStartLocalDateTime());
                     dto.setEndLocalTime(timeSlot.getEndLocalDateTime());
+
+
+                    List<CacheShopTimeSlot> cacheSlots = cacheShopTimeSlotRepository.findByShopTimeSlotId(shopTimeSlot.getId());
+                    if (!cacheSlots.isEmpty()) {
+                        CacheShopTimeSlot latestCacheSlot = cacheSlots.get(0); // Assuming the latest is the first one
+                        dto.setAvailableSlot(latestCacheSlot.getAvailableSlots());
+                        dto.setUsedSlot(latestCacheSlot.getUsedSlots());
+                    }
+
                     return dto;
                 })
                 .collect(Collectors.toList());
