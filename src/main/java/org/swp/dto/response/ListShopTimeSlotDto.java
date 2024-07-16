@@ -12,6 +12,4 @@ public class ListShopTimeSlotDto {
     private LocalTime endLocalTime;
     private String description;
     private int totalSlot;
-    private int availableSlot;
-    private int usedSlot;
 }
