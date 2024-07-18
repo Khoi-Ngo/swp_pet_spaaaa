@@ -10,6 +10,7 @@ BEGIN
     DECLARE bookingid INT;
     DECLARE shopownerid INT;
     DECLARE customername VARCHAR(255);
+    DECLARE notiStatus VARCHAR(255);
 
     IF NOT (NEW.status <=> OLD.status) THEN
 
@@ -32,13 +33,14 @@ BEGIN
 
         SET customerid = NEW.customer_id;
         SET bookingid = NEW.id;
+        SET notiStatus = NEW.status;
 
         -- Insert into notification -> customer
         INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read )
-        VALUES (CONCAT('Your booking status on : ', bookedDate, ' is updated'), customerid, bookingid, false, false);
+        VALUES (CONCAT('Your booking status on : ', bookedDate, ' is ', notiStatus), customerid, bookingid, false, false);
         -- Insert into notification -> shop owner
         INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
-        VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate, ' is updated'), shopownerid, bookingid, false, false);
+        VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate, ' is ', notiStatus), shopownerid, bookingid, false, false);
 
     END IF;
 END //
