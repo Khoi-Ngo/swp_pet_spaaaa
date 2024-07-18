@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.swp.dto.response.NotificationDto;
+import org.swp.dto.response.TotalUnreadNotificationDto;
 import org.swp.entity.Notification;
 import org.swp.repository.INotificationRepository;
 
@@ -52,8 +53,11 @@ public class NotificationService {
         return notification.getUser().getUsername().equals(jwtService.getUserNameFromToken(token));
     }
 
-    public Integer getTotalUnreadNotification(String token) {
-        return notificationRepository.getTotalUnread(jwtService.getUserNameFromToken(token));
+    public TotalUnreadNotificationDto getTotalUnreadNotification(String token) {
+        Integer totalUnread = notificationRepository.getTotalUnread(jwtService.getUserNameFromToken(token));
+        TotalUnreadNotificationDto dto = new TotalUnreadNotificationDto();
+        dto.setTotalUnreadNotification(totalUnread);
+        return dto;
     }
 
 //    @Scheduled(fixedRate = 10000)
