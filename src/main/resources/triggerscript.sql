@@ -37,10 +37,10 @@ BEGIN
 
         -- Insert into notification -> customer
         INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time )
-        VALUES (CONCAT('Lịch đặt của bạn vào ngày  ', bookedDate, ' cập nhật: ', notiStatus), customerid, bookingid, false, false, NOW());
+        VALUES (CONCAT('Lịch đặt của bạn vào ngày   ', bookedDate, ' cập nhật: ', notiStatus), customerid, bookingid, false, false, NOW());
         -- Insert into notification -> shop owner
         INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time)
-        VALUES (CONCAT('Lịch đặt của ', customername, ' vào ', bookedDate, ' cập nhật: ', notiStatus), shopownerid, bookingid, false, false, NOW());
+        VALUES (CONCAT('Lịch đặt của ', customername, ' vào  ', bookedDate, ' cập nhật: ', notiStatus), shopownerid, bookingid, false, false, NOW());
 
     END IF;
 END //
@@ -85,7 +85,7 @@ BEGIN
 
     -- insert into notification for customer
     INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time)
-    VALUES (CONCAT('Lịch đặt của bạn vào', bookedDate, ' đã được tạo'), customerid, bookingid, false, false, NOW());
+    VALUES (CONCAT('Lịch đặt của bạn vào ', bookedDate, ' đã được tạo'), customerid, bookingid, false, false, NOW());
 
     -- insert into notification for shopowner
     INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time)
