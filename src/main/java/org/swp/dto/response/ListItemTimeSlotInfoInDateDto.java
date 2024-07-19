@@ -6,7 +6,7 @@ import java.time.LocalTime;
 
 @Data
 public class ListItemTimeSlotInfoInDateDto {
-    private int id;//cacheTimeSlotId
+    private Integer id;//cacheTimeSlotId
     private int totalSlots;
     private int usedSlots;
     private int availableSlots;

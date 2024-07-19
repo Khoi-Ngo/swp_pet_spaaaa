@@ -24,8 +24,8 @@ public class CacheShopTimeSlotController {
     private CacheShopTimeSlotService cacheShopTimeSlotService;
 
     @GetMapping("/{serviceId}/{date}")
-    public ResponseEntity<?> getAvailableTimeSlotsForDate(@PathVariable("serviceId") int id
-            , @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public ResponseEntity<?> getAvailableTimeSlotsForDate(@PathVariable("serviceId") int id,
+            @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
             return ResponseEntity.ok(cacheShopTimeSlotService.getSlotInfors(id, date));
         } catch (Exception e) {
@@ -34,5 +34,5 @@ public class CacheShopTimeSlotController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found date or not found the service");
         }
     }
-    //no need CRUD here
+    // no need CRUD here
 }

@@ -8,10 +8,12 @@ import org.swp.dto.request.UpdateShopRequest;
 import org.swp.dto.response.*;
 import org.swp.entity.CacheShopTimeSlot;
 import org.swp.entity.Shop;
+import org.swp.entity.ShopTimeSlot;
 import org.swp.entity.User;
 import org.swp.repository.IBookingRepository;
 import org.swp.repository.ICacheShopTimeSlotRepository;
 import org.swp.repository.IShopRepository;
+import org.swp.repository.IShopTimeSlotRepository;
 import org.swp.repository.IUserRepository;
 
 import java.time.LocalDate;
@@ -44,17 +46,19 @@ public class ShopService {
     @Autowired
     private ICacheShopTimeSlotRepository cacheShopTimeSlotRepository;
 
+    @Autowired
+    private IShopTimeSlotRepository shopTimeSlotRepository;
+
     public Object getMostRcmdShops(int numberOfRecords) {
-//        return shopRepository.findMostRcmdShops(numberOfRecords);
+        // return shopRepository.findMostRcmdShops(numberOfRecords);
         return shopRepository.findAll();
     }
 
-    //map to shop detail dto
+    // map to shop detail dto
     private ShopDetailDto mapToDto(Shop shopEntity) {
         ModelMapper localModelMapper = new ModelMapper();
-        localModelMapper.typeMap(LocalDateTime.class, LocalTime.class).setConverter(context ->
-                context.getSource() != null ? context.getSource().toLocalTime() : null
-        );
+        localModelMapper.typeMap(LocalDateTime.class, LocalTime.class)
+                .setConverter(context -> context.getSource() != null ? context.getSource().toLocalTime() : null);
 
         ShopDetailDto dto = localModelMapper.map(shopEntity, ShopDetailDto.class);
 
@@ -63,7 +67,6 @@ public class ShopService {
         dto.setCloseTime(shopEntity.getCloseTime().toLocalTime());
         return dto;
     }
-
 
     public List<ShopDetailDto> getAllShops() {
         return shopRepository.findAllShops().stream()
@@ -74,7 +77,7 @@ public class ShopService {
                 .collect(Collectors.toList());
     }
 
-    //get shop for shop owner
+    // get shop for shop owner
     public Object getShopDetail(String token) {
         String username = jwtService.getUserNameFromToken(token);
         Shop shop = shopRepository.findByUserName(username);
@@ -100,7 +103,8 @@ public class ShopService {
     }
 
     public Object updateShop(UpdateShopRequest request, String token) {
-        Shop shop = shopRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("Shop not found with id: " + request.getId()));
+        Shop shop = shopRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Shop not found with id: " + request.getId()));
         if (!shop.getUser().getUsername().equals(jwtService.getUserNameFromToken(token)))
             throw new RuntimeException("User not shop owner");
 
@@ -114,14 +118,14 @@ public class ShopService {
     }
 
     public Object deleteShop(int id, String token) {
-        Shop shop = shopRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Shop not found with id: " + id));
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shop not found with id: " + id));
         String userName = jwtService.getUserNameFromToken(token);
         if (!userName.equals(shop.getUser().getUsername()) || shop.isDeleted())
             throw new RuntimeException("User not shop owner/ shop is deleted");
         shop.setDeleted(true);
         shopRepository.save(shop);
-        //update all service and booking deleted also
+        // update all service and booking deleted also
         shopRepository.updateServiceDeleted_ByShopId(id);
         shopRepository.updateNominationDeleted_ByShopId(id);
         shopRepository.updateCacheShopTimeSlotDeleted_ByShopId(id);
@@ -141,12 +145,10 @@ public class ShopService {
         return mapToDto(shop);
     }
 
-
     public Object getShopId(String token) {
         String userName = jwtService.getUserNameFromToken(token);
         return shopRepository.getShopIdFromUserName(userName);
     }
-
 
     public Object getDashboardOfShop(String token) {
         String userName = jwtService.getUserNameFromToken(token);
@@ -188,11 +190,25 @@ public class ShopService {
     public Object getAllInfoTimeSlotByDate(String token, LocalDate date) {
         Integer shopId = (Integer) getShopId(token);
         List<CacheShopTimeSlot> cacheShopTimeSlotList = cacheShopTimeSlotRepository.findByShopIdAndDate(shopId, date);
+        List<ShopTimeSlot> shopTimeSlots = shopTimeSlotRepository.findByShopId(shopId);
+        for (ShopTimeSlot shopTimeSlot : shopTimeSlots) {
+            if (isEmptyTimeSlot(shopTimeSlot, cacheShopTimeSlotList)) {
+                // silently create new cache shop time slot and save into database
+                CacheShopTimeSlot cacheShopTimeSlot = new CacheShopTimeSlot(shopTimeSlot.getTotalSlot(), 0,
+                        shopTimeSlot.getTotalSlot(), date, shopTimeSlot, shopTimeSlot.getShop());
+                cacheShopTimeSlotList.add(cacheShopTimeSlot);
+                cacheShopTimeSlotRepository.save(cacheShopTimeSlot);
+            }
+        }
         return cacheShopTimeSlotList.stream().map(e -> {
             ListItemTimeSlotInfoInDateDto dto = modelMapper.map(e, ListItemTimeSlotInfoInDateDto.class);
             dto.setStartTime(e.getShopTimeSlot().getTimeSlot().getStartLocalDateTime());
             dto.setEndTime(e.getShopTimeSlot().getTimeSlot().getEndLocalDateTime());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    private boolean isEmptyTimeSlot(ShopTimeSlot timeSlot, List<CacheShopTimeSlot> cacheShopTimeSlots) {
+        return cacheShopTimeSlots.stream().noneMatch(s -> s.getShopTimeSlot().equals(timeSlot));
     }
 }
