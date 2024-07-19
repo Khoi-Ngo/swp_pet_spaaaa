@@ -33,17 +33,23 @@ public class NotificationService {
 //    @Autowired
 //    private SimpMessagingTemplate simpMessagingTemplate;
 
-    public Object getNotificationByUser(String token) {
-        String userName = jwtService.getUserNameFromToken(token);
-        return notificationRepository.findAllByUser(userName).stream()
-                .map(e -> {
-                    NotificationDto dto = modelMapper.map(e, NotificationDto.class);
-                    dto.setBookingId(e.getBooking().getId());
-                    LocalDateTime localDateTime = e.getCreatedTime();
-                    dto.setLocalDateTimeString(localDateTime == null ? "" : localDateTime.toString());
-                    return dto;
-                }).collect(Collectors.toList());
-    }
+public Object getNotificationByUser(String token) {
+    String userName = jwtService.getUserNameFromToken(token);
+    return notificationRepository.findAllByUser(userName).stream()
+            .map(e -> {
+                NotificationDto dto = modelMapper.map(e, NotificationDto.class);
+                dto.setBookingId(e.getBooking().getId());
+                LocalDateTime localDateTime = e.getCreatedTime();
+                String stringTime = "";
+                if (localDateTime != null) {
+                    stringTime += localDateTime.getHour() + ":" + localDateTime.getMinute() + ", " + 
+                                  localDateTime.getDayOfMonth() + "-" + localDateTime.getMonthValue() + "-" + 
+                                  localDateTime.getYear();
+                }
+                dto.setLocalDateTimeString(stringTime);
+                return dto;
+            }).collect(Collectors.toList());
+}
 
     public void updateStatusNotification(String token, int id) {
         Notification notification = notificationRepository.findById(id).get();
