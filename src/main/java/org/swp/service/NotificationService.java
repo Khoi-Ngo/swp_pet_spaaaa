@@ -11,6 +11,7 @@ import org.swp.dto.response.TotalUnreadNotificationDto;
 import org.swp.entity.Notification;
 import org.swp.repository.INotificationRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,8 @@ public class NotificationService {
                 .map(e -> {
                     NotificationDto dto = modelMapper.map(e, NotificationDto.class);
                     dto.setBookingId(e.getBooking().getId());
+                    LocalDateTime localDateTime = e.getCreatedTime();
+                    dto.setLocalDateTimeString(localDateTime == null ? "" : localDateTime.toString());
                     return dto;
                 }).collect(Collectors.toList());
     }

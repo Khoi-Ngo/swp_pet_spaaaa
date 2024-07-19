@@ -36,11 +36,11 @@ BEGIN
         SET notiStatus = NEW.status;
 
         -- Insert into notification -> customer
-        INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read )
-        VALUES (CONCAT('Your booking status on : ', bookedDate, ' is ', notiStatus), customerid, bookingid, false, false);
+        INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time )
+        VALUES (CONCAT('Lịch đặt của bạn vào ngày  ', bookedDate, ' cập nhật: ', notiStatus), customerid, bookingid, false, false, NOW());
         -- Insert into notification -> shop owner
-        INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
-        VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate, ' is ', notiStatus), shopownerid, bookingid, false, false);
+        INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time)
+        VALUES (CONCAT('Lịch đặt của ', customername, ' vào ', bookedDate, ' cập nhật: ', notiStatus), shopownerid, bookingid, false, false, NOW());
 
     END IF;
 END //
@@ -84,12 +84,12 @@ BEGIN
     SET bookingid = NEW.id;
 
     -- insert into notification for customer
-    INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
-    VALUES (CONCAT('Your booking status on : ', bookedDate, ' is created'), customerid, bookingid, false, false);
+    INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time)
+    VALUES (CONCAT('Lịch đặt của bạn vào', bookedDate, ' đã được tạo'), customerid, bookingid, false, false, NOW());
 
     -- insert into notification for shopowner
-    INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read)
-    VALUES (CONCAT('The booking of  : ', customername, ' on ', bookedDate,' is created'), shopownerid, bookingid, false, false);
+    INSERT INTO tbl_notification (content, user_id, booking_id, is_deleted, is_read, created_time)
+    VALUES (CONCAT('Lịch đặt của ', customername, ' vào ', bookedDate,'đã được tạo'), shopownerid, bookingid, false, false, NOW());
 END //
 
 DELIMITER ;
