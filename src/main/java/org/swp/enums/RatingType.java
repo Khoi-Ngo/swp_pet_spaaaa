@@ -5,5 +5,5 @@ public enum RatingType {
     PARTIALLY_BAD,
     NORMAL,
     QUITE_GOOD,
-    REALLY, GOOD;
+    REALLY_GOOD;
 }
