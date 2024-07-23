@@ -3,7 +3,6 @@ package org.swp.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
 @Entity
 @Data
 @Table(name = "tbl_booking")
@@ -15,8 +14,8 @@ public class Booking extends BaseEntity {
     @Lob
     private String bookingNote;
     private String status;
+    @Lob
     private String additionalMessage;// -> used for cancel booking only
-
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

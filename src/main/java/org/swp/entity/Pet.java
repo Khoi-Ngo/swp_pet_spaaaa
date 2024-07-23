@@ -19,8 +19,10 @@ public class Pet extends BaseEntity {
     private int petAge;
     private String petGender;
     private int petWeight;
+    @Lob
     private String petDescription;
     private String petPhoto;
+    @Lob
     private String petNote;
 
     @ManyToOne

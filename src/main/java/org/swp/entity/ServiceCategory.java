@@ -12,6 +12,7 @@ public class ServiceCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String categoryName;
+    @Lob
     private String description;
 
 

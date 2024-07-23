@@ -13,6 +13,7 @@ public class Service extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String serviceName;
+    @Lob
     private String serviceDescription;
     private double price;
     private double minWeight;
