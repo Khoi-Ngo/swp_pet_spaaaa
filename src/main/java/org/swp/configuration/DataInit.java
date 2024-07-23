@@ -28,9 +28,9 @@ public class DataInit {
             if (IUserRepository.count() == 0) {
                 // Create some initial users
                 List<User> initialUsers = Arrays.asList(
-                        createUser("admin", passwordEncoder.encode("123456"), UserRole.ADMIN, "Admin", "User", "admin@example.com"),
-                        createUser("customer", passwordEncoder.encode("123456"), UserRole.CUSTOMER, "Customer", "User", "customer@example.com"),
-                        createUser("shop_owner", passwordEncoder.encode("123456"), UserRole.SHOP_OWNER, "Shop", "Owner", "owner@example.com")
+                        createUser("swpadmin123", passwordEncoder.encode("123456"), UserRole.ADMIN, "SWP", "Admin Example", "admin@example.com"),
+                        createUser("swpcustomer123", passwordEncoder.encode("123456"), UserRole.CUSTOMER, "SWP", "Customer Example", "customer@example.com"),
+                        createUser("swpshopowner123", passwordEncoder.encode("123456"), UserRole.SHOP_OWNER, "SWP", "Shop Owner Example", "shopowner@example.com")
                 );
 
                 // Save the initial users to the database
