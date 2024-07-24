@@ -243,7 +243,7 @@ public class BookingService {
 
     public Object markBooking(int bookingId, BookingStatus bookingStatus, String token) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        if (!doInvoleBooking(booking, token) || isOverdueBooking(booking)) throw new RuntimeException("Cannot mark");
+        // if (!doInvoleBooking(booking, token) || isOverdueBooking(booking)) throw new RuntimeException("Cannot mark");
         booking.setStatus(bookingStatus.name());
         bookingRepository.save(booking);
         return "Booking marked!";
