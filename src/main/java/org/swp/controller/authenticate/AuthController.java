@@ -15,7 +15,6 @@ import org.swp.service.AuthenticationService;
 
 import java.util.Objects;
 
-
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -24,15 +23,15 @@ public class AuthController {
 
     Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    //ENDPOINTS
+    // ENDPOINTS
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
         try {
             User newUser = authenticationService.signUp(signUpRequest);
-            return Objects.isNull(newUser) ?
-                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Maybe the username or email is in use already")
-                    : ResponseEntity.ok(newUser)
-                    ;
+            return Objects.isNull(newUser)
+                    ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("Maybe the username or email is in use already")
+                    : ResponseEntity.ok(newUser);
         } catch (Exception e) {
             logger.error("Error occurred during sign up: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -58,6 +57,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
+    // test source tree
 }
