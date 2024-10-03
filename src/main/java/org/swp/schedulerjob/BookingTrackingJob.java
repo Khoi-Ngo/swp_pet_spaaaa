@@ -13,11 +13,12 @@ public class BookingTrackingJob {
     @Autowired
     private BookingService bookingService;
     private static final Logger logger = Logger.getLogger(BookingTrackingJob.class.getName());
-    private static final int POLLING_INTERVAL = 1000;//millis
+    private static final int POLLING_INTERVAL = 100000000;//millis
 
     @Scheduled(fixedRate = POLLING_INTERVAL)
     public void trackStatusBooking() {
         logger.info("Tracking status booking triggered");
-        bookingService.trackBookingStatus(LocalDateTime.now());
+        //TODO: reduce the querying too much on free server
+        // bookingService.trackBookingStatus(LocalDateTime.now());
     }
 }
