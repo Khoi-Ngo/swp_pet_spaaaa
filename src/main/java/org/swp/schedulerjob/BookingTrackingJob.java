@@ -14,7 +14,7 @@ public class BookingTrackingJob {
     @Autowired
     private BookingService bookingService;
     private static final Logger logger = Logger.getLogger(BookingTrackingJob.class.getName());
-    private static final int POLLING_INTERVAL = 100000000; // millis
+    private static final int POLLING_INTERVAL = 10000; // millis
 
     private Thread trackingThread;
     private final AtomicBoolean running = new AtomicBoolean(false);
