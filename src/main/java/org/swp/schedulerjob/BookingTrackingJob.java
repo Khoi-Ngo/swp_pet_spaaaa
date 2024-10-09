@@ -27,9 +27,10 @@ public class BookingTrackingJob {
                     return; // already running
                 }
                 try {
-                    logger.info("Tracking status booking triggered");
-                    // TODO: reduce the querying too much on free server
-                    bookingService.trackBookingStatus(LocalDateTime.now());
+                    //TODO: comment for long term deployment
+
+                    // logger.info("Tracking status booking triggered");
+                    // bookingService.trackBookingStatus(LocalDateTime.now());
                 } finally {
                     running.set(false);
                 }
