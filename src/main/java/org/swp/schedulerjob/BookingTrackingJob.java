@@ -29,8 +29,8 @@ public class BookingTrackingJob {
                 try {
                     //TODO: comment for long term deployment
 
-                    // logger.info("Tracking status booking triggered");
-                    // bookingService.trackBookingStatus(LocalDateTime.now());
+                    logger.info("Tracking status booking triggered");
+                    bookingService.trackBookingStatus(LocalDateTime.now());
                 } finally {
                     running.set(false);
                 }
